@@ -1,0 +1,29 @@
+{
+  "name": "topdownspeed",
+  "version": "1.0.0",
+  "description": "2d 2 lane competitive speed running game",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon app.js --ext .js,.ejs,.css",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Anelon/TopDownSpeed.git"
+  },
+  "author": "Andrew Bell and Matthew Chan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Anelon/TopDownSpeed/issues"
+  },
+  "homepage": "https://github.com/Anelon/TopDownSpeed#readme",
+  "dependencies": {
+    "ejs": "^3.1.3",
+    "ejs-lint": "^1.1.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
