@@ -103,6 +103,14 @@ class PlayerController extends Player {
             this.moved = true;
             //this.location.addS(direction.makeUnit());
         }
+
+        //abilities
+        if(keyBinds[LEFT_STR]) {
+
+        }
+        if(keyBinds[RIGHT_STR]) {
+
+        }
     }
 }
 
