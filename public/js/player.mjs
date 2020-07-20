@@ -3,7 +3,7 @@ import { Moveable } from "./entity.mjs";
 
 //class for holding the other players and as a parent to PlayerController
 class Player extends Moveable {
-    constructor(map, location, imgSrc, speed) {
+    constructor(map, location, name, imgSrc, speed) {
         super(map, location, imgSrc, speed);
     }
     update(dt) {
@@ -13,8 +13,8 @@ class Player extends Moveable {
 
 //class for handling the current player
 class PlayerController extends Player {
-    constructor(map, location, imgSrc, speed) {
-        super(map, location, imgSrc, speed);
+    constructor(map, location, name, imgSrc, speed) {
+        super(map, location, name, imgSrc, speed);
     }
     update(dt) {
         this.moved = false;

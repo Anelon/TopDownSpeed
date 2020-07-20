@@ -16,7 +16,7 @@ let map = new Map();
 let players = [];
 let monsters = [];
 
-let you = new PlayerController(map, new Vec2(10,10), defaultImg, defaultSpeed);
+let you = new PlayerController(map, new Vec2(10,10), "Player1", defaultImg, defaultSpeed);
 players.push(you);
 
 let enemy = new Monster(map, new Vec2(map.width/2, map.height/2), defaultImg, defaultSpeed);
