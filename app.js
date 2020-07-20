@@ -20,7 +20,8 @@ app.get("/", function(req, res) {
 app.get("/game", function(req, res) {
     res.render("game");
 });
-console.log(new Vec2(1,2).log());
+
+//console.log(new Vec2(1,2).log());
 
 
 app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at http://${app.get('ip')}:${app.get('port')}`);});
