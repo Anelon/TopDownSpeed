@@ -58,11 +58,10 @@ function render(dt) {
         mouse.changed = false; // flag that the mouse coords have been rendered
         map.ctx.clearRect(0, 0, map.canvas.width, map.canvas.height);
         // get mouse canvas coordinate correcting for page scroll
-        let x = mouse.x - scrollX;
-        let y = mouse.y - scrollY;
-        map.drawImageLookat(you.image, you.location, new Vec2(x ,y));
+        let location = new Vec2(mouse.x, mouse.y);
+        map.drawImageLookat(you.image, you.location, location);
         // Draw mouse at its canvas position
-        map.drawCrossHair(new Vec2(x,y),"black");
+        map.drawCrossHair(location, "black");
         // draw mouse event client coordinates on canvas
         map.drawCrossHair(new Vec2(mouse.cx,mouse.cy),"rgba(255,100,100,0.2)");
 
@@ -71,7 +70,7 @@ function render(dt) {
         map.ctx.beginPath();
         map.ctx.globalAlpha = 0.2;
         map.ctx.moveTo(you.x, you.y);
-        map.ctx.lineTo(x, y);
+        map.ctx.lineTo(location.x, location.y);
         map.ctx.stroke();
         map.ctx.globalAlpha = 1;
     }

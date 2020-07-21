@@ -13,6 +13,9 @@ class Map {
         this.ctx.font = "18px arial";
         this.ctx.lineWidth = 1;
     }
+    clear() {
+        this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height);
+    }
     drawImageLookat(img, origin, look, withOutline = false) {
         this.ctx.setTransform(1, 0, 0, 1, origin.x, origin.y);
         this.ctx.rotate(Math.atan2(look.y - origin.y, look.x - origin.x)); // Adjust image 90 degree anti clockwise (PI/2) because the image  is pointing in the wrong direction.
