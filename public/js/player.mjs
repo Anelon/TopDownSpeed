@@ -46,5 +46,25 @@ class PlayerController extends Player {
 
         }
     }
+    draw(map, mouse) {
+        mouse.changed = false; // flag that the mouse coords have been rendered
+        map.ctx.clearRect(0, 0, map.canvas.width, map.canvas.height);
+        // get mouse canvas coordinate correcting for page scroll
+        let location = new Vec2(mouse.x, mouse.y);
+        map.drawImageLookat(this.image, this.location, location);
+        // Draw mouse at its canvas position
+        map.drawCrossHair(location, "black");
+        // draw mouse event client coordinates on canvas
+        map.drawCrossHair(new Vec2(mouse.cx,mouse.cy),"rgba(255,100,100,0.2)");
+
+        // draw line from you center to mouse to check alignment is perfect
+        map.ctx.strokeStyle = "black";
+        map.ctx.beginPath();
+        map.ctx.globalAlpha = 0.2;
+        map.ctx.moveTo(this.x, this.y);
+        map.ctx.lineTo(location.x, location.y);
+        map.ctx.stroke();
+        map.ctx.globalAlpha = 1;
+    }
 }
 export { Player, PlayerController };
