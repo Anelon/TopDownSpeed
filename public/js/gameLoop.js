@@ -7,6 +7,7 @@ import { Player, PlayerController } from "./player.mjs";
 //figure out resizing
 //https://stackoverflow.com/questions/1664785/resize-html5-canvas-to-fit-window
 
+//global defaults
 const defaultSpeed = 100;
 const defaultImg = './img/arrow.png';
 
@@ -16,31 +17,12 @@ let map = new Map();
 let players = [];
 let monsters = [];
 
+//declair players (will get moved to server when player connects)
 let you = new PlayerController(map, new Vec2(10,10), "Player1", defaultImg, defaultSpeed);
 players.push(you);
 
 let enemy = new Monster(map, new Vec2(map.width/2, map.height/2), defaultImg, defaultSpeed);
 monsters.push(enemy);
-const mouse = {
-    x : null,
-    y : null,
-    changed : false,
-    changeCount : 0,
-}
-
-
-
-function mouseEvent(e) {  // get the mouse coordinates relative to the canvas top left
-    var bounds = map.canvas.getBoundingClientRect(); 
-    mouse.x = e.pageX - bounds.left;
-    mouse.y = e.pageY - bounds.top;
-    mouse.cx = e.clientX - bounds.left; // to compare the difference between client and page coordinates
-    mouse.cy = e.clienY - bounds.top;
-    mouse.changed = true;
-    mouse.changeCount += 1;
-}
-document.addEventListener("mousemove",mouseEvent);
-
 
 function update(dt) {
     you.update(dt);
@@ -54,8 +36,8 @@ function update(dt) {
 
 // only render when the DOM is ready to display the mouse position
 function render(dt) {
-    if(you.moved || (you.image.complete && mouse.changed)) { // only update player if moved 
-        you.draw(map, mouse);
+    if(you.moved || (you.image.complete && you.mouse.changed)) { // only update player if moved 
+        you.draw();
     }
     requestAnimationFrame(frame);
 }

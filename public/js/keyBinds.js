@@ -1,3 +1,4 @@
+//left click is button 0, middle is 1, right is 2
 const LEFT = 0, MIDDLE = 1, RIGHT = 2;
 const LEFT_STR = "leftC", MIDDLE_STR = "middleC", RIGHT_STR = "rightC";
 
@@ -16,6 +17,8 @@ const keyBinds = {
     [LEFT_STR]: false, //melee
     [RIGHT_STR]: false, //ranged charge
 }
+
+//keyboard inputs (add to keybinds to expand)
 function keyDown(e) {
     keyBinds[e.key] = true;
 }
@@ -26,28 +29,27 @@ function keyUp(e) {
 }
 document.addEventListener("keyup",keyUp);
 
-//left click is button 0, middle is 1, right is 2
-function mouseDown(e) {
-    switch(e.button) {
+function mousePress(button, pressed) {
+    switch(button) {
         case LEFT:
-            keyBinds[LEFT_STR] = true;
+            keyBinds[LEFT_STR] = pressed;
             break;
         case RIGHT:
-            keyBinds[RIGHT_STR] = true;
+            keyBinds[RIGHT_STR] = pressed;
             break;
         default:
             console.log("nothing happened");
     }
 }
+//set which mouse button was pressed
+function mouseDown(e) {
+    mousePress(e.button, true);
+}
 document.addEventListener("mousedown",mouseDown);
 
+//set which mouse button was released
 function mouseUp(e) {
-    switch(e.button) {
-        case LEFT:
-            keyBinds[LEFT_STR] = false;
-        case RIGHT:
-            keyBinds[RIGHT_STR] = false;
-    }
+    mousePress(e.button, false);
 }
 document.addEventListener("mouseup",mouseUp);
 

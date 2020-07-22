@@ -15,6 +15,15 @@ class Player extends Moveable {
 class PlayerController extends Player {
     constructor(map, location, name, imgSrc, speed) {
         super(map, location, name, imgSrc, speed);
+
+        this.mouse = {
+            x: null,
+            y: null,
+            changed: false,
+            changeCount: 0,
+        }
+        //bind the mouse event to the document to control player aiming
+        document.addEventListener("mousemove", this.mouseEvent.bind(this));
     }
     update(dt) {
         this.moved = false;
@@ -46,25 +55,34 @@ class PlayerController extends Player {
 
         }
     }
-    draw(map, mouse) {
-        mouse.changed = false; // flag that the mouse coords have been rendered
-        map.ctx.clearRect(0, 0, map.canvas.width, map.canvas.height);
+    draw() {
+        this.mouse.changed = false; // flag that the mouse coords have been rendered
+        this.map.ctx.clearRect(0, 0, this.map.canvas.width, this.map.canvas.height);
         // get mouse canvas coordinate correcting for page scroll
-        let location = new Vec2(mouse.x, mouse.y);
-        map.drawImageLookat(this.image, this.location, location);
+        let location = new Vec2(this.mouse.x, this.mouse.y);
+        this.map.drawImageLookat(this.image, this.location, location);
         // Draw mouse at its canvas position
-        map.drawCrossHair(location, "black");
+        this.map.drawCrossHair(location, "black");
         // draw mouse event client coordinates on canvas
-        map.drawCrossHair(new Vec2(mouse.cx,mouse.cy),"rgba(255,100,100,0.2)");
+        this.map.drawCrossHair(new Vec2(this.mouse.cx,this.mouse.cy),"rgba(255,100,100,0.2)");
 
         // draw line from you center to mouse to check alignment is perfect
-        map.ctx.strokeStyle = "black";
-        map.ctx.beginPath();
-        map.ctx.globalAlpha = 0.2;
-        map.ctx.moveTo(this.x, this.y);
-        map.ctx.lineTo(location.x, location.y);
-        map.ctx.stroke();
-        map.ctx.globalAlpha = 1;
+        this.map.ctx.strokeStyle = "black";
+        this.map.ctx.beginPath();
+        this.map.ctx.globalAlpha = 0.2;
+        this.map.ctx.moveTo(this.x, this.y);
+        this.map.ctx.lineTo(location.x, location.y);
+        this.map.ctx.stroke();
+        this.map.ctx.globalAlpha = 1;
+    }
+    mouseEvent(e) {  // get the mouse coordinates relative to the canvas top left
+        let bounds = this.map.canvas.getBoundingClientRect();
+        this.mouse.x = e.pageX - bounds.left;
+        this.mouse.y = e.pageY - bounds.top;
+        this.mouse.cx = e.clientX - bounds.left; // to compare the difference between client and page coordinates
+        this.mouse.cy = e.clienY - bounds.top;
+        this.mouse.changed = true;
+        this.mouse.changeCount += 1;
     }
 }
 export { Player, PlayerController };
