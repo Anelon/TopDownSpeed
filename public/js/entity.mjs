@@ -21,11 +21,12 @@ class Entity {
     }
 }
 class Moveable extends Entity {
-    constructor(map, location, imgSrc, speed) {
+    constructor(map, location, imgSrc, speed, lookDirection) {
         super(map,location,imgSrc);
         this.speed = speed;
         this.moved = true; //true so it hopefully gets drawn frame it spawns
-        this.lookDirection = new Vec2(1,0);
+        //if lookDirection isn't set default to looking left
+        this.lookDirection = lookDirection || new Vec2(1,0);
     }
     update(dt) {
         this.move(dt, this.lookDirection);
@@ -44,6 +45,9 @@ class Moveable extends Entity {
         if(this.location.y < 0 || this.location.y >= this.map.canvas.height) {
             this.location.y = oldLocation.y;
         }
+    }
+    draw() {
+        this.map.drawImageLookat(this.image, this.location, this.lookDirection);
     }
 }
 

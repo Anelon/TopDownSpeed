@@ -18,17 +18,22 @@ let players = [];
 let monsters = [];
 
 //declair players (will get moved to server when player connects)
+//makes new player with map, Vec2 location, string name, img, and number speed
 let you = new PlayerController(map, new Vec2(10,10), "Player1", defaultImg, defaultSpeed);
 players.push(you);
 
 let enemy = new Monster(map, new Vec2(map.width/2, map.height/2), defaultImg, defaultSpeed);
 monsters.push(enemy);
 
+//Updates the game state
 function update(dt) {
     you.update(dt);
 
     //TODO move to serverside 
     //change to send and receive information
+    for(let projectile of map.projectiles) {
+        projectile.update(dt);
+    }
     for(let monster of monsters) {
         monster.update(dt);
     }
@@ -36,9 +41,16 @@ function update(dt) {
 
 // only render when the DOM is ready to display the mouse position
 function render(dt) {
-    if(you.moved || (you.image.complete && you.mouse.changed)) { // only update player if moved 
-        you.draw();
+    //clear the map
+    map.ctx.clearRect(0, 0, map.canvas.width, map.canvas.height);
+
+    if(you.moved || (you.image.complete && you.mouse.changed)) { 
+        // if player moved send update to server
     }
+    for(let projectile of map.projectiles) {
+        projectile.draw();
+    }
+    you.draw();
     requestAnimationFrame(frame);
 }
 

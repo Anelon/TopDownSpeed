@@ -25,6 +25,10 @@ class PlayerController extends Player {
         //bind the mouse event to the document to control player aiming
         document.addEventListener("mousemove", this.mouseEvent.bind(this));
     }
+    //gets a Vec2 that is the look direction
+    get look() {
+        return new Vec2(this.mouse.x, this.mouse.y).subS(this.location);
+    }
     update(dt) {
         this.moved = false;
         let direction = new Vec2();
@@ -52,15 +56,16 @@ class PlayerController extends Player {
 
         }
         if(keyBinds[RIGHT_STR]) {
+            let arrow = new Moveable(this.map, this.location.clone(), this.image.src, 200, this.look);
+            this.map.projectiles.push(arrow);
 
         }
     }
     draw() {
         this.mouse.changed = false; // flag that the mouse coords have been rendered
-        this.map.ctx.clearRect(0, 0, this.map.canvas.width, this.map.canvas.height);
         // get mouse canvas coordinate correcting for page scroll
         let location = new Vec2(this.mouse.x, this.mouse.y);
-        this.map.drawImageLookat(this.image, this.location, location);
+        this.map.drawImageLookat(this.image, this.location, this.look);
         // Draw mouse at its canvas position
         this.map.drawCrossHair(location, "black");
         // draw mouse event client coordinates on canvas
