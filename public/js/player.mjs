@@ -1,5 +1,6 @@
 import Vec2 from "./vec2.mjs";
 import { Moveable } from "./entity.mjs";
+import Projectile from "./projectile.mjs";
 
 //class for holding the other players and as a parent to PlayerController
 class Player extends Moveable {
@@ -56,9 +57,8 @@ class PlayerController extends Player {
 
         }
         if(keyBinds[RIGHT_STR]) {
-            let arrow = new Moveable(this.map, this.location.clone(), this.image.src, 200, this.look);
+            let arrow = new Projectile(this.map, this.location.clone(), this.image.src, 200, this.look);
             this.map.projectiles.push(arrow);
-
         }
     }
     draw() {
