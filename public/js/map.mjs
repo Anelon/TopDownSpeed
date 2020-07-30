@@ -2,6 +2,8 @@
 import Vec2 from "./vec2.mjs";
 import QuadTree from "./quadTree.mjs";
 import { Rectangle } from "./shapes.mjs";
+//import { MinPriorityQueue } from '@datastructures-js/priority-queue';
+
 
 class Map {
     constructor() {
