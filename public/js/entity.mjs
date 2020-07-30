@@ -1,5 +1,6 @@
-import Map from "./map.mjs";
 import Vec2 from "./vec2.mjs";
+import Point from "./point.mjs";
+import { Circle } from "./shapes.mjs";
 
 let idGen = 0;
 class Entity {
@@ -12,12 +13,20 @@ class Entity {
         this.image = new Image();
         this.image.src = imgSrc;
         this.map = map;
+        //mostly for debugging now
+        this.overlapping = false;
     }
     get x() {
         return this.location.x;
     }
     get y() {
         return this.location.y;
+    }
+    makePoint() {
+        return new Point(this.location, this, this.image.width/2);
+    }
+    makeShape(scale = 1) {
+        return new Circle(this.location, (this.image.width/2) * scale);
     }
 }
 class Moveable extends Entity {
@@ -47,7 +56,8 @@ class Moveable extends Entity {
         }
     }
     draw() {
-        this.map.drawImageLookat(this.image, this.location, this.lookDirection);
+        //this.map.drawImageLookat(this.image, this.location, this.lookDirection);
+        this.map.drawImageLookat(this.image, this.location, this.lookDirection, this.overlapping);
     }
 }
 

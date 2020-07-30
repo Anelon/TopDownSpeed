@@ -1,4 +1,6 @@
+import Vec2 from "./vec2.mjs";
 import { Rectangle } from "./shapes.mjs";
+import Point from "./point.mjs";
 
 class QuadTree {
     constructor(boundary, capacity = 10) {
@@ -7,7 +9,7 @@ class QuadTree {
 
         this.boundary = boundary;
         this.capacity = capacity;
-        this.particles = [];
+        this.points = [];
         this.devided = false;
     }
 
@@ -54,22 +56,22 @@ class QuadTree {
         let sw = new Rectangle(new Vec2(x - w / 2, y + h / 2), w, h);
         this.southwest = new QuadTree(sw, this.capacity);
 
-        //move all the particles to their new home in those subdivisions
-        for (let particle of this.particles) {
-            if (this.northeast.push(particle)) continue;
-            if (this.northwest.push(particle)) continue;
-            if (this.southeast.push(particle)) continue;
-            if (this.southwest.push(particle)) continue;
+        //move all the points to their new home in those subdivisions
+        for (let point of this.points) {
+            if (this.northeast.push(point)) continue;
+            if (this.northwest.push(point)) continue;
+            if (this.southeast.push(point)) continue;
+            if (this.southwest.push(point)) continue;
         }
-        this.particles = []; //empty this.particles
+        this.points = []; //empty this.points
 
         this.divided = true;
     }
     //add a point to the quad tree 
     push(point) {
         //TODO make this work with other things
-        if (!(point instanceof Particle))
-            throw TypeError("Point is not a Particle");
+        if (!(point instanceof Point))
+            throw TypeError("Point is not a Point");
 
         if (!this.boundary.contains(point)) {
             return false;
@@ -81,9 +83,9 @@ class QuadTree {
                 this.southeast.push(point) || this.southwest.push(point));
         }
 
-        //check if quad can fit another particle
-        if (this.particles.length < this.capacity) {
-            this.particles.push(point);
+        //check if quad can fit another point
+        if (this.points.length < this.capacity) {
+            this.points.push(point);
             return true;
         }
 
@@ -113,7 +115,7 @@ class QuadTree {
             this.southwest.query(range, found);
             this.southeast.query(range, found);
         } else {
-            for (let p of this.particles) {
+            for (let p of this.points) {
                 if (range.contains(p)) {
                     found.push(p);
                 }
@@ -127,16 +129,16 @@ class QuadTree {
         ctx.beginPath();
         ctx.lineWidth = "4";
         ctx.strokeStyle = color;
-        ctx.fillStyle = color;
+        //ctx.fillStyle = color;
         ctx.rect(this.boundary.left, this.boundary.top, this.boundary.width, this.boundary.height);
-        ctx.fill();
+        //ctx.fill();
         ctx.stroke();
         //drawCircle(this.boundary.center.x, this.boundary.center.y, 5, "red");
         if (this.divided) {
-            this.northwest.draw("#5BC0EB");
-            this.northeast.draw("#FDE74C");
-            this.southwest.draw("#9BC53D");
-            this.southeast.draw("#C3423F");
+            this.northwest.draw(ctx, "#5BC0EB");
+            this.northeast.draw(ctx, "#FDE74C");
+            this.southwest.draw(ctx, "#9BC53D");
+            this.southeast.draw(ctx, "#C3423F");
         }
     }
 }

@@ -5,7 +5,7 @@ class Monster extends Moveable {
     constructor(map, location, imgSrc, speed) {
         super(map, location, imgSrc, speed);
     }
-    update(dt, players) {
+    update(now, dt, players) {
         /* TODO Look for players target the nearest one
         for(let player in players) {
 

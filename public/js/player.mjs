@@ -1,13 +1,14 @@
 import Vec2 from "./vec2.mjs";
 import { Moveable } from "./entity.mjs";
 import Projectile from "./projectile.mjs";
+import Ability from "./ability.mjs";
 
 //class for holding the other players and as a parent to PlayerController
 class Player extends Moveable {
     constructor(map, location, name, imgSrc, speed) {
         super(map, location, imgSrc, speed);
     }
-    update(dt) {
+    update(now, dt) {
         //TODO figure out how to move other players (probably just set their x and y)
     }
 }
@@ -17,12 +18,17 @@ class PlayerController extends Player {
     constructor(map, location, name, imgSrc, speed) {
         super(map, location, name, imgSrc, speed);
 
+        this.abilities = {
+            [LEFT_STR]: new Ability("Melee",imgSrc, 100, 100, 100),
+            [RIGHT_STR]: new Ability("Arrow",imgSrc, 200, 100, 200),
+
+        };
         this.mouse = {
             x: null,
             y: null,
             changed: false,
             changeCount: 0,
-        }
+        };
         //bind the mouse event to the document to control player aiming
         document.addEventListener("mousemove", this.mouseEvent.bind(this));
     }
@@ -30,20 +36,20 @@ class PlayerController extends Player {
     get look() {
         return new Vec2(this.mouse.x, this.mouse.y).subS(this.location);
     }
-    update(dt) {
+    update(now, dt) {
         this.moved = false;
         let direction = new Vec2();
         //check all of the different movement keybindings
-        if(keyBinds.w) {
+        if(keyPress[keyBinds.UP]) {
             direction.y -= 1;
         }
-        if(keyBinds.s) {
+        if(keyPress[keyBinds.DOWN]) {
             direction.y += 1;
         }
-        if(keyBinds.a) {
+        if(keyPress[keyBinds.LEFT]) {
             direction.x -= 1;
         }
-        if(keyBinds.d) {
+        if(keyPress[keyBinds.RIGHT]) {
             direction.x += 1;
         }
         if(direction.x || direction.y) {
@@ -53,12 +59,16 @@ class PlayerController extends Player {
         }
 
         //abilities
-        if(keyBinds[LEFT_STR]) {
+        if(keyPress[LEFT_STR]) {
 
         }
-        if(keyBinds[RIGHT_STR]) {
-            let arrow = new Projectile(this.map, this.location.clone(), this.image.src, 200, this.look);
-            this.map.projectiles.push(arrow);
+        if(keyPress[RIGHT_STR]) {
+            let arrow = this.abilities[RIGHT_STR].use(now, this.map, this.location, this.look);
+            if (arrow) {
+                this.map.projectiles.push(arrow);
+            } else {
+                console.log("On CoolDown");
+            }
         }
     }
     draw() {
