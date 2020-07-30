@@ -14,7 +14,7 @@ class Ability {
         console.log(now, this.nextAvailable);
         if(now >= this.nextAvailable) {
             //make projectile
-            let abilityProjectile = new Projectile(map, origin.clone(), this.abilityName, this.abilityImgSrc, this.speed, look.clone(), this.range);
+            let abilityProjectile = new Projectile(origin.clone(), this.abilityName, this.abilityImgSrc, this.speed, look.clone(), this.range);
 
             //set the cooldown
             this.nextAvailable = now + this.cooldownTime;

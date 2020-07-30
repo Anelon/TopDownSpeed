@@ -4,6 +4,8 @@ import { Moveable } from "./entity.mjs";
 import Monster from "./monster.mjs";
 import { Player, PlayerController } from "./player.mjs";
 
+let socket = io();
+
 //figure out resizing
 //https://stackoverflow.com/questions/1664785/resize-html5-canvas-to-fit-window
 
@@ -16,10 +18,11 @@ let map = new Map();
 
 //declair players (will get moved to server when player connects)
 //makes new player with map, Vec2 location, string name, img, and number speed
-let you = new PlayerController(map, new Vec2(10,10), "Player1", defaultImg, defaultSpeed);
+let bounds = map.canvas.getBoundingClientRect();
+let you = new PlayerController(new Vec2(10,10), "Player1", defaultImg, defaultSpeed, bounds);
 map.players.push(you);
 
-let enemy = new Monster(map, new Vec2(map.width/2, map.height/2), defaultImg, defaultSpeed);
+let enemy = new Monster(new Vec2(map.width/2, map.height/2), defaultImg, defaultSpeed);
 map.players.push(enemy);
 
 //Updates the game state
@@ -40,15 +43,16 @@ function render(dt, you) {
     //probably best to move this to update rather than render
     if (you.moved || (you.image.complete && you.mouse.changed)) {
         // if player moved send update to server
+        socket.emit("playerMove", you.makeObject());
     }
     map.collisionTree.draw(map.ctx);
     map.ctx.lineWidth = "1";
 
     for (let projectile of map.projectiles) {
-        projectile.draw();
+        projectile.draw(map);
     }
     for (let player of map.players) {
-        player.draw();
+        player.draw(map);
     }
 
     requestAnimationFrame(frame);

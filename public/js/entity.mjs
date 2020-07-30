@@ -4,7 +4,7 @@ import { Circle } from "./shapes.mjs";
 
 let idGen = 0;
 class Entity {
-    constructor(map, location, imgSrc) {
+    constructor(location, imgSrc) {
         if(!(location instanceof Vec2)) {
             throw TypeError("Entity: Location not Vec2");
         }
@@ -12,7 +12,6 @@ class Entity {
         this.location = location;
         this.image = new Image();
         this.image.src = imgSrc;
-        this.map = map;
         //mostly for debugging now
         this.overlapping = false;
     }
@@ -28,19 +27,25 @@ class Entity {
     makeShape(scale = 1) {
         return new Circle(this.location, (this.image.width/2) * scale);
     }
+    makeObject() {
+        let objectType = this.constructor.name;
+        let objectJson = JSON.stringify(this);
+        return {type: objectType, json: objectJson};
+    }
 }
+
 class Moveable extends Entity {
-    constructor(map, location, imgSrc, speed, lookDirection) {
-        super(map,location,imgSrc);
+    constructor(location, imgSrc, speed, lookDirection) {
+        super(location,imgSrc);
         this.speed = speed;
         this.moved = true; //true so it hopefully gets drawn frame it spawns
         //if lookDirection isn't set default to looking left
         this.lookDirection = lookDirection || new Vec2(1,0);
     }
-    update(dt) {
-        this.move(dt, this.lookDirection);
+    update(dt, map) {
+        this.move(dt, this.lookDirection, map);
     }
-    move(dt, direction) {
+    move(dt, direction, map) {
         if(!(direction instanceof Vec2)) {
             throw TypeError("Moveable move: Direction not Vec2");
         }
@@ -48,16 +53,16 @@ class Moveable extends Entity {
 
         let dist = this.speed * dt;
         this.location.addS(direction.getUnit().multiplyScalar(dist));
-        if(this.location.x < 0 || this.location.x >= this.map.canvas.width) {
+        if(this.location.x < 0 || this.location.x >= map.canvas.width) {
             this.location.x = oldLocation.x;
         }
-        if(this.location.y < 0 || this.location.y >= this.map.canvas.height) {
+        if(this.location.y < 0 || this.location.y >= map.canvas.height) {
             this.location.y = oldLocation.y;
         }
     }
-    draw() {
-        //this.map.drawImageLookat(this.image, this.location, this.lookDirection);
-        this.map.drawImageLookat(this.image, this.location, this.lookDirection, this.overlapping);
+    draw(map) {
+        //map.drawImageLookat(this.image, this.location, this.lookDirection);
+        map.drawImageLookat(this.image, this.location, this.lookDirection, this.overlapping);
     }
 }
 

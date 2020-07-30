@@ -81,12 +81,12 @@ class Map {
 
         //move everything and place in collision quad tree
         for (let player of this.players) {
-            player.update(now, dt);
+            player.update(now, dt, this);
             this.collisionTree.push(player.makePoint());
             player.overlapping = false;
         }
         for (let projectile of this.projectiles) {
-            projectile.update(dt);
+            projectile.update(dt, this);
             this.collisionTree.push(projectile.makePoint());
             projectile.overlapping = false;
         }

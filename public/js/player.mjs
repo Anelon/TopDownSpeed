@@ -5,8 +5,8 @@ import Ability from "./ability.mjs";
 
 //class for holding the other players and as a parent to PlayerController
 class Player extends Moveable {
-    constructor(map, location, name, imgSrc, speed) {
-        super(map, location, imgSrc, speed);
+    constructor(location, name, imgSrc, speed) {
+        super(location, imgSrc, speed);
     }
     update(now, dt) {
         //TODO figure out how to move other players (probably just set their x and y)
@@ -15,8 +15,8 @@ class Player extends Moveable {
 
 //class for handling the current player
 class PlayerController extends Player {
-    constructor(map, location, name, imgSrc, speed) {
-        super(map, location, name, imgSrc, speed);
+    constructor(location, name, imgSrc, speed, bounds) {
+        super(location, name, imgSrc, speed);
 
         this.abilities = {
             [LEFT_STR]: new Ability("Melee",imgSrc, 100, 100, 100),
@@ -30,13 +30,15 @@ class PlayerController extends Player {
             changeCount: 0,
         };
         //bind the mouse event to the document to control player aiming
+        this.bounds = bounds;
         document.addEventListener("mousemove", this.mouseEvent.bind(this));
     }
-    //gets a Vec2 that is the look direction
+    //gets a Vec2 that is the look direction and updates lookDirection
     get look() {
-        return new Vec2(this.mouse.x, this.mouse.y).subS(this.location);
+        this.lookDirection = new Vec2(this.mouse.x, this.mouse.y).subS(this.location);
+        return this.lookDirection;
     }
-    update(now, dt) {
+    update(now, dt, map) {
         this.moved = false;
         let direction = new Vec2();
         //check all of the different movement keybindings
@@ -53,7 +55,7 @@ class PlayerController extends Player {
             direction.x += 1;
         }
         if(direction.x || direction.y) {
-            this.move(dt, direction);
+            this.move(dt, direction, map);
             this.moved = true;
             //this.location.addS(direction.makeUnit());
         }
@@ -63,39 +65,39 @@ class PlayerController extends Player {
 
         }
         if(keyPress[RIGHT_STR]) {
-            let arrow = this.abilities[RIGHT_STR].use(now, this.map, this.location, this.look);
+            let arrow = this.abilities[RIGHT_STR].use(now, map, this.location, this.look);
             if (arrow) {
-                this.map.projectiles.push(arrow);
+                map.projectiles.push(arrow);
             } else {
                 console.log("On CoolDown");
             }
         }
     }
-    draw() {
+    draw(map) {
         this.mouse.changed = false; // flag that the mouse coords have been rendered
         // get mouse canvas coordinate correcting for page scroll
         let location = new Vec2(this.mouse.x, this.mouse.y);
-        this.map.drawImageLookat(this.image, this.location, this.look);
+        map.drawImageLookat(this.image, this.location, this.look);
         // Draw mouse at its canvas position
-        this.map.drawCrossHair(location, "black");
+        map.drawCrossHair(location, "black");
         // draw mouse event client coordinates on canvas
-        this.map.drawCrossHair(new Vec2(this.mouse.cx,this.mouse.cy),"rgba(255,100,100,0.2)");
+        map.drawCrossHair(new Vec2(this.mouse.cx,this.mouse.cy),"rgba(255,100,100,0.2)");
 
         // draw line from you center to mouse to check alignment is perfect
-        this.map.ctx.strokeStyle = "black";
-        this.map.ctx.beginPath();
-        this.map.ctx.globalAlpha = 0.2;
-        this.map.ctx.moveTo(this.x, this.y);
-        this.map.ctx.lineTo(location.x, location.y);
-        this.map.ctx.stroke();
-        this.map.ctx.globalAlpha = 1;
+        map.ctx.strokeStyle = "black";
+        map.ctx.beginPath();
+        map.ctx.globalAlpha = 0.2;
+        map.ctx.moveTo(this.x, this.y);
+        map.ctx.lineTo(location.x, location.y);
+        map.ctx.stroke();
+        map.ctx.globalAlpha = 1;
     }
-    mouseEvent(e) {  // get the mouse coordinates relative to the canvas top left
-        let bounds = this.map.canvas.getBoundingClientRect();
-        this.mouse.x = e.pageX - bounds.left;
-        this.mouse.y = e.pageY - bounds.top;
-        this.mouse.cx = e.clientX - bounds.left; // to compare the difference between client and page coordinates
-        this.mouse.cy = e.clienY - bounds.top;
+    mouseEvent(e, map) {  // get the mouse coordinates relative to the canvas top left
+        //let bounds = map.canvas.getBoundingClientRect();
+        this.mouse.x = e.pageX - this.bounds.left;
+        this.mouse.y = e.pageY - this.bounds.top;
+        this.mouse.cx = e.clientX - this.bounds.left; // to compare the difference between client and page coordinates
+        this.mouse.cy = e.clienY - this.bounds.top;
         this.mouse.changed = true;
         this.mouse.changeCount += 1;
     }

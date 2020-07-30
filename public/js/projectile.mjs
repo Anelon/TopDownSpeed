@@ -1,8 +1,8 @@
 import { Moveable } from "./entity.mjs";
 
 class Projectile extends Moveable {
-    constructor(map, origin, name, imgSrc, speed, look, range) {
-        super(map, origin, imgSrc, speed, look);
+    constructor(origin, name, imgSrc, speed, look, range) {
+        super(origin, imgSrc, speed, look);
         //save the origin to do distance calculations?
         this.origin = origin;
         this.name = name;
