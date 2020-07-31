@@ -1,7 +1,7 @@
 import Vec2 from "./vec2.mjs";
-import { Moveable } from "./entity.mjs";
+import { Moveable } from "../../sharedJS/entity.mjs";
 import Projectile from "./projectile.mjs";
-import Ability from "./ability.mjs";
+import Ability from "../../sharedJS/ability.mjs";
 
 //class for holding the other players and as a parent to PlayerController
 class Player extends Moveable {
@@ -21,7 +21,6 @@ class PlayerController extends Player {
         this.abilities = {
             [LEFT_STR]: new Ability("Melee",imgSrc, 100, 100, 100),
             [RIGHT_STR]: new Ability("Arrow",imgSrc, 200, 100, 200),
-
         };
         this.mouse = {
             x: null,
@@ -92,7 +91,7 @@ class PlayerController extends Player {
         map.ctx.stroke();
         map.ctx.globalAlpha = 1;
     }
-    mouseEvent(e, map) {  // get the mouse coordinates relative to the canvas top left
+    mouseEvent(e) {  // get the mouse coordinates relative to the canvas top left
         //let bounds = map.canvas.getBoundingClientRect();
         this.mouse.x = e.pageX - this.bounds.left;
         this.mouse.y = e.pageY - this.bounds.top;

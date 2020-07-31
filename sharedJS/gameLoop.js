@@ -1,5 +1,5 @@
-import Map from "./map.mjs";
-import Vec2 from "./vec2.mjs";
+import Map from "../../sharedJS/map.mjs";
+import Vec2 from "../../sharedJS/vec2.mjs";
 import { Moveable } from "./entity.mjs";
 import Monster from "./monster.mjs";
 import { Player, PlayerController } from "./player.mjs";

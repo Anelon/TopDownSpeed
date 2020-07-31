@@ -1,8 +1,8 @@
-import Vec2 from "./public/js/vec2.mjs";
+import Vec2 from "./sharedJS/vec2.mjs";
+import { Player } from "./sharedJS/player.mjs";
 import express from "express";
 import ejs from "ejs";
 import ejsLint from "ejs-lint";
-import http from "http";
 import io from "socket.io";
 
 const app = express();
@@ -30,17 +30,32 @@ app.get("/game", function(req, res) {
 let server = app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at http://${app.get('ip')}:${app.get('port')}`);});
 
 let socket = io(server);
+let clients = {};
+/* how to loop through the clients if needed
+for(let id in clients) {
+    console.log(clients[id]);
+}
+*/
 
-socket.on("connection", (socket) => {
+socket.on("connection", (client) => {
     console.log("a user has connected");
-    socket.on("disconnect", (socket) => {
+    //add client to the list of clients
+    clients[client.id] = client;
+    let player = new Player(new Vec2(10,10), "Player", "./img/arrow.png", 100);
+    //console.log(clients);
+
+    client.on("disconnect", (client) => {
         console.log("a user has disconnected");
     });
-    socket.on("event", (socket) => {
+
+    client.on("event", (client) => {
         console.log("a user has evented");
     });
-    socket.on("playerMove", (player) => {
-        console.log("PlayerMove: ", player);
+
+    client.on("playerMove", (playerInfo) => {
+        //console.log("PlayerMove: ", playerInfo);
+        let updated = JSON.parse(playerInfo.json);
+        //console.log(updated);
     });
 });
 
