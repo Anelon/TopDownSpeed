@@ -20,6 +20,7 @@ function tick() {
         update(time);
     }
     sendToClients(time);
+    setImmediate(tick)
 }
 
-setImmediate()
+setImmediate(tick);

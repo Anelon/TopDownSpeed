@@ -11,5 +11,8 @@ class Time {
         this.dt = this.dt + Math.min(1, (this.now - this.last) / 1000);
         //run frames while they need to run fixed timestep gameloop
         this.last = this.now;
+        return this;
     }
 }
+
+export default Time;

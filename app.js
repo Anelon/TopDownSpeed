@@ -1,5 +1,5 @@
 import Vec2 from "./sharedJS/vec2.mjs";
-import { Player } from "./sharedJS/player.mjs";
+import Player from "./sharedJS/player.mjs";
 import express from "express";
 import ejs from "ejs";
 import ejsLint from "ejs-lint";
@@ -8,6 +8,8 @@ import io from "socket.io";
 const app = express();
 app.set("view engine", "ejs");
 app.use(express.static("public"));
+app.use("/js", express.static("sharedJS"));
+app.use("/js", express.static("clientJS"));
 
 app.engine("html", ejs.renderFile);
 app.set("port", process.env.PORT || "8080");
