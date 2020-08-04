@@ -8,9 +8,10 @@ class Entity {
         if(!(location instanceof Vec2)) {
             throw TypeError("Entity: Location not Vec2");
         }
+        console.log("Location: ", location.log());
         this.id = idGen++;
-        this.location = location;
-        this.oldLocation = location;
+        this.location = location.clone();
+        this.oldLocation = location.clone();
         //this.image = new Image();
         this.imgSrc = imgSrc;
         this.hitbox = hitbox;
@@ -26,19 +27,19 @@ class Entity {
         return this.location.y;
     }
     makePoint() {
-        return new Point(this.location, this, this.image.width/2);
+        return new Point(this.location, this, this.hitbox.halfWidth);
     }
     makeShape(scale = 1) {
-        return new Circle(this.location, (this.image.width/2) * scale);
+        return new Circle(this.location, (this.hitbox.halfWidth) * scale);
     }
     makeObject() {
         let objectType = this.constructor.name;
         let objectJson = JSON.stringify(this);
         return {type: objectType, json: objectJson};
     }
-    update(dt, map) {
+    update(time, map) {
         if(this.speed > 0) {
-            this.move(dt, this.lookDirection, map);
+            this.move(time.dt, this.lookDirection, map);
         }
     }
     move(dt, direction, map) {

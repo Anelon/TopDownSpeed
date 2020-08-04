@@ -1,10 +1,13 @@
-import { Moveable } from "./entity.mjs";
+import Entity from "./entity.mjs";
+import { Circle } from "./shapes.mjs";
 
-class Projectile extends Moveable {
+class Projectile extends Entity {
     constructor(origin, name, imgSrc, speed, look, range) {
-        super(origin, imgSrc, speed, look);
+        //temporary hitbox, need to find better place for this at somepoint (probably when we make specific abilities)
+        let hitbox = new Circle(origin, 8);
+        super(origin, imgSrc, hitbox, look, speed);
         //save the origin to do distance calculations?
-        this.origin = origin;
+        this.origin = origin.clone();
         this.name = name;
         this.distance = 0;
         //how far the projectile can go

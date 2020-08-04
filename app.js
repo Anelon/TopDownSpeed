@@ -1,9 +1,11 @@
-import Vec2 from "./sharedJS/vec2.mjs";
-import Player from "./sharedJS/player.mjs";
 import express from "express";
 import ejs from "ejs";
 import ejsLint from "ejs-lint";
 import io from "socket.io";
+
+//local modules for import
+import Vec2 from "./sharedJS/vec2.mjs";
+import Player from "./sharedJS/player.mjs";
 
 const app = express();
 app.set("view engine", "ejs");

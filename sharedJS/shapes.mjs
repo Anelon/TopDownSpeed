@@ -7,6 +7,12 @@ class Circle {
         this.center = center;
         this.radius = radius;
     }
+    get width() {
+        return this.radius / 2;
+    }
+    get halfWidth() {
+        return this.radius;
+    }
     contains(point) {
         if (!(point instanceof Point))
             throw TypeError("Contains point not a Point");
@@ -57,6 +63,9 @@ class Rectangle {
     }
     get bottom() {
         return this.center.y + (this.height / 2);
+    }
+    get halfWidth() {
+        return this.widht / 2;
     }
     contains(point) {
         if (!(point instanceof Point))

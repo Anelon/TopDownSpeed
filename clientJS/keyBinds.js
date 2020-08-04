@@ -1,10 +1,11 @@
 //left click is button 0, middle is 1, right is 2
+const MOUSE_STR = "mouse";
 const keyBinds = {
     UP: "w", DOWN: "s", LEFT: "a", RIGHT: "d",
+    DODGE: "shift", JUMP: " ",
     ABILITY1: "q", ABILITY2: "e", ABILITY3: "r",
+    MELEE: MOUSE_STR+"0", RANGE: MOUSE_STR+"2", UNLOCK: MOUSE_STR+"1",
 }
-const LEFT_STR = "leftC", MIDDLE_STR = "middleC", RIGHT_STR = "rightC";
-const LEFT = 0, MIDDLE = 1, RIGHT = 2;
 
 const keyPress = {
     [keyBinds.UP]: false, //up
@@ -13,13 +14,13 @@ const keyPress = {
     [keyBinds.RIGHT]: false, //right
 
     //non momvement might get moved to just key press
-    " ": false, //dodge
-    "shift": false, //not sure if use
+    [keyBinds.DODGE]: false, //dodge
+    [keyBinds.JUMP]: false, //not sure if use
     [keyBinds.ABILITY1]: false, //ability1
     [keyBinds.ABILITY2]: false, //ability2
     [keyBinds.ABILITY3]: false, //ult?
-    [LEFT_STR]: false, //melee
-    [RIGHT_STR]: false, //ranged charge
+    [keyBinds.MELEE]: false, //melee
+    [keyBinds.RANGE]: false, //ranged charge
 }
 
 //keyboard inputs (add to keybinds to expand)
@@ -34,6 +35,8 @@ function keyUp(e) {
 document.addEventListener("keyup",keyUp);
 
 function mousePress(button, pressed) {
+    keyPress[MOUSE_STR + button.toString()] = pressed;
+    /*
     switch(button) {
         case LEFT:
             keyPress[LEFT_STR] = pressed;
@@ -44,6 +47,7 @@ function mousePress(button, pressed) {
         default:
             console.log("nothing happened");
     }
+    */
 }
 //set which mouse button was pressed
 function mouseDown(e) {

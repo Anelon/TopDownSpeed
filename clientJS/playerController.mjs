@@ -1,19 +1,22 @@
 import Vec2 from "./vec2.mjs";
 import Entity from "./entity.mjs";
+import { Circle } from "./shapes.mjs";
+import Ability from "./ability.mjs";
 
 //class for handling the current player
 class PlayerController extends Entity {
     constructor(location, name, imgSrc, speed, bounds) {
-        super(location, name, imgSrc, speed);
-        this.image = new Image();
-        this.image.src = imgSrc;
+        let image = new Image();
+        image.src = imgSrc;
+        let hitbox = new Circle(location, image.width/2);
+        super(location, imgSrc, hitbox, new Vec2(1,0), speed);
+        this.name = name;
+        this.image = image;
 
-        /*dd
         this.abilities = {
-            [LEFT_STR]: new Ability("Melee",imgSrc, 100, 100, 100),
-            [RIGHT_STR]: new Ability("Arrow",imgSrc, 200, 100, 200),
+            [keyBinds.MELEE]: new Ability("Melee",imgSrc, 100, 100, 100),
+            [keyBinds.RANGE]: new Ability("Arrow",imgSrc, 200, 100, 200),
         };
-        */
         this.mouse = {
             x: null,
             y: null,
@@ -29,7 +32,7 @@ class PlayerController extends Entity {
         this.lookDirection = new Vec2(this.mouse.x, this.mouse.y).subS(this.location);
         return this.lookDirection;
     }
-    update(time, map) {
+    update(time, map, canvas) {
         this.moved = false;
         let direction = new Vec2();
         //check all of the different movement keybindings
@@ -48,18 +51,22 @@ class PlayerController extends Entity {
         if(direction.x || direction.y) {
             this.move(time.dt, direction, map);
             this.moved = true;
-            //this.location.addS(direction.makeUnit());
-            console.log(this.location.log());
         }
 
         //abilities
-        if(keyPress[LEFT_STR]) {
+        if(keyPress[keyBinds.MELEE]) {
 
         }
-        if(keyPress[RIGHT_STR]) {
-            let arrow = this.abilities[RIGHT_STR].use(time.now, map, this.location, this.look);
+        if(keyPress[keyBinds.RANGE]) {
+            //attempt to use the ability
+            let arrow = this.abilities[keyBinds.RANGE].use(time.now, this.location, this.look);
+            //if the ability was successful
             if (arrow) {
+                console.log(arrow);
+                //add projectile to the map
                 map.projectiles.push(arrow);
+                //add it to the canvas' drawable
+                canvas.addDrawable(arrow);
             } else {
                 console.log("On CoolDown");
             }
@@ -68,21 +75,15 @@ class PlayerController extends Entity {
     draw(canvas) {
         this.mouse.changed = false; // flag that the mouse coords have been rendered
         // get mouse canvas coordinate correcting for page scroll
-        let location = new Vec2(this.mouse.x, this.mouse.y);
+        let target = new Vec2(this.mouse.x, this.mouse.y);
         canvas.drawImageLookat(this.image, this.location, this.look);
         // Draw mouse at its canvas position
-        canvas.drawCrossHair(location, "black");
+        canvas.drawCrossHair(target, "black");
         // draw mouse event client coordinates on canvas
         //canvas.drawCrossHair(new Vec2(this.mouse.cx,this.mouse.cy),"rgba(255,100,100,0.2)");
 
         // draw line from you center to mouse to check alignment is perfect
-        canvas.ctx.strokeStyle = "black";
-        canvas.ctx.beginPath();
-        canvas.ctx.globalAlpha = 0.2;
-        canvas.ctx.moveTo(this.x, this.y);
-        canvas.ctx.lineTo(location.x, location.y);
-        canvas.ctx.stroke();
-        canvas.ctx.globalAlpha = 1;
+        canvas.drawLine(this.location, target, "black", 0.2);
     }
     mouseEvent(e) {  // get the mouse coordinates relative to the canvas top left
         //let bounds = map.canvas.getBoundingClientRect();

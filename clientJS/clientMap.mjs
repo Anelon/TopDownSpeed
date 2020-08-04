@@ -6,31 +6,33 @@ import { Rectangle } from "./shapes.mjs";
 
 
 class Map {
-    constructor(width, height) {
+    constructor(width, height, canvas) {
         this.width = width;
         this.height = height;
         //holder for player contollers (will probably only ever have the one)
         this.players = [];
         //holder for projectiles
         this.projectiles = [];
+        this.canvas = canvas;
 
         this.boundry = new Rectangle(new Vec2(this.width/2, this.height/2), this.width, this.height);
         this.qTreeCapacity = 10;
         this.collisionTree = new QuadTree(this.boundry, this.qTreeCapacity);
     }
 
-    update(time) {
+    update(time, skip) {
         //reset quadTree, might change to updating locations of each item later if we end up with too many static items
         this.collisionTree = new QuadTree(this.boundry, this.qTreeCapacity);
 
         //move everything and place in collision quad tree
         for (let player of this.players) {
-            player.update(time, this);
+            if (player !== skip)
+                player.update(time, this, this.canvas);
             this.collisionTree.push(player.makePoint());
             player.overlapping = false;
         }
         for (let projectile of this.projectiles) {
-            projectile.update(time, this);
+            projectile.update(time, this, this.canvas);
             this.collisionTree.push(projectile.makePoint());
             projectile.overlapping = false;
         }
