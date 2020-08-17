@@ -2,7 +2,7 @@ import Vec2 from "./vec2.mjs";
 
 //Might have this extend Circle
 class Point {
-	constructor(location, owner, radius = 2) {
+	constructor(location, owner = null, radius = 2) {
 		if(!(location instanceof Vec2))
 			throw TypeError("Particle Location needs to be Vec2");
 

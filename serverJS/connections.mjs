@@ -31,6 +31,15 @@ class Connections {
                 //playerInfo.broadcast.emit(playerInfo.json);
                 this.sockets.emit("playerMove", playerInfo);
             });
+
+            client.on("newProjectile", (newProjectile) => {
+                console.log("New Projectile: ", newProjectile);
+                let updated = JSON.parse(newProjectile.json);
+                //TODO: add validation of move here
+                //broadcast the player move to all other players
+                //playerInfo.broadcast.emit(playerInfo.json);
+                this.sockets.emit("playerMove", newProjectile);
+            });
         });
     }
     add(client) {

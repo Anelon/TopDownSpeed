@@ -16,7 +16,7 @@ let socket = io();
 const defaultImg = './img/arrow.png';
 
 let canvas = new CanvasWrapper();
-let map = new Map(canvas.width, canvas.height, canvas);
+let map = new Map(canvas.width, canvas.height, canvas, socket);
 let time = new Time();
 
 //declare players (will get moved to server when player connects)

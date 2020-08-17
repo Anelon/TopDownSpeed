@@ -8,7 +8,7 @@ class Circle {
         this.radius = radius;
     }
     get width() {
-        return this.radius / 2;
+        return this.radius * 2;
     }
     get halfWidth() {
         return this.radius;
@@ -65,7 +65,7 @@ class Rectangle {
         return this.center.y + (this.height / 2);
     }
     get halfWidth() {
-        return this.widht / 2;
+        return this.width / 2;
     }
     contains(point) {
         if (!(point instanceof Point))

@@ -6,7 +6,7 @@ import { Rectangle } from "./shapes.mjs";
 
 
 class Map {
-	constructor(width, height, canvas) {
+	constructor(width, height, canvas, socket) {
 		this.width = width;
 		this.height = height;
 		//holder for player contollers (will probably only ever have the one)
@@ -14,6 +14,7 @@ class Map {
 		//holder for projectiles
 		this.projectiles = [];
 		this.canvas = canvas;
+		this.socket = socket;
 
 		this.boundry = new Rectangle(new Vec2(this.width / 2, this.height / 2), this.width, this.height);
 		this.qTreeCapacity = 10;
@@ -61,6 +62,12 @@ class Map {
 				}
 			}
 		}
+	}
+
+	addProjectile(newProjectile) {
+		this.projectiles.push(newProjectile);
+		this.canvas.addDrawable(newProjectile);
+        this.socket.emit("newProjectile", newProjectile.makeObject());
 	}
 }
 

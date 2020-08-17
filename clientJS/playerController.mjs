@@ -6,6 +6,7 @@ import Ability from "./ability.mjs";
 //class for handling the current player
 class PlayerController extends Entity {
     constructor(location, name, imgSrc, speed, bounds) {
+        //create hitbox
         let image = new Image();
         image.src = imgSrc;
         let hitbox = new Circle(location, image.width/2);
@@ -13,18 +14,22 @@ class PlayerController extends Entity {
         this.name = name;
         this.image = image;
 
+        //create default abilities
         this.abilities = {
             [keyBinds.MELEE]: new Ability("Melee",imgSrc, 100, 100, 100),
             [keyBinds.RANGE]: new Ability("Arrow",imgSrc, 200, 100, 200),
         };
+        //set up mouse object
         this.mouse = {
             x: null,
             y: null,
             changed: false,
             changeCount: 0,
         };
-        //bind the mouse event to the document to control player aiming
         this.bounds = bounds;
+        //this.socket = socket;
+
+        //bind the mouse event to the document to control player aiming
         document.addEventListener("mousemove", this.mouseEvent.bind(this));
     }
     //gets a Vec2 that is the look direction and updates lookDirection
@@ -32,7 +37,7 @@ class PlayerController extends Entity {
         this.lookDirection = new Vec2(this.mouse.x, this.mouse.y).subS(this.location);
         return this.lookDirection;
     }
-    update(time, map, canvas) {
+    update(time, map) {
         this.moved = false;
         let direction = new Vec2();
         //check all of the different movement keybindings
@@ -64,9 +69,7 @@ class PlayerController extends Entity {
             if (arrow) {
                 console.log(arrow);
                 //add projectile to the map
-                map.projectiles.push(arrow);
-                //add it to the canvas' drawable
-                canvas.addDrawable(arrow);
+                map.addProjectile(arrow);
             } else {
                 console.log("On CoolDown");
             }
