@@ -5,7 +5,7 @@ class Projectile extends Entity {
     constructor(origin, name, imgSrc, speed, look, range) {
         //temporary hitbox, need to find better place for this at somepoint (probably when we make specific abilities)
         let hitbox = new Circle(origin, 8);
-        super(origin, imgSrc, hitbox, look, speed);
+        super(origin, imgSrc, hitbox, speed, look);
         //save the origin to do distance calculations?
         this.origin = origin.clone();
         this.name = name;
@@ -14,10 +14,12 @@ class Projectile extends Entity {
         this.range = range;
     }
     //placeholder for the colision to call when hit
+    //might want to return a bool saying if this should be deleted from the hit
     hit(other) {
     }
     //should be called when projectile hits max range
-    think() {
+    think(world) {
+
     }
 }
 

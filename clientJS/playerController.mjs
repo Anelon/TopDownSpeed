@@ -9,7 +9,7 @@ class PlayerController extends Entity {
         let image = new Image();
         image.src = imgSrc;
         let hitbox = new Circle(location, image.width/2);
-        super(location, imgSrc, hitbox, new Vec2(1,0), speed);
+        super(location, imgSrc, hitbox, speed);
         this.name = name;
         this.image = image;
 
@@ -71,6 +71,12 @@ class PlayerController extends Entity {
                 console.log("On CoolDown");
             }
         }
+    }
+    updateInfo(newInfo) {
+        console.log(newInfo);
+        console.log(this.location);
+        this.location.x = newInfo.location.x;
+        this.location.y = newInfo.location.y;
     }
     draw(canvas) {
         this.mouse.changed = false; // flag that the mouse coords have been rendered

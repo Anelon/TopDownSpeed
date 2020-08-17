@@ -4,7 +4,7 @@ import { Circle } from "./shapes.mjs";
 
 let idGen = 0;
 class Entity {
-    constructor(location, imgSrc, hitbox, lookDirection = new Vec2(1,0), speed = 0) {
+    constructor(location, imgSrc, hitbox, speed = 0, lookDirection = new Vec2(1,0)) {
         if(!(location instanceof Vec2)) {
             throw TypeError("Entity: Location not Vec2");
         }
@@ -19,6 +19,8 @@ class Entity {
         this.speed = speed;
         //mostly for debugging now
         this.overlapping = false;
+    }
+    updateInfo(infoJSON) {
     }
     get x() {
         return this.location.x;

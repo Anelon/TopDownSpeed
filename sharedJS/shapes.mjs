@@ -3,7 +3,7 @@ import Point from "./point.mjs";
 
 class Circle {
     constructor(center, radius) {
-        console.assert(center instanceof Vec2, "Rectangle center not a Vec2");
+        console.assert(center instanceof Vec2, "Circle center not a Vec2");
         this.center = center;
         this.radius = radius;
     }

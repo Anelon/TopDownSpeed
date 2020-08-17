@@ -11,7 +11,7 @@ class Drawable {
         this.owner.update(dt, map);
     }
     draw(canvas) {
-        canvas.drawImageLookat(this.image, this.owner.location, this.owner.lookDirection);
+        canvas.drawImageLookat(this.image, this.owner.location, this.owner.lookDirection, this.owner.overlapping);
     }
 }
 export default Drawable;

@@ -6,6 +6,7 @@ import CanvasWrapper from "./canvasWrapper.mjs";
 //import Monster from "./monster.mjs";
 import PlayerController from "./playerController.mjs";
 
+//setup the sockets and listening
 let socket = io();
 
 //figure out resizing
@@ -14,7 +15,6 @@ let socket = io();
 //global defaults
 const defaultImg = './img/arrow.png';
 
-
 let canvas = new CanvasWrapper();
 let map = new Map(canvas.width, canvas.height, canvas);
 let time = new Time();
@@ -22,8 +22,27 @@ let time = new Time();
 //declare players (will get moved to server when player connects)
 //makes new player with map, Vec2 location, string name, img, and number speed
 let bounds = canvas.getBoundingClientRect();
-let you = new PlayerController(new Vec2(10,10), "Player1", defaultImg, 100, bounds);
-map.players.push(you);
+let you;
+
+//set up socket listening
+
+//wait for the server to give the player its location
+socket.on("newPlayer", function(playerInfo) {
+    let playerInfoJson = JSON.parse(playerInfo.json);
+
+    //pull the information from json
+    let location = new Vec2(playerInfoJson.location.x, playerInfoJson.location.y);
+    //let name = playerInfoJson.name;
+    let name = "player " + playerInfoJson.id;
+    let imgSrc = playerInfoJson.imgSrc;
+    let speed = playerInfoJson.speed;
+    //make new player
+    you = new PlayerController(location, name, imgSrc, speed, bounds, socket);
+    console.log(you);
+    map.players.push(you);
+    //you.updateInfo(playerInfoJson);
+    requestAnimationFrame(frame);
+});
 
 //let enemy = new Monster(new Vec2(map.width/2, map.height/2), defaultImg, defaultSpeed);
 //map.players.push(enemy);
@@ -57,6 +76,7 @@ function render(you) {
 //based off of this site
 //https://codeincomplete.com/articles/javascript-game-foundations-the-game-loop/
 function frame() {
+    //console.log(you);
     time.update();
     //run frames while they need to run fixed timestep gameloop
     while(time.dt > step) {
@@ -66,4 +86,3 @@ function frame() {
     render(you);
     time.last = time.now;
 }
-requestAnimationFrame(frame);
