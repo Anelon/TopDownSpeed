@@ -1,5 +1,6 @@
-import assert from 'assert';
+//import assert from 'assert';
 import chai from 'chai';
+let assert = chai.assert;
 let expect = chai.expect;
 let should = chai.should;
 import Vec2 from '../sharedJS/vec2.mjs';
@@ -8,8 +9,8 @@ describe('Vec2', function () {
     describe('Default Constructor', function () {
         it('Should make a Vec2 {0,0}', function () {
             let vec = new Vec2();
-            assert.equal(vec.x, 0);
-            assert.equal(vec.y, 0);
+            assert.equal(vec.x, 0, "Default Constructor x = 0");
+            assert.equal(vec.y, 0, "Default Constructor y = 0");
         });
     });
 
