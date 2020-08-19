@@ -1,7 +1,7 @@
 //this will probably change a lot when we make an actual map
-import Vec2 from "./vec2.mjs";
-import QuadTree from "./quadTree.mjs";
-import { Rectangle } from "./shapes.mjs";
+import Vec2 from "./vec2.js";
+import QuadTree from "./quadTree.js";
+import { Rectangle } from "./shapes.js";
 //import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 
 

@@ -1,5 +1,5 @@
-import Time from "../serverJS/serverTime.mjs";
-import Connections from "./connections.mjs";
+import Time from "../serverJS/serverTime.js";
+import Connections from "./connections.js";
 import { performance } from "perf_hooks";
 //import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 

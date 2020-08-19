@@ -1,5 +1,5 @@
-import Vec2 from "./vec2.mjs";
-import Drawable from "./drawable.mjs";
+import Vec2 from "./vec2.js";
+import Drawable from "./drawable.js";
 
 
 //this handles all canvas drawing and holding the canvas

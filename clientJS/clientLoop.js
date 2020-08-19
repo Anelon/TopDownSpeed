@@ -1,11 +1,11 @@
-import Map from "./clientMap.mjs";
-import Vec2 from "./vec2.mjs";
-import Time from "./time.mjs";
-import CanvasWrapper from "./canvasWrapper.mjs";
-//import { Moveable } from "./entity.mjs";
-//import Monster from "./monster.mjs";
-import PlayerController from "./playerController.mjs";
-import CHANNELS from "./channels.mjs";
+import Map from "./clientMap.js";
+import Vec2 from "./vec2.js";
+import Time from "./time.js";
+import CanvasWrapper from "./canvasWrapper.js";
+//import { Moveable } from "./entity.js";
+//import Monster from "./monster.js";
+import PlayerController from "./playerController.js";
+import CHANNELS from "./channels.js";
 
 //setup the sockets and listening
 let socket = io();

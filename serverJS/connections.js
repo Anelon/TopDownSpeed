@@ -1,7 +1,7 @@
 import io from "socket.io";
-import Vec2 from "../sharedJS/vec2.mjs";
-import Player from "../sharedJS/player.mjs";
-import CHANNELS from "../sharedJS/channels.mjs";
+import Vec2 from "../sharedJS/vec2.js";
+import Player from "../sharedJS/player.js";
+import CHANNELS from "../sharedJS/channels.js";
 
 class Connections {
     constructor(server, map, connections = {}) {

@@ -1,4 +1,9 @@
 class Vec2 {
+    /**
+     * 
+     * @param {number} x horizontal value
+     * @param {number} y vertical value
+     */
     constructor(x=0,y=0) {
         this.x = x;
         this.y = y;
@@ -8,6 +13,9 @@ class Vec2 {
     }
     log() {
         return "{" + this.x + "," + this.y + "}";
+    }
+    equals(other) {
+        return (this.x === other.x && this.y === other.y);
     }
     //const methods
     length() {

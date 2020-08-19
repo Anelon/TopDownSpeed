@@ -1,5 +1,5 @@
-import Entity from "./entity.mjs";
-import { Circle } from "./shapes.mjs";
+import Entity from "./entity.js";
+import { Circle } from "./shapes.js";
 
 class Projectile extends Entity {
     constructor(origin, name, imgSrc, speed, look, range) {

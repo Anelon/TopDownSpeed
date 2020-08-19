@@ -1,12 +1,12 @@
 import express from "express";
 import ejs from "ejs";
 import ejsLint from "ejs-lint";
-import ServerLoop from "./serverJS/serverLoop.mjs";
+import ServerLoop from "./serverJS/serverLoop.js";
 import io from "socket.io";
 
 //local modules for import
-import Vec2 from "./sharedJS/vec2.mjs";
-import Player from "./sharedJS/player.mjs";
+import Vec2 from "./sharedJS/vec2.js";
+import Player from "./sharedJS/player.js";
 
 const app = express();
 app.set("view engine", "ejs");

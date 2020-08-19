@@ -1,5 +1,5 @@
-import Vec2 from "./vec2.mjs";
-import { Moveable } from "./entity.mjs";
+import Vec2 from "./vec2.js";
+import { Moveable } from "./entity.js";
 
 class Monster extends Moveable {
     constructor(map, location, imgSrc, speed) {

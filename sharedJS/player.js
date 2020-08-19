@@ -1,7 +1,7 @@
-import Vec2 from "./vec2.mjs";
-import Entity from "../sharedJS/entity.mjs";
-import { Circle } from "./shapes.mjs";
-//import Ability from "../../sharedJS/ability.mjs";
+import Vec2 from "./vec2.js";
+import Entity from "./entity.js";
+import { Circle } from "./shapes.js";
+//import Ability from "../../sharedJS/ability.js";
 
 //class for holding the other players and as a parent to PlayerController
 class Player extends Entity {

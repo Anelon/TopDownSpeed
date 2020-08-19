@@ -2,9 +2,9 @@ import assert from 'assert';
 import chai from 'chai';
 let expect = chai.expect;
 let should = chai.should;
-import Vec2 from '../sharedJS/vec2.mjs';
-import { Circle, Rectangle } from '../sharedJS/shapes.mjs';
-import Point from '../sharedJS/point.mjs';
+import Vec2 from '../sharedJS/vec2.js';
+import { Circle, Rectangle } from '../sharedJS/shapes.js';
+import Point from '../sharedJS/point.js';
 
 describe('Shapes', function () {
     describe('Circle', function () {

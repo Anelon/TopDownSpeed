@@ -3,7 +3,7 @@ import chai from 'chai';
 let assert = chai.assert;
 let expect = chai.expect;
 let should = chai.should;
-import Vec2 from '../sharedJS/vec2.mjs';
+import Vec2 from '../sharedJS/vec2.js';
 
 describe('Vec2', function () {
     describe('Default Constructor', function () {
@@ -11,6 +11,7 @@ describe('Vec2', function () {
             let vec = new Vec2();
             assert.equal(vec.x, 0, "Default Constructor x = 0");
             assert.equal(vec.y, 0, "Default Constructor y = 0");
+            assert.equal(vec.equals(new Vec2(0,0)), true, "Checks against normal Constructor");
         });
     });
 

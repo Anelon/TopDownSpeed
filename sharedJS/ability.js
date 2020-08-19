@@ -1,4 +1,4 @@
-import Projectile from "./projectile.mjs";
+import Projectile from "./projectile.js";
 
 class Ability {
     constructor(abilityName, abilityImgSrc, speed, range, cooldownTime) {

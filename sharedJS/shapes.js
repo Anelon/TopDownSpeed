@@ -1,11 +1,14 @@
-import Vec2 from "./vec2.mjs";
-import Point from "./point.mjs";
+import Vec2 from "./vec2.js";
+import Point from "./point.js";
 
 class Circle {
     constructor(center, radius) {
         console.assert(center instanceof Vec2, "Circle center not a Vec2");
         this.center = center;
         this.radius = radius;
+    }
+    clone() {
+        return new Circle(this.center, this.radius);
     }
     get width() {
         return this.radius * 2;
@@ -51,6 +54,9 @@ class Rectangle {
         this.center = center;
         this.width = width;
         this.height = height;
+    }
+    clone() {
+        return new Rectangle(this.center, this.width, this.height);
     }
     get left() {
         return this.center.x - (this.width / 2);

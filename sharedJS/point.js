@@ -1,4 +1,4 @@
-import Vec2 from "./vec2.mjs";
+import Vec2 from "./vec2.js";
 
 //Might have this extend Circle
 class Point {

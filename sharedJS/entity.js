@@ -1,6 +1,6 @@
-import Vec2 from "./vec2.mjs";
-import Point from "./point.mjs";
-import { Circle } from "./shapes.mjs";
+import Vec2 from "./vec2.js";
+import Point from "./point.js";
+import { Circle } from "./shapes.js";
 
 let idGen = 0;
 class Entity {
@@ -8,13 +8,12 @@ class Entity {
         if(!(location instanceof Vec2)) {
             throw TypeError("Entity: Location not Vec2");
         }
-        console.log("Location: ", location.log());
         this.id = idGen++;
         this.location = location.clone();
         this.oldLocation = location.clone();
         //this.image = new Image();
         this.imgSrc = imgSrc;
-        this.hitbox = hitbox;
+        this.hitbox = hitbox.clone();
         this.lookDirection = lookDirection;
         this.speed = speed;
         //mostly for debugging now

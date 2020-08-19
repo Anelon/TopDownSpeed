@@ -1,6 +1,6 @@
-import Vec2 from "./vec2.mjs";
-import { Rectangle } from "./shapes.mjs";
-import Point from "./point.mjs";
+import Vec2 from "./vec2.js";
+import { Rectangle } from "./shapes.js";
+import Point from "./point.js";
 
 class QuadTree {
     constructor(boundary, capacity = 10) {
