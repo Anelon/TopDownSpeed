@@ -27,7 +27,6 @@ class PlayerController extends Entity {
             changeCount: 0,
         };
         this.bounds = bounds;
-        //this.socket = socket;
 
         //bind the mouse event to the document to control player aiming
         document.addEventListener("mousemove", this.mouseEvent.bind(this));
@@ -37,8 +36,9 @@ class PlayerController extends Entity {
         this.lookDirection = new Vec2(this.mouse.x, this.mouse.y).subS(this.location);
         return this.lookDirection;
     }
-    update(time, map) {
+    update(time, step, map) {
         this.moved = false;
+        //console.log(step);
         let direction = new Vec2();
         //check all of the different movement keybindings
         if(keyPress[keyBinds.UP]) {
@@ -54,7 +54,7 @@ class PlayerController extends Entity {
             direction.x += 1;
         }
         if(direction.x || direction.y) {
-            this.move(time.dt, direction, map);
+            this.move(step, direction, map);
             this.moved = true;
         }
 
@@ -67,7 +67,6 @@ class PlayerController extends Entity {
             let arrow = this.abilities[keyBinds.RANGE].use(time.now, this.location, this.look);
             //if the ability was successful
             if (arrow) {
-                console.log(arrow);
                 //add projectile to the map
                 map.addProjectile(arrow);
             } else {

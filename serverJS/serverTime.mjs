@@ -1,7 +1,7 @@
 import { performance } from "perf_hooks";
 
 class Time {
-    constructor(now = performance.now(), last = 0, dt = 0, tickRate = 1/60) {
+    constructor(now = performance.now(), last = 0, dt = 0, tickRate = 1/30) {
         this.now = now;
         this.last = last;
         this.dt = dt;

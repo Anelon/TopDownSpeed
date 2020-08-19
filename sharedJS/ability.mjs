@@ -14,7 +14,7 @@ class Ability {
         if(now >= this.nextAvailable) {
             //make projectile
             let abilityProjectile = new Projectile(origin.clone(), this.abilityName, this.abilityImgSrc, this.speed, look.clone(), this.range);
-            console.log("Spawned: ", abilityProjectile);
+            //console.log("Spawned: ", abilityProjectile);
 
             //set the cooldown
             this.nextAvailable = now + this.cooldownTime;

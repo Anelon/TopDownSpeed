@@ -5,6 +5,7 @@ import CanvasWrapper from "./canvasWrapper.mjs";
 //import { Moveable } from "./entity.mjs";
 //import Monster from "./monster.mjs";
 import PlayerController from "./playerController.mjs";
+import CHANNELS from "./channels.mjs";
 
 //setup the sockets and listening
 let socket = io();
@@ -27,7 +28,8 @@ let you;
 //set up socket listening
 
 //wait for the server to give the player its location
-socket.on("newPlayer", function(playerInfo) {
+console.log(CHANNELS.newPlayer);
+socket.on(CHANNELS.newPlayer, function(playerInfo) {
     let playerInfoJson = JSON.parse(playerInfo.json);
 
     //pull the information from json
@@ -38,7 +40,6 @@ socket.on("newPlayer", function(playerInfo) {
     let speed = playerInfoJson.speed;
     //make new player
     you = new PlayerController(location, name, imgSrc, speed, bounds, socket);
-    console.log(you);
     map.players.push(you);
     //you.updateInfo(playerInfoJson);
     requestAnimationFrame(frame);
@@ -48,18 +49,17 @@ socket.on("newPlayer", function(playerInfo) {
 //map.players.push(enemy);
 
 //Updates the game state
-function update(time) {
+function update(time, step) {
     //TODO move to serverside 
     //change to send and receive information
-    map.update(time);
+    map.update(time, step);
 }
 
-const step = 1/60; // 60 tics per second
+const step = 1/30; // 30 tics per second
 
 function render(you) {
     //clear the map
     canvas.clear();
-    //map.ctx.clearRect(0, 0, map.canvas.width, map.canvas.height);
 
     //probably best to move this to update rather than render
     if (you.moved || you.mouse.changed) {
@@ -78,9 +78,10 @@ function render(you) {
 function frame() {
     //console.log(you);
     time.update();
+    //console.log(time.dt);
     //run frames while they need to run fixed timestep gameloop
     while(time.dt > step) {
-        time.dt = time.dt - step;
+        time.dt -= step;
         update(time, step);
     }
     render(you);

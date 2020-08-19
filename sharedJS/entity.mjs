@@ -39,9 +39,9 @@ class Entity {
         let objectJson = JSON.stringify(this);
         return {type: objectType, json: objectJson};
     }
-    update(time, map) {
+    update(time, step, map) {
         if(this.speed > 0) {
-            this.move(time.dt, this.lookDirection, map);
+            this.move(step, this.lookDirection, map);
         }
     }
     move(dt, direction, map) {

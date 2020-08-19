@@ -21,19 +21,19 @@ class Map {
 		this.collisionTree = new QuadTree(this.boundry, this.qTreeCapacity);
 	}
 
-	update(time, skip) {
+	update(time, step, skip) {
 		//reset quadTree, might change to updating locations of each item later if we end up with too many static items
 		this.collisionTree = new QuadTree(this.boundry, this.qTreeCapacity);
 
 		//move everything and place in collision quad tree
 		for (let player of this.players) {
 			if (player !== skip)
-				player.update(time, this, this.canvas);
+				player.update(time, step, this);
 			this.collisionTree.push(player.makePoint());
 			player.overlapping = false;
 		}
 		for (let projectile of this.projectiles) {
-			projectile.update(time, this, this.canvas);
+			projectile.update(time, step, this);
 			this.collisionTree.push(projectile.makePoint());
 			projectile.overlapping = false;
 		}

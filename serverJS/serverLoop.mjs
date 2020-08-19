@@ -7,7 +7,7 @@ class ServerLoop {
     constructor(server) {
         //basic time object to pass to funcitons
         this.time = new Time(performance);
-        this.connections = new Connections(server);
+        this.connections = new Connections(server).start();
     }
 
     update(time) {
