@@ -26,16 +26,17 @@ describe('Vec2', function () {
     describe('Length', function () {
         it('Length of a Vec2 {3,4} should be 5', function () {
             let vec = new Vec2(3,4);
-            assert.equal(vec.x, 3);
-            assert.equal(vec.y, 4);
             assert.equal(vec.length(), 5);
             assert.equal(vec.lengthSq(), 25);
         });
     });
 
     describe('Math', function () {
-        let vec1 = new Vec2(1,3);
-        let vec2 = new Vec2(2,1);
+        let vec1, vec2;
+        beforeEach(function() {
+            vec1 = new Vec2(1, 3);
+            vec2 = new Vec2(2, 1);
+        });
 
         it('Add 2 Vec2', function () {
             //test default

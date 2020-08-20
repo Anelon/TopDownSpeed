@@ -2,8 +2,15 @@ import Vec2 from "./vec2.js";
 import Point from "./point.js";
 
 class Circle {
+    /**
+     * Makes a new Circle
+     * @constructor
+     * @param {Vec2} center Location of the center of the cirlce
+     * @param {number} radius Radius of the circle
+     */
     constructor(center, radius) {
-        console.assert(center instanceof Vec2, "Circle center not a Vec2");
+		if(!(center instanceof Vec2))
+			throw TypeError("Circle center needs to be Vec2");
         this.center = center;
         this.radius = radius;
     }
@@ -16,6 +23,16 @@ class Circle {
     get halfWidth() {
         return this.radius;
     }
+
+    /**
+     * Check if value of this is equal to other
+     * @param {Circle} other 
+     * @returns {boolean}
+     */
+    equals(other) {
+        if(!(other instanceof Circle)) return false;
+        return (this.center.equals(other.center) && this.radius === other.radius);
+    }
     contains(point) {
         if (!(point instanceof Point))
             throw TypeError("Contains point not a Point");
@@ -24,6 +41,12 @@ class Circle {
             Math.pow((point.x - this.center.x), 2) + Math.pow((point.y - this.center.y), 2) <= this.radius * this.radius
         );
     }
+
+    /**
+     * Check if circle or rectangle overlaps with this
+     * @param {Cirlce|Rectangle} range 
+     * @returns {boolean}
+     */
     intersects(range) {
         if (range instanceof Circle) {
             //A^2 + B^2 <= C^2
@@ -73,10 +96,25 @@ class Rectangle {
     get halfWidth() {
         return this.width / 2;
     }
+
+    /**
+     * Check if value of this is equal to other
+     * @param {Rectangle} other 
+     * @returns {boolean}
+     */
+    equals(other) {
+        if(!(other instanceof Rectangle)) return false;
+        return (this.center.equals(other.center) && this.width === other.width && this.height === other .height);
+    }
+
+    /**
+     * Check if rectangle contains a point
+     * @param {Point} point The point to be checked
+     * @returns {boolean}
+     */
     contains(point) {
         if (!(point instanceof Point))
             throw TypeError("Contains point not a Point");
-        //hmm I feel like widht and height should be / 2
         return (
             point.x >= this.left &&
             point.x <= this.right &&
@@ -84,6 +122,12 @@ class Rectangle {
             point.y <= this.bottom
         );
     }
+
+    /**
+     * Check if circle or rectangle overlaps with this
+     * @param {Cirlce|Rectangle} range 
+     * @returns {boolean}
+     */
     intersects(range) {
         if (range instanceof Circle) {
             //if its a circle flip the order
