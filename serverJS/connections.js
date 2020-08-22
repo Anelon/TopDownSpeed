@@ -42,13 +42,19 @@ class Connections {
             });
 
             client.on(CHANNELS.newProjectile, (newProjectile) => {
-                console.log("New Projectile: ", newProjectile);
-                let updated = JSON.parse(newProjectile.json);
-                let projectile = new Projectile()
-
-                console.log("New Projectile: ", updated);
-
-                //console.log(this.map);
+                const updated = JSON.parse(newProjectile.json);
+                //console.log("New Projectile: ", updated);
+                //destruct json
+                const {
+                    location, name, imgSrc, speed, lookDirection, range, hitbox 
+                } = updated;
+                //construct projectile
+                const projectile = new Projectile(
+                    new Vec2(location.x, location.y), name, imgSrc,
+                    speed, lookDirection, range
+                );
+                this.map.addProjectile(projectile);
+                console.log(this.map);
                 //TODO: add validation of move here
                 //broadcast the message (add client to prevent echoing)
                 this.broadcast(CHANNELS.newProjectile, newProjectile);
