@@ -31,7 +31,6 @@ class Point {
 	equals(other) {
 		if(!(other instanceof Point)) return false;
 		return (this.location.equals(other.location) && this.owner.equals(other.owner) && this.radius === other.radius);
-
 	}
 
 	//leaving in for debugging

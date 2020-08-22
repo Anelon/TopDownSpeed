@@ -6,6 +6,11 @@ import { Rectangle } from "./shapes.js";
 
 
 class Map {
+    /**
+     * constructor.
+     * @param {number} width
+     * @param {number} height
+     */
     constructor(width, height) {
         this.width = width;
         this.height = height;
@@ -19,6 +24,10 @@ class Map {
         this.collisionTree = new QuadTree(this.boundry, this.qTreeCapacity);
     }
 
+    /**
+     * Updates everything on the map
+     * @param {Time} time
+     */
     update(time) {
         //reset quadTree, might change to updating locations of each item later if we end up with too many static items
         this.collisionTree = new QuadTree(this.boundry, this.qTreeCapacity);

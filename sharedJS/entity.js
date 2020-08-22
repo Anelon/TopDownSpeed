@@ -108,6 +108,13 @@ class Entity {
         }
         */
     }
+    //placeholder for the colision to call when hit
+    //might want to return a bool saying if this should be deleted from the hit
+    hit(other) {
+    }
+    //should be called when projectile hits max range
+    think(world) {
+    }
 }
 
 export default Entity;
