@@ -2,22 +2,23 @@
 import Vec2 from "./vec2.js";
 import QuadTree from "./quadTree.js";
 import { Rectangle } from "./shapes.js";
+import Projectile from "./projectile.js";
 //import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 
 
-class Map {
+class GameMap {
     /**
-     * constructor.
-     * @param {number} width
-     * @param {number} height
+     * Constructs a GameMap
+     * @param {number} width Width of map region
+     * @param {number} height Height of map region
      */
-    constructor(width, height) {
+    constructor(width, height) {//TODO: add mapdata
         this.width = width;
         this.height = height;
-        //holder for player contollers (will probably only ever have the one)
-        this.players = [];
-        //holder for projectiles
-        this.projectiles = [];
+
+        //map for holding player and projectiles id -> object
+        this.players = new Map();
+        this.projectiles = new Map();
 
         this.boundry = new Rectangle(new Vec2(this.width/2, this.height/2), this.width, this.height);
         this.qTreeCapacity = 10;
@@ -25,26 +26,58 @@ class Map {
     }
 
     /**
-     * Updates everything on the map
-     * @param {Time} time
+     * Adds player to the players Map
+     * @param {Player} newPlayer 
+     */
+    addPlayer(newPlayer) {
+        this.players.set(newPlayer.id, newPlayer);
+    }
+
+    /**
+     * Removes player from player Map
+     * @param {Player} oldPlayer 
+     */
+    removePlayer(oldPlayer) {
+        this.players.delete(oldPlayer.id);
+    }
+
+    /**
+     * Adds projectile to the projectiles Map
+     * @param {Projectile} newProjectile 
+     */
+    addProjectile(newProjectile) {
+        this.projectiles.set(newProjectile.id, newProjectile);
+    }
+
+    /**
+     * Removes projectile from player Map
+     * @param {Projectile} oldPlayer 
+     */
+    removeProjectile(oldProjectile) {
+        this.projectiles.delete(oldProjectile.id);
+    }
+
+    /**
+     * Updates all player's and projectiles based on the changed time and checks for colisions
+     * @param {Time} time 
      */
     update(time) {
         //reset quadTree, might change to updating locations of each item later if we end up with too many static items
         this.collisionTree = new QuadTree(this.boundry, this.qTreeCapacity);
 
         //move everything and place in collision quad tree
-        for (let player of this.players) {
+        for (let player of this.players.values()) {
             player.update(time, this);
             this.collisionTree.push(player.makePoint());
             player.overlapping = false;
         }
-        for (let projectile of this.projectiles) {
+        for (let projectile of this.projectiles.values()) {
             projectile.update(time, this);
             this.collisionTree.push(projectile.makePoint());
             projectile.overlapping = false;
         }
         //check for collisions
-        for (let player of this.players) {
+        for (let player of this.players.values()) {
             let playerShape = player.makeShape();
             //make shape with 2 to have it search an area double the size of the player
             let others = this.collisionTree.query(player.makeShape(2));
@@ -56,7 +89,7 @@ class Map {
                 }
             }
         }
-        for (let projectile of this.projectiles) {
+        for (let projectile of this.projectiles.values()) {
             let projectileShape = projectile.makeShape();
             //make shape with 2 to have it search an area double the size of the projectile
             let others = this.collisionTree.query(projectile.makeShape(2));
@@ -71,4 +104,4 @@ class Map {
     }
 }
 
-export default Map;
+export default GameMap;
