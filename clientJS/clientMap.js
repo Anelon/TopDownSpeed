@@ -2,6 +2,7 @@
 import Vec2 from "./vec2.js";
 import QuadTree from "./quadTree.js";
 import { Rectangle } from "./shapes.js";
+import CHANNELS from "./channels.js";
 //import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 
 
@@ -67,7 +68,7 @@ class Map {
 	addProjectile(newProjectile) {
 		this.projectiles.push(newProjectile);
 		this.canvas.addDrawable(newProjectile);
-        this.socket.emit("newProjectile", newProjectile.makeObject());
+        this.socket.emit(CHANNELS.newProjectile, newProjectile.makeObject());
 	}
 }
 
