@@ -83,7 +83,7 @@ class Entity {
      * Updates the Entity based on how much time has passed and the map state
      * @param {Time} time 
      * @param {number} dt The time sinse last frame
-     * @param {*} map 
+     * @param {GameMap} map 
      */
     update(time, dt, map) {
         if(this.speed > 0) {

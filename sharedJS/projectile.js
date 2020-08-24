@@ -23,6 +23,21 @@ class Projectile extends Entity {
         //how far the projectile can go
         this.range = range;
     }
+    /**
+     * Makes a Projectile based on json sent to it
+     * @param {JSON} json 
+     */
+    static makeFromJSON(json) {
+        const {
+            location, name, imgSrc, speed, lookDirection, range, hitbox
+        } = json;
+        console.log("look", lookDirection);
+        //construct projectile
+        return new Projectile(
+            new Vec2(location.x, location.y), name, imgSrc,
+            speed, new Vec2(lookDirection.x, lookDirection.y), range
+        );
+    }
 }
 
 export default Projectile;

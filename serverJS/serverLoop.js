@@ -14,7 +14,7 @@ class ServerLoop {
 
     update(time) {
         //update all projectiles
-
+        this.map.update(time, time.tickRate);
         //check if anyone is ready to think
 
     }

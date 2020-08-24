@@ -65,10 +65,15 @@ class Map {
 		}
 	}
 
-	addProjectile(newProjectile) {
+	/**
+	 * Adds a projecile to the map
+	 * @param {Projectile} newProjectile Projectile spawned
+	 * @param {boolean} selfMade If prejectile was made by this client send to others
+	 */
+	addProjectile(newProjectile, selfMade = true) {
 		this.projectiles.push(newProjectile);
 		this.canvas.addDrawable(newProjectile);
-        this.socket.emit(CHANNELS.newProjectile, newProjectile.makeObject());
+        if(selfMade) this.socket.emit(CHANNELS.newProjectile, newProjectile.makeObject());
 	}
 }
 

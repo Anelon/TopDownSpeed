@@ -61,27 +61,32 @@ class GameMap {
      * Updates all player's and projectiles based on the changed time and checks for colisions
      * @param {Time} time 
      */
-    update(time) {
+    update(time, step) {
         //reset quadTree, might change to updating locations of each item later if we end up with too many static items
         this.collisionTree = new QuadTree(this.boundry, this.qTreeCapacity);
 
         //move everything and place in collision quad tree
-        for (let player of this.players.values()) {
-            player.update(time, this);
+        for (const player of this.players.values()) {
+            player.update(time, step, this);
             this.collisionTree.push(player.makePoint());
             player.overlapping = false;
         }
-        for (let projectile of this.projectiles.values()) {
-            projectile.update(time, this);
-            this.collisionTree.push(projectile.makePoint());
+        for (const projectile of this.projectiles.values()) {
+            projectile.update(time, step, this);
+            const added = this.collisionTree.push(projectile.makePoint());
+            console.log("added", added);
+            if(!added) {
+                console.log("deleted", projectile);
+                this.projectiles.delete(projectile.id);
+            }
             projectile.overlapping = false;
         }
         //check for collisions
-        for (let player of this.players.values()) {
-            let playerShape = player.makeShape();
+        for (const player of this.players.values()) {
+            const playerShape = player.makeShape();
             //make shape with 2 to have it search an area double the size of the player
-            let others = this.collisionTree.query(player.makeShape(2));
-            for(let other of others) {
+            const others = this.collisionTree.query(player.makeShape(2));
+            for(const other of others) {
                 if(other.owner === player) continue;
                 if(playerShape.intersects(other.owner.makeShape(1))) {
                     player.overlapping = true;
@@ -89,11 +94,11 @@ class GameMap {
                 }
             }
         }
-        for (let projectile of this.projectiles.values()) {
-            let projectileShape = projectile.makeShape();
+        for (const projectile of this.projectiles.values()) {
+            const projectileShape = projectile.makeShape();
             //make shape with 2 to have it search an area double the size of the projectile
-            let others = this.collisionTree.query(projectile.makeShape(2));
-            for(let other of others) {
+            const others = this.collisionTree.query(projectile.makeShape(2));
+            for(const other of others) {
                 if(other.owner === projectile) continue;
                 if(projectileShape.intersects(other.owner.makeShape(1))) {
                     projectile.overlapping = true;

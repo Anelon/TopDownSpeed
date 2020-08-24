@@ -43,21 +43,11 @@ class Connections {
 
             client.on(CHANNELS.newProjectile, (newProjectile) => {
                 const updated = JSON.parse(newProjectile.json);
-                //console.log("New Projectile: ", updated);
-                //destruct json
-                const {
-                    location, name, imgSrc, speed, lookDirection, range, hitbox 
-                } = updated;
-                //construct projectile
-                const projectile = new Projectile(
-                    new Vec2(location.x, location.y), name, imgSrc,
-                    speed, lookDirection, range
-                );
-                this.map.addProjectile(projectile);
+                this.map.addProjectile(Projectile.makeFromJSON(updated));
                 console.log(this.map);
                 //TODO: add validation of move here
                 //broadcast the message (add client to prevent echoing)
-                this.broadcast(CHANNELS.newProjectile, newProjectile);
+                this.broadcast(CHANNELS.newProjectile, newProjectile /*, client*/);
             });
         });
     }

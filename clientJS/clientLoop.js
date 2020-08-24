@@ -6,6 +6,7 @@ import CanvasWrapper from "./canvasWrapper.js";
 //import Monster from "./monster.js";
 import PlayerController from "./playerController.js";
 import CHANNELS from "./channels.js";
+import Projectile from "./projectile.js";
 
 //setup the sockets and listening
 let socket = io();
@@ -43,6 +44,10 @@ socket.on(CHANNELS.newPlayer, function(playerInfo) {
     map.players.push(you);
     //you.updateInfo(playerInfoJson);
     requestAnimationFrame(frame);
+});
+socket.on(CHANNELS.newProjectile, function(newProjectile) {
+    const updated = JSON.parse(newProjectile.json);
+    map.addProjectile(Projectile.makeFromJSON(updated), false);
 });
 
 //let enemy = new Monster(new Vec2(map.width/2, map.height/2), defaultImg, defaultSpeed);
