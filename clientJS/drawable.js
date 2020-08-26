@@ -1,7 +1,6 @@
 
 class Drawable {
     constructor(owner) {
-        console.log("Owner: ", owner);
         this.owner = owner;
         this.image = new Image();
         this.image.src = owner.imgSrc;

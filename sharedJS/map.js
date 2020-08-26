@@ -67,7 +67,6 @@ class GameMap {
 
         //move everything and place in collision quad tree
         for (const player of this.players.values()) {
-            player.update(time, step, this);
             this.collisionTree.push(player.makePoint());
             player.overlapping = false;
         }

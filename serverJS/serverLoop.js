@@ -8,7 +8,7 @@ class ServerLoop {
     constructor(server) {
         //basic time object to pass to funcitons
         this.time = new Time();
-        this.map = new GameMap(1000, 5000);
+        this.map = new GameMap(2000, 5000);
         this.connections = new Connections(server, this.map).start();
     }
 

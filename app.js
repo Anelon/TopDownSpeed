@@ -11,8 +11,8 @@ import Player from "./sharedJS/player.js";
 const app = express();
 app.set("view engine", "ejs");
 app.use(express.static("public"));
-app.use("/js", express.static("sharedJS"));
-app.use("/js", express.static("clientJS"));
+app.use("/js/sharedJS", express.static("sharedJS"));
+app.use("/js/clientJS", express.static("clientJS"));
 
 app.engine("html", ejs.renderFile);
 app.set("port", process.env.PORT || "8080");

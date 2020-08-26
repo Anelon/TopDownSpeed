@@ -1,7 +1,8 @@
-import Vec2 from "./vec2.js";
-import Entity from "./entity.js";
-import { Circle } from "./shapes.js";
-import Ability from "./ability.js";
+import Vec2 from "../sharedJS/vec2.js";
+import Entity from "../sharedJS/entity.js";
+import { Circle } from "../sharedJS/shapes.js";
+import Ability from "../sharedJS/ability.js";
+import CHANNELS from "../sharedJS/channels.js";
 
 //class for handling the current player
 class PlayerController extends Entity {
@@ -36,7 +37,7 @@ class PlayerController extends Entity {
         this.lookDirection = new Vec2(this.mouse.x, this.mouse.y).subS(this.location);
         return this.lookDirection;
     }
-    update(time, step, map) {
+    update(time, step, map, canvas, socket) {
         this.moved = false;
         //console.log(step);
         let direction = new Vec2();
@@ -68,7 +69,10 @@ class PlayerController extends Entity {
             //if the ability was successful
             if (arrow) {
                 //add projectile to the map
+                console.log(arrow.location.log());
                 map.addProjectile(arrow);
+                canvas.addDrawable(arrow);
+                socket.emit(CHANNELS.newProjectile, arrow.makeObject());
             } else {
                 console.log("On CoolDown");
             }

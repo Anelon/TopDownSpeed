@@ -1,12 +1,12 @@
-import Map from "./clientMap.js";
-import Vec2 from "./vec2.js";
+import Map from "../sharedJS/map.js";
+import Vec2 from "../sharedJS/vec2.js";
 import Time from "./time.js";
 import CanvasWrapper from "./canvasWrapper.js";
 //import { Moveable } from "./entity.js";
 //import Monster from "./monster.js";
 import PlayerController from "./playerController.js";
-import CHANNELS from "./channels.js";
-import Projectile from "./projectile.js";
+import CHANNELS from "../sharedJS/channels.js";
+import Projectile from "../sharedJS/projectile.js";
 
 //setup the sockets and listening
 let socket = io();
@@ -31,7 +31,13 @@ let you;
 //wait for the server to give the player its location
 console.log(CHANNELS.newPlayer);
 socket.on(CHANNELS.newPlayer, function(playerInfo) {
+    let playerExists = false;
+    if(you) {
+        playerExists = true;
+        console.log("Already a player controller");
+    }
     let playerInfoJson = JSON.parse(playerInfo.json);
+
 
     //pull the information from json
     let location = new Vec2(playerInfoJson.location.x, playerInfoJson.location.y);
@@ -41,7 +47,11 @@ socket.on(CHANNELS.newPlayer, function(playerInfo) {
     let speed = playerInfoJson.speed;
     //make new player
     you = new PlayerController(location, name, imgSrc, speed, bounds, socket);
-    map.players.push(you);
+    if (!playerExists) {
+        map.addPlayer(you);
+    } else {
+
+    }
     //you.updateInfo(playerInfoJson);
     requestAnimationFrame(frame);
 });
@@ -57,6 +67,7 @@ socket.on(CHANNELS.newProjectile, function(newProjectile) {
 function update(time, step) {
     //TODO move to serverside 
     //change to send and receive information
+    you.update(time, step, map, canvas, socket);
     map.update(time, step);
 }
 
