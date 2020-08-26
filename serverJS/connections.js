@@ -23,7 +23,7 @@ class Connections {
             player.id = client.id;
             this.map.addPlayer(player);
             client.emit(CHANNELS.newPlayer, player.makeObject());
-            console.log("map:", this.map);
+            //console.log("map:", this.map);
 
             client.on("disconnect", (client) => {
                 console.log("a user has disconnected");
@@ -43,8 +43,9 @@ class Connections {
 
             client.on(CHANNELS.newProjectile, (newProjectile) => {
                 const updated = JSON.parse(newProjectile.json);
+                console.log(updated);
                 this.map.addProjectile(Projectile.makeFromJSON(updated));
-                console.log(this.map);
+                //console.log(this.map);
                 //TODO: add validation of move here
                 //broadcast the message (add client to prevent echoing)
                 this.broadcast(CHANNELS.newProjectile, newProjectile /*, client*/);

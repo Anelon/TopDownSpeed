@@ -73,7 +73,7 @@ class GameMap {
         for (const projectile of this.projectiles.values()) {
             projectile.update(time, step, this);
             const added = this.collisionTree.push(projectile.makePoint());
-            console.log("added", added);
+            //if projectile is out of the map region delete it
             if(!added) {
                 console.log("deleted", projectile);
                 this.projectiles.delete(projectile.id);
