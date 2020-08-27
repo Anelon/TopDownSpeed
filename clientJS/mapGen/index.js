@@ -58,10 +58,10 @@ class TileImage {
         const x = location.x * TileImage.width;
         const y = location.y * TileImage.height;
         ctx.drawImage(this.image, x, y);
-
     }
 }
 const wallPath = "/img/wall/wall";
+const inWallPath = "/img/inwall/inwall";
 const floorPath = "/img/ground/ground";
 
 const tileImages = {
@@ -78,10 +78,20 @@ const tileImages = {
         "TTC": new TileImage(wallPath + "TTC.png"),
         "TTL": new TileImage(wallPath + "TTL.png"),
         "TTR": new TileImage(wallPath + "TTR.png"),
-        "IBR": new TileImage("/img/inwall/inwallBR.png"),
-        "IBL": new TileImage("/img/inwall/inwallBL.png"),
-        "ITR": new TileImage("/img/inwall/inwallTR.png"),
-        "ITL": new TileImage("/img/inwall/inwallTL.png"),
+    },
+    "insideWall": {
+        "BC": new TileImage(inWallPath + "BC.png"),
+        "BL": new TileImage(inWallPath + "BL.png"),
+        "BR": new TileImage(inWallPath + "BR.png"),
+        "C": new TileImage(inWallPath + "C.png"),
+        "L": new TileImage(inWallPath + "L.png"),
+        "R": new TileImage(inWallPath + "R.png"),
+        "TC": new TileImage(inWallPath + "TC.png"),
+        "TL": new TileImage(inWallPath + "TL.png"),
+        "TR": new TileImage(inWallPath + "TR.png"),
+        "TTC": new TileImage(inWallPath + "TTC.png"),
+        "TTL": new TileImage(inWallPath + "TTL.png"),
+        "TTR": new TileImage(inWallPath + "TTR.png"),
     },
     "floor": {
         "TL": new TileImage(floorPath + "1.png"),
