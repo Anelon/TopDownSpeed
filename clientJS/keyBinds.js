@@ -36,18 +36,6 @@ document.addEventListener("keyup",keyUp);
 
 function mousePress(button, pressed) {
     keyPress[MOUSE_STR + button.toString()] = pressed;
-    /*
-    switch(button) {
-        case LEFT:
-            keyPress[LEFT_STR] = pressed;
-            break;
-        case RIGHT:
-            keyPress[RIGHT_STR] = pressed;
-            break;
-        default:
-            console.log("nothing happened");
-    }
-    */
 }
 //set which mouse button was pressed
 function mouseDown(e) {

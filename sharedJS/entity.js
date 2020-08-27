@@ -14,6 +14,7 @@ class Entity {
      * @param {Vec2} [lookDirection=Vec2(1,0)] Which direction the entity is looking at
      */
     constructor(location, imgSrc, hitbox, speed = 0, lookDirection = new Vec2(1,0)) {
+        console.assert(location instanceof Vec2, "Loaction not a Vec2", location);
         if(!(location instanceof Vec2)) {
             throw TypeError("Entity: Location not Vec2");
         }

@@ -13,6 +13,7 @@ class CanvasWrapper {
 		this.ctx.font = "18px arial";
 		this.ctx.lineWidth = 1;
 
+		//TODO: refactor to map
 		this.drawables = [];
 	}
 	get width() {

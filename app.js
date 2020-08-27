@@ -28,6 +28,9 @@ app.get("/", function(req, res) {
 app.get("/game", function(req, res) {
     res.render("game");
 });
+app.get("/mapEditor", function(req, res) {
+    res.render("mapEditor");
+});
 
 
 let server = app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at http://${app.get('ip')}:${app.get('port')}`);});
