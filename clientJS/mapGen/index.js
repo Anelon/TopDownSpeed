@@ -19,8 +19,60 @@ const upLeftDown = up | left | down | upAndLeft | downAndLeft;
 const rightUpLeft = right | up | left | upAndRight | upAndLeft;
 const rightDownLeft = right | down | left | downAndLeft | downAndRight;
 const allRound = up | down | left | right | downAndLeft | downAndRight | upAndRight | upAndLeft;
+
 const dirs = [[1, 0, right], [-1, 0, left], [0, -1, up], [0, 1, down], [1, 1, downAndRight], [-1, 1, downAndLeft], [1, -1, upAndRight], [-1, -1, upAndLeft]];
 
+const dirsToTileMap = {
+    [allRound]: 0,
+    [allRound ^ downAndRight]: 1,
+    [allRound ^ downAndLeft]: 2,
+    [allRound ^ upAndRight]: 3,
+    [allRound ^ upAndRight]: 4,
+    [allRound ^ (downAndLeft | downAndRight)]: 5,
+    [allRound ^ (upAndLeft | downAndRight)]: 6,
+    [allRound ^ (upAndRight | downAndRight)]: 7,
+    [allRound ^ (downAndLeft | upAndLeft)]: 8,
+    [allRound ^ (downAndLeft | upAndRight)]: 9,
+    [allRound ^ (downAndLeft | upAndRight | downAndRight)]: 10,
+    [allRound ^ (downAndLeft | upAndLeft | downAndRight)]: 10,
+    [allRound ^ (downAndLeft | upAndLeft | upAndRight)]: 10,
+    [allRound ^ (downAndRight | upAndLeft | upAndRight)]: 10,
+    [allRound ^ (downAndLeft | downAndRight | upAndLeft | upAndRight)]: 10,
+    [allRound ^ (downAndRight | right | upAndRight)]: 10,
+    [allRound ^ (downAndRight | down | downAndLeft)]: 10,
+    [allRound ^ (upAndLeft | left | downAndLeft)]: 10,
+    [allRound ^ (upAndLeft | up | upAndRight)]: 10,
+    [allRound ^ (downAndLeft | downAndRight | right | upAndRight)]: 10,
+    [allRound ^ (upAndLeft | downAndRight | right | upAndRight)]: 10,
+    [allRound ^ (downAndLeft | upAndLeft | downAndRight | right | upAndRight)]: 10,
+    [allRound ^ (downAndLeft | upAndLeft | downAndRight | down)]: 10,
+    [allRound ^ (downAndLeft | upAndRight | downAndRight | down)]: 10,
+    [allRound ^ (downAndLeft | upAndRight | downAndRight | down | upAndLeft)]: 10,
+    [allRound ^ (downAndLeft | downAndRight | left | upAndLeft)]: 10,
+    [allRound ^ (downAndLeft | upAndRight | left | upAndLeft)]: 10,
+    [allRound ^ (downAndLeft | downAndRight | upAndRight | left | upAndLeft)]: 10,
+    [allRound ^ (downAndLeft | upAndRight | up | upAndLeft)]: 10,
+    [allRound ^ (downAndRight | upAndRight | up | upAndLeft)]: 10,
+    [allRound ^ (downAndRight | downAndLeft | upAndRight | up | upAndLeft)]: 10,
+    [allRound ^ (downAndRight | downAndLeft | upAndRight | upAndLeft | left | right)]: 10,
+    [allRound ^ (downAndRight | downAndLeft | upAndRight | upAndLeft | up | down)]: 10,
+    [allRound ^ (downAndRight | downAndLeft | upAndRight | right | down)]: 10,
+    [allRound ^ (downAndRight | downAndLeft | upAndLeft | left | down)]: 10,
+    [allRound ^ (downAndLeft | upAndRight | upAndLeft | left | up)]: 10,
+    [allRound ^ (downAndRight | upAndRight | upAndLeft | right | up)]: 10,
+    [allRound ^ (downAndRight | downAndLeft | upAndLeft | upAndRight | right | down)]: 10,
+    [allRound ^ (downAndRight | downAndLeft | upAndLeft | upAndRight | left | down)]: 10,
+    [allRound ^ (downAndRight | downAndLeft | upAndRight | upAndLeft | left | up)]: 10,
+    [allRound ^ (downAndRight | downAndLeft | upAndRight | upAndLeft | right | up)]: 10,
+    [left | upAndLeft | downAndLeft]: 10,
+    [up | upAndLeft | upAndRight]: 10,
+    [right | upAndRight | downAndRight]: 10,
+    [down | downAndLeft | downAndRight]: 10,
+    "Not sure just a short top edge": 10,
+}
+Object.freeze(dirsToTileMap);
+Object.freeze(dirs);
+console.log(dirsToTileMap);
 
 //Globals
 let width = 0;
