@@ -198,17 +198,18 @@ const aroundToTileMap = {
     [left | downAndLeft | upAndLeft | up | upAndLeft]: 34,
     [left | downAndLeft | upAndLeft | up]: 34,
     [left | downAndLeft | up | upAndRight | upAndLeft]: 34,
-    [left | downAndLeft | up | upAndRight]: 34,
     [left | downAndLeft | up | upAndLeft]: 34,
-    [left | downAndLeft | up]: 34,
     [left | upAndLeft | up | upAndRight | upAndLeft]: 34,
     [left | upAndLeft | up | upAndRight]: 34,
     [left | upAndLeft | up | upAndLeft]: 34,
     [left | upAndLeft | up]: 34,
     [left | up | upAndRight | upAndLeft]: 34,
-    [left | up | upAndRight]: 34,
     [left | up | upAndLeft]: 34,
-    [left | up]: 34,
+
+    [left | downAndLeft | up | upAndRight]: 38,
+    [left | downAndLeft | up]: 38,
+    [left | up | upAndRight]: 38,
+    [left | up]: 38,
 
     [right | downAndRight | upAndRight | up | upAndRight | upAndLeft]: 35,
     [right | downAndRight | upAndRight | up | upAndRight]: 35,
@@ -216,16 +217,17 @@ const aroundToTileMap = {
     [right | downAndRight | upAndRight | up]: 35,
     [right | downAndRight | up | upAndRight | upAndLeft]: 35,
     [right | downAndRight | up | upAndRight]: 35,
-    [right | downAndRight | up | upAndLeft]: 35,
-    [right | downAndRight | up]: 35,
     [right | upAndRight | up | upAndRight | upAndLeft]: 35,
     [right | upAndRight | up | upAndRight]: 35,
     [right | upAndRight | up | upAndLeft]: 35,
     [right | upAndRight | up]: 35,
     [right | up | upAndRight | upAndLeft]: 35,
     [right | up | upAndRight]: 35,
-    [right | up | upAndLeft]: 35,
-    [right | up]: 35,
+
+    [right | downAndRight | up | upAndLeft]: 39,
+    [right | downAndRight | up]: 39,
+    [right | up | upAndLeft]: 39,
+    [right | up]: 39,
 
     [right | upAndRight | downAndRight | down | downAndRight | downAndLeft]: 36,
     [right | upAndRight | downAndRight | down | downAndRight]: 36,
@@ -237,51 +239,52 @@ const aroundToTileMap = {
     [right | downAndRight | down]: 36,
     [right | upAndRight | down | downAndRight | downAndLeft]: 36,
     [right | upAndRight | down | downAndRight]: 36,
-    [right | upAndRight | down | downAndLeft]: 36,
-    [right | upAndRight | down]: 36,
     [right | down | downAndRight | downAndLeft]: 36,
     [right | down | downAndRight]: 36,
-    [right | down | downAndLeft]: 36,
-    [right | down]: 36,
 
-    [right | downAndRight | upAndRight | up | upAndRight | upAndLeft]: 37,
-    [right | downAndRight | upAndRight | up | upAndRight]: 37,
-    [right | downAndRight | upAndRight | up | upAndLeft]: 37,
-    [right | downAndRight | upAndRight | up]: 37,
-    [right | downAndRight | up | upAndRight | upAndRight]: 37,
-    [right | downAndRight | up | upAndRight]: 37,
-    [right | downAndRight | up | upAndLeft]: 37,
-    [right | downAndRight | up]: 37,
-    [right | upAndRight | up | upAndRight | upAndLeft]: 37,
-    [right | upAndRight | up | upAndRight]: 37,
-    [right | upAndRight | up | upAndLeft]: 37,
-    [right | upAndRight | up]: 37,
-    [right | up | upAndRight | upAndLeft]: 37,
-    [right | up | upAndRight]: 37,
-    [right | up | upAndLeft]: 37,
-    [right | up]: 37,
+    [right | upAndRight | down | downAndLeft]: 40,
+    [right | upAndRight | down]: 40,
+    [right | down | downAndLeft]: 40,
+    [right | down]: 40,
 
-    [allRound ^ (downAndRight | upAndRight | upAndLeft | right | up)]: 37,
-    [allRound ^ (downAndRight | downAndLeft | upAndLeft | upAndRight | right | down)]: 38,
-    [allRound ^ (downAndRight | downAndLeft | upAndLeft | upAndRight | left | down)]: 39,
-    [allRound ^ (downAndRight | downAndLeft | upAndRight | upAndLeft | left | up)]: 40,
-    [allRound ^ (downAndRight | downAndLeft | upAndRight | upAndLeft | right | up)]: 41,
+    [left | downAndLeft | upAndLeft | down | downAndRight | downAndLeft]: 37,
+    [left | downAndLeft | upAndLeft | down | downAndRight]: 37,
+    [left | downAndLeft | upAndLeft | down | downAndLeft]: 37,
+    [left | downAndLeft | upAndLeft | down]: 37,
+    [left | downAndLeft | down | downAndRight | downAndLeft]: 37,
+    [left | downAndLeft | down | downAndRight]: 37,
+    [left | downAndLeft | down | downAndLeft]: 37,
+    [left | downAndLeft | down]: 37,
+    [left | upAndLeft | down | downAndRight | downAndLeft]: 37,
+    [left | upAndLeft | down | downAndLeft]: 37,
+    [left | down | downAndRight | downAndLeft]: 37,
+    [left | down | downAndLeft]: 37,
+
+    [left | upAndLeft | down | downAndRight]: 41,
+    [left | down | downAndRight]: 41,
+    [left | upAndLeft | down]: 41,
+    [left | down]: 41,
+
     [left | upAndLeft | downAndLeft]: 42,
     [left | downAndLeft]: 42,
     [left | upAndLeft]: 42,
     [left]: 42,
+
     [up | upAndLeft | upAndRight]: 43,
     [up | upAndRight]: 43,
     [up | upAndLeft]: 43,
     [up]: 43,
+
     [right | upAndRight | downAndRight]: 44,
     [right | downAndRight]: 44,
     [right | upAndRight]: 44,
     [right]: 44,
+
     [down | downAndLeft | downAndRight]: 45,
     [down | downAndRight]: 45,
     [down | downAndLeft]: 45,
     [down]: 45,
+
     [0]: 46,
     "Not sure just a short top edge": 47,
 }
@@ -317,10 +320,9 @@ class TileImage {
             if (imagesToLoad === 0) {
                 init();
             }
-            //ctx.drawImage(this.image, imagesToLoad*TileImage.tileHeight, imagesToLoad*TileImage.tileHeight);
+            this.tilesWide = this.image.width / TileImage.width;
         });
         this.image.src = imgSrc;
-        this.tilesWide = this.image.width / TileImage.width;
     }
     /**
      * 
@@ -342,40 +344,10 @@ class TileImage {
         }
     }
 }
-const wallPath = "/img/wall/wall";
-const inWallPath = "/img/inwall/inwall";
-const floorPath = "/img/ground/ground";
 const grassPath = "/img/tileMaps/grassTiles.png";
 
 const grassTileMap = new TileImage(grassPath);
 
-const tileImages = {
-    "wall": {
-        "BC": new TileImage(wallPath + "BC.png"),
-        "BL": new TileImage(wallPath + "BL.png"),
-        "BR": new TileImage(wallPath + "BR.png"),
-        "C": new TileImage(wallPath + "C.png"),
-        "L": new TileImage(wallPath + "L.png"),
-        "R": new TileImage(wallPath + "R.png"),
-        "TC": new TileImage(wallPath + "TC.png"),
-        "TL": new TileImage(wallPath + "TL.png"),
-        "TR": new TileImage(wallPath + "TR.png"),
-        "TTC": new TileImage(wallPath + "TTC.png"),
-        "TTL": new TileImage(wallPath + "TTL.png"),
-        "TTR": new TileImage(wallPath + "TTR.png"),
-    },
-    "floor": {
-        "TL": new TileImage(floorPath + "1.png"),
-        "TC": new TileImage(floorPath + "2.png"),
-        "TR": new TileImage(floorPath + "3.png"),
-        "L": new TileImage(floorPath + "4.png"),
-        "C": new TileImage(floorPath + "5.png"),
-        "R": new TileImage(floorPath + "6.png"),
-        "BL": new TileImage(floorPath + "7.png"),
-        "BC": new TileImage(floorPath + "8.png"),
-        "BR": new TileImage(floorPath + "9.png"),
-    }
-}
 
 class Tile {
     /**
