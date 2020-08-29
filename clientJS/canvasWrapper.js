@@ -4,15 +4,27 @@ import Drawable from "./drawable.js";
 
 //this handles all canvas drawing and holding the canvas
 class CanvasWrapper {
-	constructor(id = "game") {
+	/**
+	 * 
+	 * @param {string} [id="game"] Target Canvas ID from HTML
+	 * @param {Vec2} [canvasSize] 
+	 * @param {Vec2} [tileSize=new Vec2(16,16)] 
+	 */
+	constructor(id = "game", canvasSize = null, tileSize = new Vec2(16,16)) {
 		this.canvas = document.getElementById(id);
 		this.ctx = this.canvas.getContext('2d');
 		this.borderSize = 40;
-		this.canvas.width = window.innerWidth - this.borderSize;
-		this.canvas.height = window.innerHeight - this.borderSize;
+		if(canvasSize === null) {
+			this.canvas.width = window.innerWidth - this.borderSize;
+			this.canvas.height = window.innerHeight - this.borderSize;
+		} else {
+			this.canvas.width = canvasSize.x;
+			this.canvas.height = canvasSize.y;
+		}
 		this.ctx.font = "18px arial";
 		this.ctx.lineWidth = 1;
 
+		this.tileSize = tileSize;
 		//TODO: refactor to map
 		this.drawables = [];
 	}
@@ -71,6 +83,23 @@ class CanvasWrapper {
 		//restore back to previous settings
 		this.ctx.restore();
 	}
+	/**
+	 * Draws an image at location x, y. Include sx, sy and width, height if you want to draw part of an image
+	 * @param {Image} img Image to draw
+	 * @param {number} x X location of top right corner
+	 * @param {number} y Y location of top right corner
+	 * @param {number} [sx=null] Images X location to start drawing
+	 * @param {number} [sy] 
+	 * @param {number} [width] Width of image to print
+	 * @param {number} [height] Height of image to print
+	 */
+	drawImage(img, x, y, sx = null, sy, width, height) {
+		if(sx !== null) {
+			this.ctx.drawImage(img, sx, sy, width, height, x, y, width, height);
+		} else {
+			this.ctx.drawImage(img, x, y);
+		}
+	}
 
 	//draws the player's crosshair with vec2 origin and string color
 	drawCrossHair(origin, color) {
@@ -83,6 +112,7 @@ class CanvasWrapper {
 		this.ctx.lineTo(x, y + 10);
 		this.ctx.stroke();
 	}
+
 	drawLine(origin, destination, color = "black", alpha = 0.2) {
 		this.ctx.save();
 
@@ -94,6 +124,34 @@ class CanvasWrapper {
 		this.ctx.stroke();
 
 		this.ctx.restore();
+	}
+
+	drawGrid(color = "black", alpha = 0.2) {
+
+		this.ctx.strokeStyle = color;
+		for(let i = 0; i < this.width; i += this.tileSize.x) {
+			this.ctx.save();
+
+			this.ctx.beginPath();
+			this.ctx.globalAlpha = alpha;
+			this.ctx.moveTo(i, 0);
+			this.ctx.lineTo(i, this.height);
+			this.ctx.stroke();
+
+			this.ctx.restore();
+		}
+		for(let j = 0; j < this.height; j += this.tileSize.y) {
+			this.ctx.save();
+
+			this.ctx.beginPath();
+			this.ctx.globalAlpha = alpha;
+			this.ctx.moveTo(0, j);
+			this.ctx.lineTo(this.width, j);
+			this.ctx.stroke();
+
+			this.ctx.restore();
+		}
+
 	}
 	getBoundingClientRect() {
 		return this.canvas.getBoundingClientRect();

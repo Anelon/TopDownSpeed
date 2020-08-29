@@ -22,45 +22,6 @@ const allRound = up | down | left | right | downAndLeft | downAndRight | upAndRi
 
 const dirs = [[1, 0, right], [-1, 0, left], [0, -1, up], [0, 1, down], [1, 1, downAndRight], [-1, 1, downAndLeft], [1, -1, upAndRight], [-1, -1, upAndLeft]];
 
-function aroundToIndex(around) {
-    if(around === allRound) return 0;
-    if(around === allRound ^ downAndRight) return 1;
-    if(around === allRound ^ downAndLeft) return 2;
-    if(around === allRound ^ upAndRight) return 3;
-    if(around === allRound ^ upAndLeft) return 4;
-    if(around === allRound ^ (downAndRight | downAndLeft)) return 5;
-    if(around === allRound ^ (downAndRight | upAndLeft)) return 6;
-    if(around === allRound ^ (downAndRight | upAndRight)) return 7;
-    if(around === allRound ^ (downAndLeft | upAndLeft)) return 8;
-    if(around === allRound ^ (downAndLeft | upAndRight)) return 9;
-    if(around === allRound ^ (upAndLeft | upAndRight)) return 10;
-    if(around === allRound ^ (downAndRight | upAndRight | downAndLeft)) return 11;
-    if(around === allRound ^ (downAndRight | upAndLeft | downAndLeft)) return 12;
-    if(around === allRound ^ (upAndRight | upAndLeft | downAndLeft)) return 13;
-    if(around === allRound ^ (upAndRight | upAndLeft | downAndRight)) return 14;
-    if(around === allRound ^ (upAndRight | upAndLeft | downAndRight | downAndLeft)) return 15;
-    if(around & (left | down | up)) {
-        if(~around & downAndLeft) {
-            if(~around & upAndLeft) return 22;
-            return 20;
-        }
-        if(~around & upAndLeft) return 21;
-        return 16;
-    }
-    if(around & (left | right | up)) {
-        if(~around & upAndLeft) {
-            if(~around & upAndRight) return 25;
-            return 23;
-        }
-        if(~around & upAndRight) return 24;
-        return 17;
-    }
-    if(around & (left | up | right)) return 17;
-    if(around & (down | up | right)) return 18;
-    if(around & (down | left | right)) return 19;
-    if(around & (down | left | right)) return 19;
-
-}
 const aroundToTileMap = {
     [allRound]: 0,
     [allRound ^ downAndRight]: 1,
@@ -296,6 +257,8 @@ console.log(aroundToTileMap);
 let width = 0;
 let height = 0;
 //set up canvas
+const canvas = new CanvasWrapper();
+/*
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext('2d');
 const borderSize = 40;
@@ -303,41 +266,43 @@ canvas.width = window.innerWidth - borderSize;
 canvas.height = window.innerHeight - borderSize;
 ctx.font = "18px arial";
 ctx.lineWidth = 1;
+*/
 
 let room = [];
 let mobs = {};
 
-let imagesToLoad = 12 + 9 + 1; //number of images in tileImages object
+let imagesToLoad = 0; //number of images in tileImages object
 class TileImage {
     static width = 16;
     static height = 16;
     constructor(imgSrc) {
         //add one to imagesLoading
+        imagesToLoad++;
         this.imgSrc = imgSrc;
         this.image = new Image();
         this.image.addEventListener('load', () => {
+            this.tilesWide = this.image.width / TileImage.width;
             imagesToLoad--;
             if (imagesToLoad === 0) {
                 init();
             }
-            this.tilesWide = this.image.width / TileImage.width;
         });
         this.image.src = imgSrc;
     }
     /**
      * 
-     * @param {CanvasRenderingContext2D} ctx 
+     * @param {CanvasWrapper} ctx 
      * @param {Vec2} location Tile x and y location
      * @param {number} around Bitmap of similar tiles that are around this
      */
-    draw(ctx, location, around = null) {
+    draw(canvas, location, around = null) {
         const x = location.x * TileImage.width;
         const y = location.y * TileImage.height;
         if(around !== null) {
             const sx = parseInt(aroundToTileMap[around] % this.tilesWide) * TileImage.width;
             const sy = parseInt(aroundToTileMap[around] / this.tilesWide) * TileImage.height;
             console.log("sx: ", sx, " sy: ", sy);
-            ctx.drawImage(this.image, sx, sy, TileImage.width, TileImage.height, x, y, TileImage.width, TileImage.height);
+            canvas.drawImage(this.image, x, y, sx, sy, TileImage.width, TileImage.height);
             //ctx.drawImage(this.image, x, y);
         } else {
             ctx.drawImage(this.image, x, y);
@@ -369,8 +334,8 @@ class Tile {
         this.isWalkable = isWalkable;
         this.around = around;
     }
-    draw(ctx) {
-        this.tileImage.draw(ctx, this.location, this.around);
+    draw(canvas) {
+        this.tileImage.draw(canvas, this.location, this.around);
     }
 }
 
@@ -449,6 +414,7 @@ function getTileSuffixWall(i, j, curr) {
     }
     return "C";
 }
+//works with split tiles where it just has 9 different directions
 function getTileSuffix(i, j, curr) {
     const around = getAround(i, j, curr);
     //see if statements in getImg from mapGen.py
@@ -475,72 +441,37 @@ async function init() {
     height = room.length, width = room[0].length;
     for (let j = 0; j < height; j++) {
         for (let i = 0; i < width; i++) {
-            if (room[j][i] === "w") {
+            if (room[j][i] === "g") {
                 const around = getAround(i, j, room[j][i]);
                 const tile = new Tile(new Vec2(i,j), grassTileMap, false, around);
                 console.log(aroundToTileMap[around], tile);
-                tile.draw(ctx);
-                /*
-                const around = getTileSuffixWall(i, j, room[j][i]);
-                const tile = new Tile(new Vec2(i, j), tileImages.wall[around], false);
-                tile.draw(ctx);
-                */
+                tile.draw(canvas);
             }
-            else if (room[j][i] === "f") {
-                const around = getTileSuffix(i, j, room[j][i]);
-                const tile = new Tile(new Vec2(i, j), tileImages.floor[around], false);
-                tile.draw(ctx);
-            }
-            await sleep(1);
-            /*
-            let tileClass = "";
-            if(room[i][j] == "w") {
-                let around = getAround(i,j);
-                tileClass += " wall" + around;
-            }
-            //gameboard.append(`<div id="${i}-${j}" class="tile${tileClass}"></div>`);
-            if(room[i][j] == "B") {
-                let temp = new Mob(i,j,"blue","Pilar");
-                mobs["bluePilar"] = temp;
-            } else if(room[i][j] == "R") {
-                mobs["redPilar"] = new Mob(i,j,"red","Pilar");
-            } else if(room[i][j] == "G") {
-                mobs["greenPilar"] = new Mob(i,j,"green","Pilar");
-            } else if(room[i][j] == "b") {
-                mobs["blueStone"] = new Mob(i,j,"blue","Stone");
-            } else if(room[i][j] == "r") {
-                mobs["redStone"] = new Mob(i,j,"red","Stone");
-            } else if(room[i][j] == "g") {
-                mobs["greenStone"] = new Mob(i,j,"green","Stone");
-            } else if(room[i][j] == "C") { //implement chests later
-                mobs[""] = new Mob(i,j,"chest","Closed");
-            } else if(room[i][j] == "p") {
-                player = new Player(i,j);
-            }
-            */
+            //await sleep(.01);
         }
     }
+    canvas.drawGrid();
 }
 function mapInit() {
     //clear the room
     room = [];
-    room.push("wwwwwwwwwwwwwwwwwwww");
-    room.push("wwwwwwwwwwwwwwwwwwww");
-    room.push("wfffffffffwwwwwffffw");
-    room.push("wwfffffffffwwwfffffw");
-    room.push("wwwwfwwffffwwwfffffw");
-    room.push("wwwwfwwwffffwffffffw");
-    room.push("wwwwwwfffffffffffffw");
-    room.push("wffffffffffffffffffw");
-    room.push("wffffffffffffffffffw");
-    room.push("wffffffffffffffffffw");
-    room.push("wffffffffffffffffffw");
-    room.push("wffffffffffffffffffw");
-    room.push("wffffffffffffffffffw");
-    room.push("wffffffffffffffffffw");
-    room.push("wfffwffffffffffffffw");
-    room.push("wffwwwfffffffffffffw");
-    room.push("wffwwwfffffffffffffw");
-    room.push("wfwwwwwffffffffffffw");
-    room.push("wwwwwwwwwwwwwwwwwwww");
+    room.push("gggggggggggggggggggg");
+    room.push("gggggggggggggggggggg");
+    room.push("gfffffffffgggggffffg");
+    room.push("ggfffffffffgggfffffg");
+    room.push("ggggfggffffgggfffffg");
+    room.push("ggggfgggffffgffffffg");
+    room.push("ggggggfffffffffffffg");
+    room.push("gffffffffffffffffffg");
+    room.push("gfffffgggggfffggfffg");
+    room.push("gfffffgggggfffggfffg");
+    room.push("gfffffgffggggggffffg");
+    room.push("gfffffffgggggffffffg");
+    room.push("gfffffffggfffffffffg");
+    room.push("gffffffffffffffffffg");
+    room.push("gfffgffffffffffffffg");
+    room.push("gffgggfffffffffffffg");
+    room.push("gffgggfffffffffffffg");
+    room.push("gfgggggffffffffffffg");
+    room.push("gggggggggggggggggggg");
 }
