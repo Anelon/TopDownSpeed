@@ -10,6 +10,12 @@ class Vec2 {
         this.y = y;
     }
     /**
+     * @returns {Array} x, y
+     */
+    getXY() {
+        return [this.x, this.y];
+    }
+    /**
      * Creates a new Vec2 with same elements as this
      * @returns {Vec2}
      */
@@ -128,6 +134,20 @@ class Vec2 {
      */
     dot(other) {
         return this.x * other.x + this.y * other.y;
+    }
+    /**
+     * Calls Math.floor on both x and y
+     */
+    floorS() {
+        this.x = Math.floor(this.x);
+        this.y = Math.floor(this.y);
+        return this;
+    }
+    /**
+     * Makes new Vec2 with the the floor of x and y
+     */
+    floor() {
+        return new Vec2(Math.floor(this.x), Math.floor(this.y));
     }
 }
 

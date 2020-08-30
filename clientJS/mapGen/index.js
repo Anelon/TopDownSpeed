@@ -251,13 +251,31 @@ const aroundToTileMap = {
 }
 Object.freeze(aroundToTileMap);
 Object.freeze(dirs);
-console.log(aroundToTileMap);
+//console.log(aroundToTileMap);
 
 //Globals
 let width = 0;
 let height = 0;
 //set up canvas
 const canvas = new CanvasWrapper();
+let bounds = canvas.getBoundingClientRect();
+
+let regionStart = new Vec2();
+let regionEnd = new Vec2();
+canvas.addEventListener("mousedown", function(e) {
+    console.log(e);
+    const clickLocation = new Vec2(e.offsetX, e.offsetY);
+    regionStart = clickLocation.multiplyScalar(1 / TileImage.width).floorS();
+    console.log(clickLocation.log(), regionStart.log());
+});
+canvas.addEventListener("mouseup", function(e) {
+    console.log(e);
+    const clickLocation = new Vec2(e.offsetX, e.offsetY);
+    regionEnd = clickLocation.multiplyScalar(1 / TileImage.width).floorS();
+    console.log(clickLocation.log(), regionEnd.log());
+    updateRoom(regionStart, regionEnd, grassTileMap);
+});
+
 /*
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext('2d');
@@ -268,14 +286,14 @@ ctx.font = "18px arial";
 ctx.lineWidth = 1;
 */
 
-let room = [];
-let mobs = {};
+let room = new Array();
+let mobs = new Map();
 
 let imagesToLoad = 0; //number of images in tileImages object
 class TileImage {
     static width = 16;
     static height = 16;
-    constructor(imgSrc) {
+    constructor(imgSrc, char) {
         //add one to imagesLoading
         imagesToLoad++;
         this.imgSrc = imgSrc;
@@ -284,10 +302,11 @@ class TileImage {
             this.tilesWide = this.image.width / TileImage.width;
             imagesToLoad--;
             if (imagesToLoad === 0) {
-                init();
+                drawMap();
             }
         });
         this.image.src = imgSrc;
+        this.char = char;
     }
     /**
      * 
@@ -301,7 +320,7 @@ class TileImage {
         if(around !== null) {
             const sx = parseInt(aroundToTileMap[around] % this.tilesWide) * TileImage.width;
             const sy = parseInt(aroundToTileMap[around] / this.tilesWide) * TileImage.height;
-            console.log("sx: ", sx, " sy: ", sy);
+            //console.log("sx: ", sx, " sy: ", sy);
             canvas.drawImage(this.image, x, y, sx, sy, TileImage.width, TileImage.height);
             //ctx.drawImage(this.image, x, y);
         } else {
@@ -309,9 +328,18 @@ class TileImage {
         }
     }
 }
-const grassPath = "/img/tileMaps/grassTiles.png";
+const tileMapPath = "/img/tileMaps/";
+const grassTileMap = new TileImage(tileMapPath + "grasstiles.png", "g");
+const snowTileMap = new TileImage(tileMapPath + "snowTiles.png", "s");
+const dirtTileMap = new TileImage(tileMapPath + "dirtPathTiles.png", "d");
+const waterTileMap = new TileImage(tileMapPath + "waterTiles.png", "w");
 
-const grassTileMap = new TileImage(grassPath);
+const tileImages = new Array();
+tileImages.push(grassTileMap);
+tileImages.push(snowTileMap);
+tileImages.push(dirtTileMap);
+tileImages.push(waterTileMap);
+
 
 
 class Tile {
@@ -369,7 +397,7 @@ function getTileSuffixWall(i, j, curr) {
     //convert to check if it is the wall tile (or something)
     if (around === allRound) {
         const below = getAround(i, j + 1, curr);
-        console.log("Around: ", around, " Below: ", below);
+        //console.log("Around: ", around, " Below: ", below);
         if (!(below & down)) return "TTC";
         //should be above a tile that is TL
         if (!(below & downAndRight)) return "TTL";
@@ -432,46 +460,87 @@ function getTileSuffix(i, j, curr) {
     return "C";
 }
 
+function setTile(tileCoord, tileImage) {
+    room[tileCoord.y][tileCoord.x] = "g";
+}
+
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function init() {
-    mapInit();
+async function drawMap() {
+    canvas.clear();
     height = room.length, width = room[0].length;
     for (let j = 0; j < height; j++) {
         for (let i = 0; i < width; i++) {
-            if (room[j][i] === "g") {
-                const around = getAround(i, j, room[j][i]);
-                const tile = new Tile(new Vec2(i,j), grassTileMap, false, around);
-                console.log(aroundToTileMap[around], tile);
-                tile.draw(canvas);
+            const curr = room[j][i];
+            for(const tileImage of tileImages) {
+                if (curr === tileImage.char) {
+                    const around = getAround(i, j, curr);
+                    const tile = new Tile(new Vec2(i, j), tileImage, false, around);
+                    tile.draw(canvas);
+                }
             }
             //await sleep(.01);
         }
     }
     canvas.drawGrid();
 }
+
 function mapInit() {
     //clear the room
-    room = [];
+    room = new Array();
+    room.push("ggggddddddddddddgggg");
+    room.push("ggggdgggggddddddgggg");
+    room.push("gwwwwwwwwwgddggwwwwg");
+    room.push("ggwwwwwwwwwgdgwwwwwg");
+    room.push("ggggwggwwwwgggwwwwwg");
+    room.push("ggggwgggwwwwgwwwwwwg");
+    room.push("ggggggwwwwsssswwwwwg");
+    room.push("gwwwwwwwwwsssswwwwwg");
+    room.push("gwwwwwgggggwwwggwwwg");
+    room.push("gwwwwwgggggwwwggwwwg");
+    room.push("gwwwwwgwwggggggwwwwg");
+    room.push("gwwwwwwwgggggwwwwwwg");
+    room.push("gwwwwwwwggwwwwwwwwwg");
+    room.push("gwwwwwwwwwwwwwwwwwwg");
+    room.push("gwwwgwwwwwwwwwwwwwwg");
+    room.push("gwwgggwwwwwwwwwwwwwg");
+    room.push("gwwgggwwwwwwwwwwwwwg");
+    room.push("gwgggggwwwwwwwwwwwwg");
     room.push("gggggggggggggggggggg");
-    room.push("gggggggggggggggggggg");
-    room.push("gfffffffffgggggffffg");
-    room.push("ggfffffffffgggfffffg");
-    room.push("ggggfggffffgggfffffg");
-    room.push("ggggfgggffffgffffffg");
-    room.push("ggggggfffffffffffffg");
-    room.push("gffffffffffffffffffg");
-    room.push("gfffffgggggfffggfffg");
-    room.push("gfffffgggggfffggfffg");
-    room.push("gfffffgffggggggffffg");
-    room.push("gfffffffgggggffffffg");
-    room.push("gfffffffggfffffffffg");
-    room.push("gffffffffffffffffffg");
-    room.push("gfffgffffffffffffffg");
-    room.push("gffgggfffffffffffffg");
-    room.push("gffgggfffffffffffffg");
-    room.push("gfgggggffffffffffffg");
-    room.push("gggggggggggggggggggg");
+}
+mapInit();
+
+/**
+ * Updates the room from start to end with TileImage
+ * @param {Vec2} regionStart 
+ * @param {Vec2} regionEnd 
+ * @param {TileImage} tileImage 
+ */
+function updateRoom(regionStart, regionEnd, tileImage) {
+    console.assert(regionStart instanceof Vec2, "regionStart Not Vec2", regionStart);
+    console.assert(regionEnd instanceof Vec2, "regionEnd Not Vec2", regionEnd);
+    console.log(regionStart, regionEnd);
+    let [startX, startY] = regionStart.getXY();
+    let [endX, endY] = regionEnd.getXY();
+    //if start is after end swap
+    if(startX > endX)
+        [startX, endX] = [endX, startX];
+    if(startY > endY)
+        [startY, endY] = [endY, startY];
+
+    //build replacement string
+    let newStr = "";
+    for (let i = startX; i <= endX; i++) {
+        newStr += tileImage.char;
+    }
+    for(let j = startY; j <= endY; j++) {
+        console.log("Room ", room[j]);
+        //room[j] = room[j].replace(room[j].slice(startX, endX+1), newStr);
+        room[j] = room[j].slice(0, startX) + newStr + room[j].slice(endX+1);
+        console.log("Room ", room[j]);
+    }
+    console.log(room);
+    drawMap();
 }

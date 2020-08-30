@@ -156,6 +156,10 @@ class CanvasWrapper {
 	getBoundingClientRect() {
 		return this.canvas.getBoundingClientRect();
 	}
+	addEventListener(event, func) {
+		console.log(event);
+		this.canvas.addEventListener(event, func);
+	}
 }
 
 export default CanvasWrapper;
