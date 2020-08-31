@@ -1,4 +1,4 @@
-Requirements, nodejs, and a modern web browser.
+Requirements, nodejs (>=13.2.0), and a modern web browser.
 From the project root run
 - npm install
 - npm run start
