@@ -1,2 +1,7 @@
-[ ] split gameloop into serverloop and clientloop
-[ ] refactor map to canvas wrapper for client code and map in shared
+Requirements, nodejs, and a modern web browser.
+From the project root run
+- npm install
+- npm run start
+or
+- npm run dev (for hot reloading and developting)
+- npm run test (to run Mocha tests)
