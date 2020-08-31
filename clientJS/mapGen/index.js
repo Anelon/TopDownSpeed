@@ -20,238 +20,21 @@ const rightUpLeft = right | up | left | upAndRight | upAndLeft;
 const rightDownLeft = right | down | left | downAndLeft | downAndRight;
 const allRound = up | down | left | right | downAndLeft | downAndRight | upAndRight | upAndLeft;
 
+function aroundToString(around) {
+    let retStr = "";
+    if(around & right) retStr += "right | ";
+    if(around & left) retStr += "left | ";
+    if(around & up) retStr += "up | ";
+    if(around & down) retStr += "down | ";
+    if(around & downAndRight) retStr += "downAndRight | ";
+    if(around & downAndLeft) retStr += "downAndLeft | ";
+    if(around & upAndRight) retStr += "upAndRight | ";
+    if(around & upAndLeft) retStr += "upAndLeft | ";
+    return retStr;
+}
+
 const dirs = [[1, 0, right], [-1, 0, left], [0, -1, up], [0, 1, down], [1, 1, downAndRight], [-1, 1, downAndLeft], [1, -1, upAndRight], [-1, -1, upAndLeft]];
-
-const aroundToTileMap = new Map([
-    [allRound, 0],
-    [allRound ^ downAndRight, 1],
-    [allRound ^ downAndLeft, 2],
-    [allRound ^ upAndRight, 3],
-    [allRound ^ upAndLeft, 4],
-    [allRound ^ (downAndLeft | downAndRight), 5],
-    [allRound ^ (upAndLeft | downAndRight), 6],
-    [allRound ^ (upAndRight | downAndRight), 7],
-    [allRound ^ (downAndLeft | upAndLeft), 8],
-    [allRound ^ (downAndLeft | upAndRight), 9],
-    [allRound ^ (upAndLeft | upAndRight), 10],
-    [allRound ^ (downAndLeft | upAndRight | downAndRight), 11],
-    [allRound ^ (downAndLeft | upAndLeft | downAndRight), 12],
-    [allRound ^ (downAndLeft | upAndLeft | upAndRight), 13],
-    [allRound ^ (downAndRight | upAndLeft | upAndRight), 14],
-    [allRound ^ (downAndLeft | downAndRight | upAndLeft | upAndRight), 15],
-
-    [allRound ^ (right | downAndRight | upAndRight), 16],
-    [allRound ^ (right | upAndRight), 16],
-    [allRound ^ (right | downAndRight), 16],
-    [allRound ^ (right), 16],
-
-    [allRound ^ (down | downAndLeft | downAndRight), 17],
-    [allRound ^ (down | downAndLeft), 17],
-    [allRound ^ (down | downAndRight), 17],
-    [allRound ^ (down), 17],
-
-    [allRound ^ (left | upAndLeft | downAndLeft), 18],
-    [allRound ^ (left | downAndLeft), 18],
-    [allRound ^ (left | upAndLeft), 18],
-    [allRound ^ (left), 18],
-
-    [allRound ^ (up | upAndLeft | upAndRight), 19],
-    [allRound ^ (up | upAndRight), 19],
-    [allRound ^ (up | upAndLeft), 19],
-    [allRound ^ (up), 19],
-
-    [allRound ^ (downAndLeft | downAndRight | right | upAndRight), 20],
-    [allRound ^ (downAndLeft | right | upAndRight), 20],
-    [allRound ^ (downAndLeft | downAndRight | right), 20],
-    [allRound ^ (downAndLeft | right), 20],
-
-    [allRound ^ (upAndLeft | downAndRight | right | upAndRight), 21],
-    [allRound ^ (upAndLeft | right | upAndRight), 21],
-    [allRound ^ (upAndLeft | downAndRight | right), 21],
-    [allRound ^ (upAndLeft | right), 21],
-
-    [allRound ^ (downAndLeft | upAndLeft | downAndRight | right | upAndRight), 22],
-    [allRound ^ (downAndLeft | upAndLeft | downAndRight | right), 22],
-    [allRound ^ (downAndLeft | upAndLeft | right | upAndRight), 22],
-    [allRound ^ (downAndLeft | upAndLeft | right), 22],
-
-    [allRound ^ (upAndLeft | downAndLeft | downAndRight | down), 23],
-    [allRound ^ (upAndLeft | downAndRight | down), 23],
-    [allRound ^ (upAndLeft | downAndLeft | down), 23],
-    [allRound ^ (upAndLeft | down), 23],
-
-    [allRound ^ (upAndRight | downAndLeft | downAndRight | down), 24],
-    [allRound ^ (upAndRight | downAndRight | down), 24],
-    [allRound ^ (upAndRight | downAndLeft | down), 24],
-    [allRound ^ (upAndRight | down), 24],
-
-    [allRound ^ (upAndLeft | upAndRight | downAndLeft | downAndRight | down), 25],
-    [allRound ^ (upAndLeft | upAndRight | downAndRight | down), 25],
-    [allRound ^ (upAndLeft | upAndRight | downAndLeft | down), 25],
-    [allRound ^ (upAndLeft | upAndRight | down), 25],
-
-    [allRound ^ (downAndRight | downAndLeft | upAndLeft | left), 26],
-    [allRound ^ (downAndRight | upAndLeft | left), 26],
-    [allRound ^ (downAndRight | downAndLeft | left), 26],
-    [allRound ^ (downAndRight | left), 26],
-
-    [allRound ^ (upAndRight | upAndLeft | downAndLeft | left), 27],
-    [allRound ^ (upAndRight | downAndLeft | left), 27],
-    [allRound ^ (upAndRight | upAndLeft | left), 27],
-    [allRound ^ (upAndRight | left), 27],
-
-    [allRound ^ (downAndRight | upAndRight | downAndLeft | upAndLeft | left), 28],
-    [allRound ^ (downAndRight | upAndRight | upAndLeft | left), 28],
-    [allRound ^ (downAndRight | upAndRight | downAndLeft | left), 28],
-    [allRound ^ (downAndRight | upAndRight | left), 28],
-
-    [allRound ^ (downAndLeft | upAndRight | upAndLeft | up), 29],
-    [allRound ^ (downAndLeft | upAndLeft | up), 29],
-    [allRound ^ (downAndLeft | upAndRight | up), 29],
-    [allRound ^ (downAndLeft | up), 29],
-
-    [allRound ^ (downAndRight | upAndRight | upAndLeft | up), 30],
-    [allRound ^ (downAndRight | upAndLeft | up), 30],
-    [allRound ^ (downAndRight | upAndRight | up), 30],
-    [allRound ^ (downAndRight | up), 30],
-
-    [allRound ^ (downAndRight | downAndLeft | upAndRight | upAndLeft | up), 31],
-    [allRound ^ (downAndRight | downAndLeft | upAndLeft | up), 31],
-    [allRound ^ (downAndRight | downAndLeft | upAndRight | up), 31],
-    [allRound ^ (downAndRight | downAndLeft | up), 31],
-
-    [up | upAndRight | upAndLeft | down | downAndRight | downAndLeft, 32],
-    [up | upAndRight | upAndLeft | down | downAndLeft, 32],
-    [up | upAndRight | upAndLeft | down | downAndRight, 32],
-    [up | upAndRight | upAndLeft | down , 32],
-    [up | upAndLeft | down | downAndRight | downAndLeft, 32],
-    [up | upAndLeft | down | downAndRight, 32],
-    [up | upAndLeft | down | downAndLeft, 32],
-    [up | upAndLeft | down, 32],
-    [up | upAndRight | down | downAndRight | downAndLeft, 32],
-    [up | upAndRight | down | downAndRight, 32],
-    [up | upAndRight | down | downAndLeft, 32],
-    [up | upAndRight | down, 32],
-    [up | down | downAndRight | downAndLeft, 32],
-    [up | down | downAndRight, 32],
-    [up | down | downAndLeft, 32],
-    [up | down, 32],
-
-    [right | upAndRight | downAndRight | left | upAndLeft | downAndLeft, 33],
-    [right | upAndRight | downAndRight | left | downAndLeft, 33],
-    [right | upAndRight | downAndRight | left | upAndLeft, 33],
-    [right | upAndRight | downAndRight | left, 33],
-    [right | downAndRight | left | upAndLeft | downAndLeft, 33],
-    [right | downAndRight | left | downAndLeft, 33],
-    [right | downAndRight | left | upAndLeft, 33],
-    [right | downAndRight | left, 33],
-    [right | upAndRight | left | upAndLeft | downAndLeft, 33],
-    [right | upAndRight | left | downAndLeft, 33],
-    [right | upAndRight | left | upAndLeft, 33],
-    [right | upAndRight | left, 33],
-    [right | left | upAndLeft | downAndLeft, 33],
-    [right | left | downAndLeft, 33],
-    [right | left | upAndLeft, 33],
-    [right | left, 33],
-
-    [left | downAndLeft | upAndLeft | up | upAndRight | upAndLeft, 34],
-    [left | downAndLeft | upAndLeft | up | upAndRight, 34],
-    [left | downAndLeft | upAndLeft | up | upAndLeft, 34],
-    [left | downAndLeft | upAndLeft | up, 34],
-    [left | downAndLeft | up | upAndRight | upAndLeft, 34],
-    [left | downAndLeft | up | upAndLeft, 34],
-    [left | upAndLeft | up | upAndRight | upAndLeft, 34],
-    [left | upAndLeft | up | upAndRight, 34],
-    [left | upAndLeft | up | upAndLeft, 34],
-    [left | upAndLeft | up, 34],
-    [left | up | upAndRight | upAndLeft, 34],
-    [left | up | upAndLeft, 34],
-
-    [left | downAndLeft | up | upAndRight, 38],
-    [left | downAndLeft | up, 38],
-    [left | up | upAndRight, 38],
-    [left | up, 38],
-
-    [right | downAndRight | upAndRight | up | upAndRight | upAndLeft, 35],
-    [right | downAndRight | upAndRight | up | upAndRight, 35],
-    [right | downAndRight | upAndRight | up | upAndLeft, 35],
-    [right | downAndRight | upAndRight | up, 35],
-    [right | downAndRight | up | upAndRight | upAndLeft, 35],
-    [right | downAndRight | up | upAndRight, 35],
-    [right | upAndRight | up | upAndRight | upAndLeft, 35],
-    [right | upAndRight | up | upAndRight, 35],
-    [right | upAndRight | up | upAndLeft, 35],
-    [right | upAndRight | up, 35],
-    [right | up | upAndRight | upAndLeft, 35],
-    [right | up | upAndRight, 35],
-
-    [right | downAndRight | up | upAndLeft, 39],
-    [right | downAndRight | up, 39],
-    [right | up | upAndLeft, 39],
-    [right | up, 39],
-
-    [right | upAndRight | downAndRight | down | downAndRight | downAndLeft, 36],
-    [right | upAndRight | downAndRight | down | downAndRight, 36],
-    [right | upAndRight | downAndRight | down | downAndLeft, 36],
-    [right | upAndRight | downAndRight | down, 36],
-    [right | downAndRight | down | downAndRight | downAndLeft, 36],
-    [right | downAndRight | down | downAndRight, 36],
-    [right | downAndRight | down | downAndLeft, 36],
-    [right | downAndRight | down, 36],
-    [right | upAndRight | down | downAndRight | downAndLeft, 36],
-    [right | upAndRight | down | downAndRight, 36],
-    [right | down | downAndRight | downAndLeft, 36],
-    [right | down | downAndRight, 36],
-
-    [right | upAndRight | down | downAndLeft, 40],
-    [right | upAndRight | down, 40],
-    [right | down | downAndLeft, 40],
-    [right | down, 40],
-
-    [left | downAndLeft | upAndLeft | down | downAndRight | downAndLeft, 37],
-    [left | downAndLeft | upAndLeft | down | downAndRight, 37],
-    [left | downAndLeft | upAndLeft | down | downAndLeft, 37],
-    [left | downAndLeft | upAndLeft | down, 37],
-    [left | downAndLeft | down | downAndRight | downAndLeft, 37],
-    [left | downAndLeft | down | downAndRight, 37],
-    [left | downAndLeft | down | downAndLeft, 37],
-    [left | downAndLeft | down, 37],
-    [left | upAndLeft | down | downAndRight | downAndLeft, 37],
-    [left | upAndLeft | down | downAndLeft, 37],
-    [left | down | downAndRight | downAndLeft, 37],
-    [left | down | downAndLeft, 37],
-
-    [left | upAndLeft | down | downAndRight, 41],
-    [left | down | downAndRight, 41],
-    [left | upAndLeft | down, 41],
-    [left | down, 41],
-
-    [left | upAndLeft | downAndLeft, 42],
-    [left | downAndLeft, 42],
-    [left | upAndLeft, 42],
-    [left, 42],
-
-    [up | upAndLeft | upAndRight, 43],
-    [up | upAndRight, 43],
-    [up | upAndLeft, 43],
-    [up, 43],
-
-    [right | upAndRight | downAndRight, 44],
-    [right | downAndRight, 44],
-    [right | upAndRight, 44],
-    [right, 44],
-
-    [down | downAndLeft | downAndRight, 45],
-    [down | downAndRight, 45],
-    [down | downAndLeft, 45],
-    [down, 45],
-
-    [0, 46],
-    ["Not sure just a short top edge", 47],
-]);
-Object.freeze(aroundToTileMap);
 Object.freeze(dirs);
-//console.log(aroundToTileMap);
 
 //Globals
 let width = 0;
@@ -263,16 +46,16 @@ let bounds = canvas.getBoundingClientRect();
 let regionStart = new Vec2();
 let regionEnd = new Vec2();
 canvas.addEventListener("mousedown", function(e) {
-    console.log(e);
+    //console.log(e);
     const clickLocation = new Vec2(e.offsetX, e.offsetY);
     regionStart = clickLocation.multiplyScalar(1 / TileImage.width).floorS();
-    console.log(clickLocation.log(), regionStart.log());
+    //console.log(clickLocation.log(), regionStart.log());
 });
 canvas.addEventListener("mouseup", function(e) {
-    console.log(e);
+    //console.log(e);
     const clickLocation = new Vec2(e.offsetX, e.offsetY);
     regionEnd = clickLocation.multiplyScalar(1 / TileImage.width).floorS();
-    console.log(clickLocation.log(), regionEnd.log());
+    //console.log(clickLocation.log(), regionEnd.log());
     updateRoom(regionStart, regionEnd, grassTileMap);
 });
 
@@ -293,7 +76,7 @@ let imagesToLoad = 0; //number of images in tileImages object
 class TileImage {
     static width = 16;
     static height = 16;
-    constructor(imgSrc, char) {
+    constructor(imgSrc, char, connects = [char]) {
         //add one to imagesLoading
         imagesToLoad++;
         this.imgSrc = imgSrc;
@@ -307,6 +90,7 @@ class TileImage {
         });
         this.image.src = imgSrc;
         this.char = char;
+        this.connects = connects;
     }
     /**
      * 
@@ -320,10 +104,15 @@ class TileImage {
         if(around !== null) {
             let sx = 0, sy = 0;
             //if it doesn't contain around I probably did something wrong but default to the first tile in the map
-            if(aroundToTileMap.has(around)) {
-                sx = parseInt(aroundToTileMap.get(around) % this.tilesWide) * TileImage.width;
-                sy = parseInt(aroundToTileMap.get(around) / this.tilesWide) * TileImage.height;
-            } else console.log(location.log(), "tile not found ", around.toString(2));
+            let index = aroundToIndex(around);
+            if (index !== -1) {
+                sx = parseInt(index % this.tilesWide) * TileImage.width;
+                sy = parseInt(index / this.tilesWide) * TileImage.height;
+            } else {
+                console.log(location.log(), "tile not found ", around.toString(2));
+                let aroundStr = aroundToString(around);
+                console.log(aroundStr);
+            }
             //console.log("sx: ", sx, " sy: ", sy);
             canvas.drawImage(this.image, x, y, sx, sy, TileImage.width, TileImage.height);
             //ctx.drawImage(this.image, x, y);
@@ -333,7 +122,7 @@ class TileImage {
     }
 }
 const tileMapPath = "/img/tileMaps/";
-const grassTileMap = new TileImage(tileMapPath + "grasstiles.png", "g");
+const grassTileMap = new TileImage(tileMapPath + "grasstiles.png", "g", ["g","d"]);
 const snowTileMap = new TileImage(tileMapPath + "snowTiles.png", "s");
 const dirtTileMap = new TileImage(tileMapPath + "dirtPathTiles.png", "d");
 const waterTileMap = new TileImage(tileMapPath + "waterTiles.png", "w");
@@ -375,6 +164,7 @@ class Tile {
  * Gets where each tile is around the current tile
  * @param {number} i X location of Tile
  * @param {number} j Y location of Tile
+ * @param {Array} curr Array of tiles that can connect to
  */
 function getAround(i, j, curr) {
     //console.log("getting Around");
@@ -388,16 +178,101 @@ function getAround(i, j, curr) {
             around = around | dir[2];
             continue;
         }
-        if (curr == room[newJ][newI]) {
+        if (curr.includes(room[newJ][newI])) {
             around = around | dir[2];
         }
     }
     return around;
 }
+function aroundToIndex(around) {
+    //console.log(around.toString(2), ((~around >>> 0)).toString(2));
+    //console.log(~around === (~around >>> 0)); //stupid!!!
+    //need unsigned bitwise not of around
+    let nAround = (~around >>> 0);
+    if(around === allRound) return 0;
+    if(around === (allRound ^ downAndRight)) return 1;
+    if(around === (allRound ^ downAndLeft)) return 2;
+    if(around === (allRound ^ upAndRight)) return 3;
+    if(around === (allRound ^ upAndLeft)) return 4;
+    if(around === (allRound ^ (downAndLeft | downAndRight))) return 5;
+    if(around === (allRound ^ (upAndLeft | downAndRight))) return 6;
+    if(around === (allRound ^ (upAndRight | downAndRight))) return 7;
+    if(around === (allRound ^ (downAndLeft | upAndLeft))) return 8;
+    if(around === (allRound ^ (downAndLeft | upAndRight))) return 9;
+    if(around === (allRound ^ (upAndLeft | upAndRight))) return 10;
+    if(around === (allRound ^ (downAndLeft | upAndRight | downAndRight))) return 11;
+    if(around === (allRound ^ (downAndLeft | upAndLeft | downAndRight))) return 12;
+    if(around === (allRound ^ (downAndLeft | upAndLeft | upAndRight))) return 13;
+    if(around === (allRound ^ (downAndRight | upAndLeft | upAndRight))) return 14;
+    if(around === (allRound ^ (downAndLeft | downAndRight | upAndLeft | upAndRight))) return 15;
+    //edges
+    if(nAround & up) {
+        if (nAround & down) {
+            if (nAround & left) {
+                if (nAround & right) {
+                    return 46;
+                }
+                return 44;
+            }
+            if(nAround & right) {
+                return 42;
+            }
+            return 33;
+        }
+        if(nAround & right) {
+            if(nAround & left) {
+                return 45;
+            }
+            if(nAround & downAndLeft) return 41;
+            return 37;
+        }
+        if(nAround & left) {
+            if(nAround & downAndRight) return 40;
+            return 36;
+        }
+        if(nAround & downAndRight && nAround & downAndLeft) return 31;
+        if(nAround & downAndRight) return 30;
+        if(nAround & downAndLeft) return 29;
+        return 19;
+    }
+    if(nAround & down) {
+        if(nAround & right) {
+            if(nAround & left) {
+                return 43;
+            }
+            if(nAround & upAndLeft) return 38;
+            return 34;
+        }
+        if(nAround & left) {
+            if(nAround & upAndRight) return 39;
+            return 35;
+        }
+        if(nAround & upAndRight && nAround & upAndLeft) return 25;
+        if(nAround & upAndRight) return 24;
+        if(nAround & upAndLeft) return 23;
+        return 17;
+    }
+    if(nAround & left) {
+        if (nAround & right) {
+            return 32;
+        }
+        if(nAround & upAndRight && nAround & downAndRight) return 28;
+        if(nAround & downAndRight) return 26;
+        if(nAround & upAndRight) return 27;
+        return 18;
+    }
+    if(nAround & right) {
+        if(nAround & downAndLeft && nAround & upAndLeft) return 22;
+        if(nAround & downAndLeft) return 20;
+        if(nAround & upAndLeft) return 21;
+        return 16;
+    }
+    //default case if something doesn't get found (should never get here)
+	return -1;
+}
 function getTileSuffixWall(i, j, curr) {
     const around = getAround(i, j, curr);
     //see if statements in getImg from mapGen.py
-    //if self.desc == "fence":
     //convert to check if it is the wall tile (or something)
     if (around === allRound) {
         const below = getAround(i, j + 1, curr);
@@ -480,7 +355,7 @@ async function drawMap() {
             const curr = room[j][i];
             for(const tileImage of tileImages) {
                 if (curr === tileImage.char) {
-                    const around = getAround(i, j, curr);
+                    const around = getAround(i, j, tileImage.connects);
                     const tile = new Tile(new Vec2(i, j), tileImage, false, around);
                     tile.draw(canvas);
                 }
@@ -540,11 +415,7 @@ function updateRoom(regionStart, regionEnd, tileImage) {
         newStr += tileImage.char;
     }
     for(let j = startY; j <= endY; j++) {
-        console.log("Room ", room[j]);
-        //room[j] = room[j].replace(room[j].slice(startX, endX+1), newStr);
         room[j] = room[j].slice(0, startX) + newStr + room[j].slice(endX+1);
-        console.log("Room ", room[j]);
     }
-    console.log(room);
     drawMap();
 }
