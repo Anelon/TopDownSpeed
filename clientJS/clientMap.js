@@ -1,3 +1,4 @@
+//DEPRICTATED NO LONGER BEING USED
 //this will probably change a lot when we make an actual map
 import Vec2 from "./vec2.js";
 import QuadTree from "./quadTree.js";
@@ -77,4 +78,4 @@ class Map {
 	}
 }
 
-export default Map;
+//export default Map;

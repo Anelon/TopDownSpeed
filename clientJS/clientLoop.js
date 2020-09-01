@@ -11,7 +11,7 @@ import Projectile from "../sharedJS/projectile.js";
 //setup the sockets and listening
 let socket = io();
 
-//figure out resizing
+//TODO figure out resizing
 //https://stackoverflow.com/questions/1664785/resize-html5-canvas-to-fit-window
 
 //global defaults
@@ -47,6 +47,7 @@ socket.on(CHANNELS.newPlayer, function(playerInfo) {
     let speed = playerInfoJson.speed;
     //make new player
     you = new PlayerController(location, name, imgSrc, speed, bounds, socket);
+    you.id = playerInfoJson.id;
     if (!playerExists) {
         map.addPlayer(you);
     } else {
@@ -57,6 +58,7 @@ socket.on(CHANNELS.newPlayer, function(playerInfo) {
 });
 socket.on(CHANNELS.newProjectile, function(newProjectile) {
     const updated = JSON.parse(newProjectile.json);
+    console.log("From Server", updated);
     map.addProjectile(Projectile.makeFromJSON(updated), false);
 });
 

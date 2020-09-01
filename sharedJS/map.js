@@ -3,6 +3,7 @@ import Vec2 from "./vec2.js";
 import QuadTree from "./quadTree.js";
 import { Rectangle } from "./shapes.js";
 import Projectile from "./projectile.js";
+import Player from "./player.js";
 //import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 
 
@@ -39,6 +40,23 @@ class GameMap {
      */
     removePlayer(oldPlayer) {
         this.players.delete(oldPlayer.id);
+    }
+
+    updatePlayer(playerJSON) {
+        const player = this.players.get(playerJSON.id);
+        //this should not happen in production hopefully
+        console.assert(player instanceof Player, "Player not found", playerJSON.id);
+        if(player instanceof Player) {
+            player.updateInfo(playerJSON);
+        } else {
+            //handle if the server reloads but the client doesn't (could just reset the client but this seems better for development)
+            const {
+                location, name, imgSrc, speed, maxHealth
+            } = playerJSON;
+            let newPlayer = new Player(new Vec2(location.x, location.y), name, imgSrc, speed, maxHealth);
+            newPlayer.id = playerJSON.id;
+            this.addPlayer(newPlayer);
+        }
     }
 
     /**

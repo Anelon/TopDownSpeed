@@ -20,7 +20,6 @@ app.set("ip", process.env.IP || "localhost");
 app.use(express.static("public"));
 ejsLint("index");
 
-
 //Paths
 app.get("/", function(req, res) {
     res.render("index");

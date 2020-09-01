@@ -34,8 +34,9 @@ class Connections {
             });
 
             client.on(CHANNELS.playerMove, (playerInfo) => {
-                //console.log("PlayerMove: ", playerInfo);
+                console.log("PlayerMove: ", playerInfo);
                 let updated = JSON.parse(playerInfo.json);
+                this.map.updatePlayer(updated);
                 //TODO: add validation of move here
                 //broadcast the message (add client to prevent echoing)
                 this.broadcast(CHANNELS.playerMove, playerInfo);
@@ -48,7 +49,8 @@ class Connections {
                 //console.log(this.map);
                 //TODO: add validation of move here
                 //broadcast the message (add client to prevent echoing)
-                this.broadcast(CHANNELS.newProjectile, newProjectile /*, client*/);
+                this.broadcast(CHANNELS.newProjectile, newProjectile, client);
+
             });
         });
     }

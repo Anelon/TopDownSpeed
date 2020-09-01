@@ -29,23 +29,6 @@ class Entity {
         //mostly for debugging now
         this.overlapping = false;
     }
-
-    /**
-     * Given a JSON object it updates the entity
-     * @param {JSON} infoJSON Contains what needs to be updated
-     */
-    updateInfo(infoJSON) {
-        if(infoJSON.id) this.id = infoJSON.id;
-        if(infoJSON.location) {
-            this.location = new Vec2(infoJSON.location.x, infoJSON.location.y);
-        }
-        if(infoJSON.lookDirection) {
-            this.lookDirection = new Vec2(infoJSON.lookDirection.x, infoJSON.lookDirection.y);
-        }
-        if(infoJSON.speed) {
-            this.speed = infoJSON.speed;
-        }
-    }
     get x() {
         return this.location.x;
     }
@@ -99,15 +82,24 @@ class Entity {
 
         let dist = this.speed * dt;
         this.location.addS(direction.getUnit().multiplyScalar(dist));
-        /*
-        //handle this with collision detection
-        if(this.location.x < 0 || this.location.x >= map.canvas.width) {
-            this.location.x = oldLocation.x;
+    }
+
+    /**
+     * Given a JSON object it updates the entity
+     * @param {JSON} infoJSON Contains what needs to be updated
+     */
+    updateInfo(infoJSON) {
+        if(infoJSON.id) this.id = infoJSON.id;
+        if(infoJSON.location) {
+            this.location = new Vec2(infoJSON.location.x, infoJSON.location.y);
         }
-        if(this.location.y < 0 || this.location.y >= map.canvas.height) {
-            this.location.y = oldLocation.y;
+        if(infoJSON.lookDirection) {
+            this.lookDirection = new Vec2(infoJSON.lookDirection.x, infoJSON.lookDirection.y);
         }
-        */
+        if(infoJSON.speed) {
+            this.speed = infoJSON.speed;
+        }
+        return this;
     }
     //placeholder for the colision to call when hit
     //might want to return a bool saying if this should be deleted from the hit
