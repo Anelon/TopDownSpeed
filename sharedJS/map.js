@@ -4,6 +4,7 @@ import QuadTree from "./quadTree.js";
 import { Rectangle } from "./shapes.js";
 import Projectile from "./projectile.js";
 import Player from "./player.js";
+import CanvasWrapper from "../clientJS/canvasWrapper.js";
 //import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 
 
@@ -45,7 +46,7 @@ class GameMap {
     updatePlayer(playerJSON) {
         const player = this.players.get(playerJSON.id);
         //this should not happen in production hopefully
-        console.assert(player instanceof Player, "Player not found", playerJSON.id);
+        //console.assert(player instanceof Player, "Player not found", playerJSON.id);
         if(player instanceof Player) {
             player.updateInfo(playerJSON);
         } else {
@@ -78,8 +79,10 @@ class GameMap {
     /**
      * Updates all player's and projectiles based on the changed time and checks for colisions
      * @param {Time} time 
+     * @param {number} step The tick time
+     * @param {CanvasWrapper} [canvas=null] Will be passed on clientside code
      */
-    update(time, step) {
+    update(time, step, canvas = null) {
         //reset quadTree, might change to updating locations of each item later if we end up with too many static items
         this.collisionTree = new QuadTree(this.boundry, this.qTreeCapacity);
 
@@ -95,6 +98,9 @@ class GameMap {
             if(!added) {
                 console.log("deleted", projectile);
                 this.projectiles.delete(projectile.id);
+                if(canvas !== null) {
+                    canvas.removeDrawable(projectile);
+                }
             }
             projectile.overlapping = false;
         }

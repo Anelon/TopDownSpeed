@@ -70,7 +70,7 @@ function update(time, step) {
     //TODO move to serverside 
     //change to send and receive information
     you.update(time, step, map, canvas, socket);
-    map.update(time, step);
+    map.update(time, step, canvas);
 }
 
 const step = 1/30; // 30 tics per second

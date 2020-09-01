@@ -26,7 +26,7 @@ class CanvasWrapper {
 
 		this.tileSize = tileSize;
 		//TODO: refactor to map
-		this.drawables = [];
+		this.drawables = new Map();
 	}
 	get width() {
 		return this.canvas.width;
@@ -34,11 +34,27 @@ class CanvasWrapper {
 	get height() {
 		return this.canvas.height;
 	}
+	/**
+	 * Adds a drawable to drawables
+	 * @param {Drawable|Entity} drawable 
+	 */
 	addDrawable(drawable) {
 		if(drawable instanceof Drawable) {
-			this.drawables.push(drawable);
+			this.drawables.set(drawable.owner.id, drawable);
+			//this.drawables.push(drawable);
 		} else {
-			this.drawables.push(new Drawable(drawable));
+			this.drawables.set(drawable.id, new Drawable(drawable));
+		}
+	}
+	/**
+	 * Deletes a drawable from drawables
+	 * @param {Drawable|Entity} drawable 
+	 */
+	removeDrawable(drawable) {
+		if(drawable instanceof Drawable) {
+			this.drawables.delete(drawable.owner.id);
+		} else {
+			this.drawables.delete(drawable.id);
 		}
 	}
 	//basic clear the canvas
@@ -46,7 +62,7 @@ class CanvasWrapper {
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 	}
 	render(skip) {
-		for (let draw of this.drawables) {
+		for (let draw of this.drawables.values()) {
 			if (draw.owner !== skip)
 				draw.draw(this);
 		}
