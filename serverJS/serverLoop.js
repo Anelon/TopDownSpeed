@@ -1,25 +1,36 @@
-import Time from "../sharedJS/time.mjs";
-import Connections from "./connections.mjs";
+import Time from "../serverJS/serverTime.js";
+import Connections from "./connections.js";
+import { performance } from "perf_hooks";
+import GameMap from "../sharedJS/map.js";
+//import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 
-//basic time object to pass to funcitons
-const time = new Time();
-const connections = new Connections();
-
-function update(time) {
-    //update all projectiles
-
-    //check if anyone is ready to think
-
-}
-
-
-function tick() {
-    time.update();
-    while (time.dt > time.tickRate) {
-        time.dt = time.dt - time.tickRate;
-        update(time);
+class ServerLoop {
+    constructor(server) {
+        //basic time object to pass to funcitons
+        this.time = new Time();
+        this.map = new GameMap(2000, 5000);
+        this.connections = new Connections(server, this.map).start();
     }
-    sendToClients(time);
-}
 
-setImmediate()
+    update(time) {
+        //update all projectiles
+        this.map.update(time, time.tickRate);
+        //check if anyone is ready to think
+
+    }
+
+    tick() {
+        this.time.update();
+        while (this.time.dt > this.time.tickRate) {
+            this.time.dt = this.time.dt - this.time.tickRate;
+            this.update(this.time);
+        }
+        //sendToClients(this.time);
+        setImmediate(this.tick.bind(this));
+    }
+
+    start() {
+        setImmediate(this.tick.bind(this));
+    }
+}
+export default ServerLoop;

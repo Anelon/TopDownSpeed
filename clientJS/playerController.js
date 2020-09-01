@@ -1,35 +1,35 @@
-import Vec2 from "./vec2.mjs";
-import { Moveable } from "../../sharedJS/entity.mjs";
-import Projectile from "./projectile.mjs";
-import Ability from "../../sharedJS/ability.mjs";
-
-//class for holding the other players and as a parent to PlayerController
-class Player extends Moveable {
-    constructor(location, name, imgSrc, speed) {
-        super(location, imgSrc, speed);
-    }
-    update(now, dt) {
-        //TODO figure out how to move other players (probably just set their x and y)
-    }
-}
+import Vec2 from "../sharedJS/vec2.js";
+import Entity from "../sharedJS/entity.js";
+import { Circle } from "../sharedJS/shapes.js";
+import Ability from "../sharedJS/ability.js";
+import CHANNELS from "../sharedJS/channels.js";
 
 //class for handling the current player
-class PlayerController extends Player {
+class PlayerController extends Entity {
     constructor(location, name, imgSrc, speed, bounds) {
-        super(location, name, imgSrc, speed);
+        //create hitbox
+        let image = new Image();
+        image.src = imgSrc;
+        let hitbox = new Circle(location, image.width/2);
+        super(location, imgSrc, hitbox, speed);
+        this.name = name;
+        this.image = image;
 
+        //create default abilities
         this.abilities = {
-            [LEFT_STR]: new Ability("Melee",imgSrc, 100, 100, 100),
-            [RIGHT_STR]: new Ability("Arrow",imgSrc, 200, 100, 200),
+            [keyBinds.MELEE]: new Ability("Melee",imgSrc, 100, 100, 100),
+            [keyBinds.RANGE]: new Ability("Arrow",imgSrc, 200, 100, 200),
         };
+        //set up mouse object
         this.mouse = {
             x: null,
             y: null,
             changed: false,
             changeCount: 0,
         };
-        //bind the mouse event to the document to control player aiming
         this.bounds = bounds;
+
+        //bind the mouse event to the document to control player aiming
         document.addEventListener("mousemove", this.mouseEvent.bind(this));
     }
     //gets a Vec2 that is the look direction and updates lookDirection
@@ -37,8 +37,9 @@ class PlayerController extends Player {
         this.lookDirection = new Vec2(this.mouse.x, this.mouse.y).subS(this.location);
         return this.lookDirection;
     }
-    update(now, dt, map) {
+    update(time, step, map, canvas, socket) {
         this.moved = false;
+        //console.log(step);
         let direction = new Vec2();
         //check all of the different movement keybindings
         if(keyPress[keyBinds.UP]) {
@@ -54,42 +55,47 @@ class PlayerController extends Player {
             direction.x += 1;
         }
         if(direction.x || direction.y) {
-            this.move(dt, direction, map);
+            this.move(step, direction, map);
             this.moved = true;
-            //this.location.addS(direction.makeUnit());
         }
 
         //abilities
-        if(keyPress[LEFT_STR]) {
+        if(keyPress[keyBinds.MELEE]) {
 
         }
-        if(keyPress[RIGHT_STR]) {
-            let arrow = this.abilities[RIGHT_STR].use(now, map, this.location, this.look);
+        if(keyPress[keyBinds.RANGE]) {
+            //attempt to use the ability
+            let arrow = this.abilities[keyBinds.RANGE].use(time.now, this.location, this.look);
+            //if the ability was successful
             if (arrow) {
-                map.projectiles.push(arrow);
+                //add projectile to the map
+                console.log(arrow.location.log());
+                map.addProjectile(arrow);
+                canvas.addDrawable(arrow);
+                socket.emit(CHANNELS.newProjectile, arrow.makeObject());
             } else {
                 console.log("On CoolDown");
             }
         }
     }
-    draw(map) {
+    updateInfo(newInfo) {
+        console.log(newInfo);
+        console.log(this.location);
+        this.location.x = newInfo.location.x;
+        this.location.y = newInfo.location.y;
+    }
+    draw(canvas) {
         this.mouse.changed = false; // flag that the mouse coords have been rendered
         // get mouse canvas coordinate correcting for page scroll
-        let location = new Vec2(this.mouse.x, this.mouse.y);
-        map.drawImageLookat(this.image, this.location, this.look);
+        let target = new Vec2(this.mouse.x, this.mouse.y);
+        canvas.drawImageLookat(this.image, this.location, this.look);
         // Draw mouse at its canvas position
-        map.drawCrossHair(location, "black");
+        canvas.drawCrossHair(target, "black");
         // draw mouse event client coordinates on canvas
-        map.drawCrossHair(new Vec2(this.mouse.cx,this.mouse.cy),"rgba(255,100,100,0.2)");
+        //canvas.drawCrossHair(new Vec2(this.mouse.cx,this.mouse.cy),"rgba(255,100,100,0.2)");
 
         // draw line from you center to mouse to check alignment is perfect
-        map.ctx.strokeStyle = "black";
-        map.ctx.beginPath();
-        map.ctx.globalAlpha = 0.2;
-        map.ctx.moveTo(this.x, this.y);
-        map.ctx.lineTo(location.x, location.y);
-        map.ctx.stroke();
-        map.ctx.globalAlpha = 1;
+        canvas.drawLine(this.location, target, "black", 0.2);
     }
     mouseEvent(e) {  // get the mouse coordinates relative to the canvas top left
         //let bounds = map.canvas.getBoundingClientRect();
@@ -101,4 +107,5 @@ class PlayerController extends Player {
         this.mouse.changeCount += 1;
     }
 }
-export { Player, PlayerController };
+
+export default PlayerController;

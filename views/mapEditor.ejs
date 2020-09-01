@@ -1,0 +1,19 @@
+<% include('partials/header.ejs') %>
+<link href="https://fonts.googleapis.com/css?family=Exo+2%7CLobster&display=swap" rel="stylesheet">
+<link href="./css/game.css" rel="stylesheet">
+<link href="./css/mapEditor.css" rel="stylesheet">
+
+<canvas id="game" style="cursor: default;"></canvas>
+
+<div class="tileSelect" id="tileSelect">
+    <h2>Select a Tile</h2>
+    <ul class="selectList">
+        <li><a href="#">Grass</a></li>
+        <li><a href="#">Path</a></li>
+        <li><a href="#">Snow</a></li>
+    </ul>
+</div>
+
+<script asyc type="module" src="js/clientJS/mapGen/index.js"></script>
+
+<% include('partials/footer.ejs') %>

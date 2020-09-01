@@ -1,4 +1,4 @@
-import Projectile from "./projectile.mjs";
+import Projectile from "./projectile.js";
 
 class Ability {
     constructor(abilityName, abilityImgSrc, speed, range, cooldownTime) {
@@ -10,11 +10,11 @@ class Ability {
         this.range = range;
     }
     //now is the current time
-    use(now, map, origin, look) {
-        console.log(now, this.nextAvailable);
+    use(now, origin, look) {
         if(now >= this.nextAvailable) {
             //make projectile
             let abilityProjectile = new Projectile(origin.clone(), this.abilityName, this.abilityImgSrc, this.speed, look.clone(), this.range);
+            //console.log("Spawned: ", abilityProjectile);
 
             //set the cooldown
             this.nextAvailable = now + this.cooldownTime;
