@@ -37,10 +37,14 @@ class GameMap {
 
     /**
      * Removes player from player Map
-     * @param {Player} oldPlayer 
+     * @param {Player|string} oldPlayer A player object or playerID
      */
     removePlayer(oldPlayer) {
-        this.players.delete(oldPlayer.id);
+        if(oldPlayer instanceof Player) {
+            this.players.delete(oldPlayer.id);
+        } else {
+            this.players.delete(oldPlayer);
+        }
     }
 
     updatePlayer(playerJSON) {
@@ -49,6 +53,7 @@ class GameMap {
         //console.assert(player instanceof Player, "Player not found", playerJSON.id);
         if(player instanceof Player) {
             player.updateInfo(playerJSON);
+            return false;
         } else {
             //handle if the server reloads but the client doesn't (could just reset the client but this seems better for development)
             const {
@@ -57,6 +62,7 @@ class GameMap {
             let newPlayer = new Player(new Vec2(location.x, location.y), name, imgSrc, speed, maxHealth);
             newPlayer.id = playerJSON.id;
             this.addPlayer(newPlayer);
+            return newPlayer;
         }
     }
 
@@ -96,7 +102,6 @@ class GameMap {
             const added = this.collisionTree.push(projectile.makePoint());
             //if projectile is out of the map region delete it
             if(!added) {
-                console.log("deleted", projectile);
                 this.projectiles.delete(projectile.id);
                 if(canvas !== null) {
                     canvas.removeDrawable(projectile);

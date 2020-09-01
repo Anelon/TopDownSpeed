@@ -51,10 +51,14 @@ class CanvasWrapper {
 	 * @param {Drawable|Entity} drawable 
 	 */
 	removeDrawable(drawable) {
+		console.log(typeof drawable);
 		if(drawable instanceof Drawable) {
 			this.drawables.delete(drawable.owner.id);
 		} else {
-			this.drawables.delete(drawable.id);
+			if (drawable.id)
+				this.drawables.delete(drawable.id);
+			else
+				this.drawables.delete(drawable);
 		}
 	}
 	//basic clear the canvas

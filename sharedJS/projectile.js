@@ -31,7 +31,7 @@ class Projectile extends Entity {
         const {
             location, name, imgSrc, speed, lookDirection, range, hitbox
         } = json;
-        console.log("look", lookDirection);
+        //console.log("look", lookDirection);
         //construct projectile
         return new Projectile(
             new Vec2(location.x, location.y), name, imgSrc,

@@ -58,8 +58,21 @@ socket.on(CHANNELS.newPlayer, function(playerInfo) {
 });
 socket.on(CHANNELS.newProjectile, function(newProjectile) {
     const updated = JSON.parse(newProjectile.json);
-    console.log("From Server", updated);
-    map.addProjectile(Projectile.makeFromJSON(updated), false);
+    //console.log("From Server", updated);
+    const projectile = Projectile.makeFromJSON(updated);
+    map.addProjectile(projectile);
+    canvas.addDrawable(projectile);
+});
+socket.on(CHANNELS.playerMove, function(playerInfo) {
+    const updated = JSON.parse(playerInfo.json);
+    //console.log(updated);
+    const newPlayer = map.updatePlayer(updated);
+    if(newPlayer) canvas.addDrawable(newPlayer);
+});
+socket.on(CHANNELS.deletePlayer, function(playerID) {
+    console.log("Deleting", playerID);
+    map.removePlayer(playerID);
+    canvas.removeDrawable(playerID);
 });
 
 //let enemy = new Monster(new Vec2(map.width/2, map.height/2), defaultImg, defaultSpeed);

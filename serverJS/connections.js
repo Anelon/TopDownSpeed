@@ -25,26 +25,27 @@ class Connections {
             client.emit(CHANNELS.newPlayer, player.makeObject());
             //console.log("map:", this.map);
 
-            client.on("disconnect", (client) => {
+            client.on("disconnect", (event) => {
                 console.log("a user has disconnected");
+                this.broadcast(CHANNELS.deletePlayer, client.id);
             });
 
-            client.on("event", (client) => {
+            client.on("event", (event) => {
                 console.log("a user has evented");
             });
 
             client.on(CHANNELS.playerMove, (playerInfo) => {
-                console.log("PlayerMove: ", playerInfo);
+                //console.log("PlayerMove: ", playerInfo);
                 let updated = JSON.parse(playerInfo.json);
                 this.map.updatePlayer(updated);
                 //TODO: add validation of move here
                 //broadcast the message (add client to prevent echoing)
-                this.broadcast(CHANNELS.playerMove, playerInfo);
+                this.broadcast(CHANNELS.playerMove, playerInfo, client);
             });
 
             client.on(CHANNELS.newProjectile, (newProjectile) => {
                 const updated = JSON.parse(newProjectile.json);
-                console.log(updated);
+                //console.log(updated);
                 this.map.addProjectile(Projectile.makeFromJSON(updated));
                 //console.log(this.map);
                 //TODO: add validation of move here
