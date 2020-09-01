@@ -209,20 +209,14 @@ function aroundToIndex(around) {
     if(nAround & up) {
         if (nAround & down) {
             if (nAround & left) {
-                if (nAround & right) {
-                    return 46;
-                }
+                if (nAround & right) return 46;
                 return 44;
             }
-            if(nAround & right) {
-                return 42;
-            }
+            if(nAround & right) return 42;
             return 33;
         }
         if(nAround & right) {
-            if(nAround & left) {
-                return 45;
-            }
+            if(nAround & left) return 45;
             if(nAround & downAndLeft) return 41;
             return 37;
         }
@@ -237,9 +231,7 @@ function aroundToIndex(around) {
     }
     if(nAround & down) {
         if(nAround & right) {
-            if(nAround & left) {
-                return 43;
-            }
+            if(nAround & left) return 43;
             if(nAround & upAndLeft) return 38;
             return 34;
         }
@@ -253,9 +245,7 @@ function aroundToIndex(around) {
         return 17;
     }
     if(nAround & left) {
-        if (nAround & right) {
-            return 32;
-        }
+        if (nAround & right) return 32;
         if(nAround & upAndRight && nAround & downAndRight) return 28;
         if(nAround & downAndRight) return 26;
         if(nAround & upAndRight) return 27;
