@@ -12,10 +12,11 @@ class Player extends Entity {
      * @param {string} imgSrc Client Path to image
      * @param {number} speed 
      * @param {number} health 
-     * @param {Circle} hitbox 
+     * @param {Circle} [hitbox=new Circle(location, 16)]
      */
-    constructor(location, name, imgSrc, speed, health, hitbox) {
-        let newHitbox = hitbox || new Circle(location, 8);
+    constructor(location, name, imgSrc, speed, health, hitbox=new Circle(location,16)) {
+        console.assert(typeof health === "number");
+        let newHitbox = hitbox;
         super(location, imgSrc, newHitbox, speed);
         this.name = name;
         this.maxHealth = health;
@@ -28,7 +29,7 @@ class Player extends Entity {
     */
     /**
      * Updates where the player is based on the json data given
-     * @param {JSON} json 
+     * @param {Player} json 
      * @returns reference to this
      */
     updateInfo(json) {

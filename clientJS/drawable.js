@@ -23,7 +23,7 @@ class Drawable {
      * @param {CanvasWrapper} canvas 
      */
     drawHealthBar(canvas) {
-        const healthBarOffset = new Vec2(0, this.owner.hitbox.halfWidth + 5);
+        const healthBarOffset = new Vec2(0, -(this.owner.hitbox.halfWidth + 5));
         const healthBarDimentions = new Vec2(32, 8);
         const origin = this.owner.location.add(healthBarOffset);
 

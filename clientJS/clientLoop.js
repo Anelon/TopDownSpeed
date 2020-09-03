@@ -9,6 +9,7 @@ import CHANNELS from "../sharedJS/channels.js";
 import Projectile from "../sharedJS/projectile.js";
 
 //setup the sockets and listening
+// @ts-ignore
 let socket = io();
 
 //TODO figure out resizing
@@ -18,7 +19,7 @@ let socket = io();
 const defaultImg = './img/arrow.png';
 
 let canvas = new CanvasWrapper();
-let map = new Map(canvas.width, canvas.height, canvas, socket);
+let map = new Map(canvas.width, canvas.height);
 let time = new Time();
 
 //declare players (will get moved to server when player connects)
@@ -40,12 +41,14 @@ socket.on(CHANNELS.newPlayer, function(playerInfo) {
 
     //pull the information from json
     const {
-        location, name, imgSrc, speed, health, id
+        location, name, imgSrc, speed, currHealth, maxHealth, id
     } = playerInfoJson;
     const locationVec = new Vec2(location.x, location.y);
     //make new player
-    you = new PlayerController(locationVec, "Player " + name, imgSrc, speed, health, bounds);
+    you = new PlayerController(locationVec, "Player " + name, imgSrc, speed, maxHealth, bounds);
     you.id = id;
+    //this should be redundant as when you span you probably should have full health
+    you.currHealth = currHealth;
     if (!playerExists) {
         map.addPlayer(you);
     } else {
@@ -93,6 +96,7 @@ function render(you) {
     //probably best to move this to update rather than render
     if (you.moved || you.mouse.changed) {
         // if player moved send update to server
+        console.log(you, you.makeObject());
         socket.emit("playerMove", you.makeObject());
     }
 

@@ -44,7 +44,7 @@ class Circle {
 
     /**
      * Check if circle or rectangle overlaps with this
-     * @param {Cirlce|Rectangle} range 
+     * @param {Circle|Rectangle} range 
      * @returns {boolean}
      */
     intersects(range) {
@@ -125,7 +125,7 @@ class Rectangle {
 
     /**
      * Check if circle or rectangle overlaps with this
-     * @param {Cirlce|Rectangle} range 
+     * @param {Circle|Rectangle} range 
      * @returns {boolean}
      */
     intersects(range) {

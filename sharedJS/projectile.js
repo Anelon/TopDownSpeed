@@ -26,7 +26,7 @@ class Projectile extends Entity {
     }
     /**
      * Makes a Projectile based on json sent to it
-     * @param {JSON} json 
+     * @param {Projectile} json 
      */
     static makeFromJSON(json) {
         const {

@@ -55,7 +55,7 @@ class PlayerController extends Player {
             direction.x += 1;
         }
         if(direction.x || direction.y) {
-            this.move(step, direction, map);
+            this.move(step, direction);
             this.moved = true;
         }
 
@@ -69,7 +69,7 @@ class PlayerController extends Player {
             //if the ability was successful
             if (arrow) {
                 //add projectile to the map
-                console.log(arrow.location.log());
+                //console.log(arrow.location.log());
                 map.addProjectile(arrow);
                 canvas.addDrawable(arrow);
                 socket.emit(CHANNELS.newProjectile, arrow.makeObject());
@@ -78,6 +78,7 @@ class PlayerController extends Player {
             }
         }
     }
+    // @ts-ignore
     updateInfo(newInfo) {
         console.log(newInfo);
         console.log(this.location);
@@ -91,11 +92,14 @@ class PlayerController extends Player {
         canvas.drawImageLookat(this.image, this.location, this.look);
         // Draw mouse at its canvas position
         canvas.drawCrossHair(target, "black");
-        // draw mouse event client coordinates on canvas
-        //canvas.drawCrossHair(new Vec2(this.mouse.cx,this.mouse.cy),"rgba(255,100,100,0.2)");
-
         // draw line from you center to mouse to check alignment is perfect
         canvas.drawLine(this.location, target, "black", 0.2);
+        // draw Health bar
+        const healthBarOffset = new Vec2(0, -(this.hitbox.halfWidth + 5));
+        const healthBarDimentions = new Vec2(32, 8);
+        const origin = this.location.add(healthBarOffset);
+
+        canvas.drawHealthBar(origin, healthBarDimentions, this.currHealth, this.maxHealth);
     }
     mouseEvent(e) {  // get the mouse coordinates relative to the canvas top left
         //let bounds = map.canvas.getBoundingClientRect();

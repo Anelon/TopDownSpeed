@@ -81,5 +81,17 @@ describe('Player', function () {
             expect(player).to.eql(expectedPlayer);
         });
     });
+    context('Make Object', function() {
+        it('Check everything is attached to Make Object', function() {
+            const object = player.makeObject();
+            expect(object.type).to.eql("Player");
+            const updated = JSON.parse(object.json);
+            expect(updated.currHealth).to.eql(health);
+            expect(updated.maxHealth).to.eql(health);
+            expect(updated.location).to.eql(location);
+            expect(updated.speed).to.eql(speed);
+            expect(updated.hitbox).to.eql(hitbox);
+        });
+    });
     //TODO add tests for hit when hit is written
 });

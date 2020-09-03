@@ -5,6 +5,8 @@ import { Rectangle } from "./shapes.js";
 import Projectile from "./projectile.js";
 import Player from "./player.js";
 import CanvasWrapper from "../clientJS/canvasWrapper.js";
+import Time from "../clientJS/time.js";
+import PlayerController from "../clientJS/playerController.js";
 //import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 
 
@@ -90,7 +92,7 @@ class GameMap {
 
     /**
      * Adds player to the players Map
-     * @param {Player} newPlayer 
+     * @param {Player|PlayerController} newPlayer 
      */
     addPlayer(newPlayer) {
         this.players.set(newPlayer.id, newPlayer);
@@ -138,7 +140,7 @@ class GameMap {
 
     /**
      * Removes projectile from player Map
-     * @param {Projectile} oldPlayer 
+     * @param {Projectile} oldProjectile 
      */
     removeProjectile(oldProjectile) {
         this.projectiles.delete(oldProjectile.id);

@@ -1,5 +1,6 @@
 import Vec2 from "../sharedJS/vec2.js";
 import Drawable from "./drawable.js";
+import Entity from "../sharedJS/entity.js";
 
 
 //this handles all canvas drawing and holding the canvas
@@ -11,7 +12,8 @@ class CanvasWrapper {
 	 * @param {Vec2} [tileSize=new Vec2(16,16)] 
 	 */
 	constructor(id = "game", canvasSize = null, tileSize = new Vec2(16,16)) {
-		this.canvas = document.getElementById(id);
+		/** @type {HTMLCanvasElement} */
+		this.canvas = (document.getElementById(id));
 		this.ctx = this.canvas.getContext('2d');
 		this.borderSize = 40;
 		if(canvasSize === null) {
@@ -51,7 +53,6 @@ class CanvasWrapper {
 	 * @param {Drawable|Entity} drawable 
 	 */
 	removeDrawable(drawable) {
-		console.log(typeof drawable);
 		if(drawable instanceof Drawable) {
 			this.drawables.delete(drawable.owner.id);
 		} else {
@@ -106,7 +107,7 @@ class CanvasWrapper {
 	}
 	/**
 	 * Draws an image at location x, y. Include sx, sy and width, height if you want to draw part of an image
-	 * @param {Image} img Image to draw
+	 * @param {CanvasImageSource} img Image to draw
 	 * @param {number} x X location of top right corner
 	 * @param {number} y Y location of top right corner
 	 * @param {number} [sx=null] Images X location to start drawing

@@ -1,6 +1,9 @@
 import Vec2 from "./vec2.js";
 import Point from "./point.js";
 import { Circle, Rectangle } from "./shapes.js";
+//import GameMap from "./map.js";
+import Time from "../clientJS/time.js";
+/* global GameMap */
 
 let idGen = 0;
 class Entity {
@@ -18,7 +21,7 @@ class Entity {
         if(!(location instanceof Vec2)) {
             throw TypeError("Entity: Location not Vec2");
         }
-        this.id = idGen++;
+        this.id = (idGen++).toString();
         this.location = location.clone();
         this.oldLocation = location.clone();
         //this.image = new Image();
@@ -55,7 +58,7 @@ class Entity {
 
     /**
      * Converts an Entity to a JSON object with the type as constructor name
-     * @returns {JSON}
+     * @returns {object}
      */
     makeObject() {
         let objectType = this.constructor.name;
@@ -67,14 +70,13 @@ class Entity {
      * Updates the Entity based on how much time has passed and the map state
      * @param {Time} time 
      * @param {number} dt The time sinse last frame
-     * @param {GameMap} map 
      */
-    update(time, dt, map) {
+    update(time, dt) {
         if(this.speed > 0) {
-            this.move(dt, this.lookDirection, map);
+            this.move(dt, this.lookDirection);
         }
     }
-    move(dt, direction, map) {
+    move(dt, direction) {
         if(!(direction instanceof Vec2)) {
             throw TypeError("Moveable move: Direction not Vec2");
         }
@@ -86,7 +88,7 @@ class Entity {
 
     /**
      * Given a JSON object it updates the entity
-     * @param {JSON} infoJSON Contains what needs to be updated
+     * @param {Entity} infoJSON Contains what needs to be updated
      */
     updateInfo(infoJSON) {
         if(infoJSON.id) this.id = infoJSON.id;
