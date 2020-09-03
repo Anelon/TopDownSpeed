@@ -12,7 +12,7 @@ class Projectile extends Entity {
      * @param {Vec2} look 
      * @param {number} range How far the projectile can go
      */
-    constructor(origin, name, imgSrc, speed, look, range) {
+    constructor(origin, name, imgSrc, speed, look, range, damage) {
         //temporary hitbox, need to find better place for this at somepoint (probably when we make specific abilities)
         let hitbox = new Circle(origin, 8);
         super(origin, imgSrc, hitbox, speed, look);
@@ -22,6 +22,7 @@ class Projectile extends Entity {
         this.distance = 0;
         //how far the projectile can go
         this.range = range;
+        this.damage = damage;
     }
     /**
      * Makes a Projectile based on json sent to it
@@ -29,13 +30,12 @@ class Projectile extends Entity {
      */
     static makeFromJSON(json) {
         const {
-            location, name, imgSrc, speed, lookDirection, range, hitbox
+            location, name, imgSrc, speed, lookDirection, range, hitbox, damage
         } = json;
         //console.log("look", lookDirection);
         //construct projectile
         return new Projectile(
-            new Vec2(location.x, location.y), name, imgSrc,
-            speed, new Vec2(lookDirection.x, lookDirection.y), range
+            new Vec2(location.x, location.y), name, imgSrc, speed, new Vec2(lookDirection.x, lookDirection.y), range, damage
         );
     }
 }

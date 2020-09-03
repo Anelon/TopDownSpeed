@@ -1,17 +1,17 @@
 import Vec2 from "../sharedJS/vec2.js";
-import Entity from "../sharedJS/entity.js";
 import { Circle } from "../sharedJS/shapes.js";
 import Ability from "../sharedJS/ability.js";
 import CHANNELS from "../sharedJS/channels.js";
+import Player from "../sharedJS/player.js";
 
 //class for handling the current player
-class PlayerController extends Entity {
-    constructor(location, name, imgSrc, speed, bounds) {
+class PlayerController extends Player {
+    constructor(location, name, imgSrc, speed, health, bounds) {
         //create hitbox
         let image = new Image();
         image.src = imgSrc;
         let hitbox = new Circle(location, image.width/2);
-        super(location, imgSrc, hitbox, speed);
+        super(location, name, imgSrc, speed, health, hitbox);
         this.name = name;
         this.image = image;
 
@@ -61,7 +61,7 @@ class PlayerController extends Entity {
 
         //abilities
         if(keyPress[keyBinds.MELEE]) {
-
+            console.log(this);
         }
         if(keyPress[keyBinds.RANGE]) {
             //attempt to use the ability

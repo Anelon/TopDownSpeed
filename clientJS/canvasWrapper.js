@@ -55,9 +55,10 @@ class CanvasWrapper {
 		if(drawable instanceof Drawable) {
 			this.drawables.delete(drawable.owner.id);
 		} else {
+			//if drawable has an id use it for the delete
 			if (drawable.id)
 				this.drawables.delete(drawable.id);
-			else
+			else //else assume drawable is the id
 				this.drawables.delete(drawable);
 		}
 	}
@@ -142,6 +143,35 @@ class CanvasWrapper {
 		this.ctx.moveTo(origin.x, origin.y);
 		this.ctx.lineTo(destination.x, destination.y);
 		this.ctx.stroke();
+
+		this.ctx.restore();
+	}
+
+	/**
+	 * Draws a health bar centered at origin with dimentions according to value
+	 * @param {Vec2} origin Center of health bar
+	 * @param {Vec2} dimentions Width and Height of bar
+	 * @param {number} value Current value that the bar represents
+	 * @param {number} maxValue Max value that the bar can have
+	 * @param {string} [fillColor="red"] Color of the inside of the bar
+	 * @param {string} [strokeColor="black"] Color of the boarder of the bar
+	 * @param {number} [alpha=0.7] How transparent the bar is
+	 * @param {number} [strokeWeight=2] Width of the boarder around bar
+	 */
+	drawHealthBar(origin, dimentions, value, maxValue, fillColor = "red", strokeColor = "black", alpha = 0.7, strokeWeight = 2) {
+		this.ctx.save();
+
+		const topLeft = origin.sub(dimentions.multiplyScalar(0.5));
+		const barArea = origin.sub(dimentions.multiplyScalar(0.5));
+		barArea.x *= value / maxValue;
+
+		this.ctx.globalAlpha = alpha;
+		this.ctx.fillStyle = fillColor;
+		this.ctx.fillRect(topLeft.x, topLeft.y, dimentions.x, dimentions.y);
+
+		this.ctx.lineWidth = strokeWeight;
+		this.ctx.strokeStyle = strokeColor;
+		this.ctx.strokeRect(topLeft.x, topLeft.y, dimentions.x, dimentions.y);
 
 		this.ctx.restore();
 	}

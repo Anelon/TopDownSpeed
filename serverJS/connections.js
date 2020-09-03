@@ -21,13 +21,17 @@ class Connections {
             let player = new Player(new Vec2(50, 50), "Player", "./img/arrow.png", 200, 200);
             //set player id to client id for easier lookup
             player.id = client.id;
+            console.log(player);
             this.map.addPlayer(player);
             client.emit(CHANNELS.newPlayer, player.makeObject());
-            //console.log("map:", this.map);
+            this.broadcast(CHANNELS.playerMove, player.makeObject(), client);
+            //console.log("map:", this.map.players);
 
             client.on("disconnect", (event) => {
                 console.log("a user has disconnected");
                 this.broadcast(CHANNELS.deletePlayer, client.id);
+                this.map.removePlayer(client.id);
+                //console.log("map:", this.map.players);
             });
 
             client.on("event", (event) => {

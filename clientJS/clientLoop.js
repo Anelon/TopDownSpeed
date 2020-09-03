@@ -38,16 +38,14 @@ socket.on(CHANNELS.newPlayer, function(playerInfo) {
     }
     let playerInfoJson = JSON.parse(playerInfo.json);
 
-
     //pull the information from json
-    let location = new Vec2(playerInfoJson.location.x, playerInfoJson.location.y);
-    //let name = playerInfoJson.name;
-    let name = "player " + playerInfoJson.id;
-    let imgSrc = playerInfoJson.imgSrc;
-    let speed = playerInfoJson.speed;
+    const {
+        location, name, imgSrc, speed, health, id
+    } = playerInfoJson;
+    const locationVec = new Vec2(location.x, location.y);
     //make new player
-    you = new PlayerController(location, name, imgSrc, speed, bounds, socket);
-    you.id = playerInfoJson.id;
+    you = new PlayerController(locationVec, "Player " + name, imgSrc, speed, health, bounds);
+    you.id = id;
     if (!playerExists) {
         map.addPlayer(you);
     } else {
@@ -65,7 +63,7 @@ socket.on(CHANNELS.newProjectile, function(newProjectile) {
 });
 socket.on(CHANNELS.playerMove, function(playerInfo) {
     const updated = JSON.parse(playerInfo.json);
-    //console.log(updated);
+    console.log(updated);
     const newPlayer = map.updatePlayer(updated);
     if(newPlayer) canvas.addDrawable(newPlayer);
 });
