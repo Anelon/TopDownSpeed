@@ -22,6 +22,8 @@ class CanvasWrapper {
 		const id = params.id || "game";
 		const canvasSize = params.canvasSize || null;
 		const tileSize = params.tileSize || new Vec2(16, 16);
+		this.scale = params.scale || 1;
+
 		/** @type {HTMLCanvasElement} */
 		this.canvas = (document.getElementById(id));
 		this.ctx = this.canvas.getContext('2d');
@@ -39,9 +41,15 @@ class CanvasWrapper {
 		this.tileSize = tileSize;
 		this.drawables = new Map();
 	}
+	/**
+	 * @returns {number} Canvas width
+	 */
 	get width() {
 		return this.canvas.width;
 	}
+	/**
+	 * @returns {number} Canvas height
+	 */
 	get height() {
 		return this.canvas.height;
 	}

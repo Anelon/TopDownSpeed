@@ -2,7 +2,8 @@ import Vec2 from "./vec2.js";
 import Entity from "./entity.js";
 import { Circle } from "./shapes.js";
 import CanvasWrapper from "../clientJS/canvasWrapper.js";
-import TYPES from "./types.js";
+import { TYPES, CATEGORY } from "./enums.js";
+import Projectile from "./projectile.js";
 //import Ability from "../../sharedJS/ability.js";
 
 //class for holding the other players and as a parent to PlayerController
@@ -23,13 +24,9 @@ class Player extends Entity {
         this.maxHealth = health;
         this.currHealth = health;
         
-        this.type = TYPES.player;
+        this.type = TYPES.basic;
+        this.category = CATEGORY.player;
     }
-    /*
-    update(now, dt) {
-        //TODO Might hold last move direction and have it go in that direction until server says otherwise
-    }
-    */
     /**
      * Updates where the player is based on the json data given
      * @param {Player} json 
@@ -43,6 +40,17 @@ class Player extends Entity {
         //call entity's updateFromJSON
         super.updateInfo(json);
         return this;
+    }
+
+    /**
+     * 
+     * @param {Player|Projectile|Entity} other 
+     */
+    hit(other) {
+        if(other.category === CATEGORY.projectile)
+            if(other.damage - this.currHealth <= 0)
+                return true;
+        return false;
     }
 }
 

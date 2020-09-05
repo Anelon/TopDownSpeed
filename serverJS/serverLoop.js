@@ -2,7 +2,7 @@ import Time from "../serverJS/serverTime.js";
 import Connections from "./connections.js";
 import { performance } from "perf_hooks";
 import GameMap from "../sharedJS/map.js";
-import TYPES from "../sharedJS/types.js";
+import { TYPES } from "../sharedJS/enums.js";
 import Projectile from "../sharedJS/projectile.js";
 import Player from "../sharedJS/player.js";
 //import { MinPriorityQueue } from '@datastructures-js/priority-queue';

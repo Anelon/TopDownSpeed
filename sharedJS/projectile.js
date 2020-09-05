@@ -1,7 +1,7 @@
 import Vec2 from "./vec2.js";
 import Entity from "./entity.js";
 import { Circle } from "./shapes.js";
-import TYPES from "./types.js";
+import { TYPES, CATEGORY } from "./enums.js";
 import Player from "./player.js";
 
 class Projectile extends Entity {

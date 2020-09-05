@@ -101,13 +101,10 @@ class PlayerController extends Player {
             }
         }
     }
-    // @ts-ignore
-    updateInfo(newInfo) {
-        console.log(newInfo);
-        console.log(this.location);
-        this.location.x = newInfo.location.x;
-        this.location.y = newInfo.location.y;
-    }
+    /**
+     * Draws player image, crosshair, and healthbar
+     * @param {CanvasWrapper} canvas 
+     */
     draw(canvas) {
         this.mouse.changed = false; // flag that the mouse coords have been rendered
         // get mouse canvas coordinate correcting for page scroll

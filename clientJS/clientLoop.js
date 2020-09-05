@@ -7,7 +7,7 @@ import CanvasWrapper from "./canvasWrapper.js";
 import PlayerController from "./playerController.js";
 import CHANNELS from "../sharedJS/channels.js";
 import Projectile from "../sharedJS/projectile.js";
-import TYPES from "../sharedJS/types.js";
+import { TYPES } from "../sharedJS/enums.js";
 import Player from "../sharedJS/player.js";
 
 //setup the sockets and listening

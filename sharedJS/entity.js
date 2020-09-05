@@ -3,7 +3,7 @@ import Point from "./point.js";
 import { Circle, Rectangle } from "./shapes.js";
 //import GameMap from "./map.js";
 import Time from "../clientJS/time.js";
-import TYPES from "./types.js";
+import { TYPES, CATEGORY } from "./enums.js";
 /* global GameMap */
 
 let idGen = 0;
@@ -32,8 +32,10 @@ class Entity {
         this.speed = speed;
         //mostly for debugging now
         this.overlapping = false;
+        this.damage = 0;
 
         this.type = TYPES.basic;
+        this.category = CATEGORY.none;
     }
     get x() {
         return this.location.x;
@@ -97,6 +99,7 @@ class Entity {
     /**
      * Given a JSON object it updates the entity
      * @param {Entity} infoJSON Contains what needs to be updated
+     * @retruns {Entity}
      */
     updateInfo(infoJSON) {
         if(infoJSON.id) this.id = infoJSON.id;
@@ -111,10 +114,8 @@ class Entity {
         }
         return this;
     }
-    //placeholder for the colision to call when hit
-    //might want to return a bool saying if this should be deleted from the hit
     /**
-     * 
+     * Returns false saying do nothing be default to default entity
      * @param {Entity} other 
      */
     hit(other) {
