@@ -15,9 +15,9 @@ class ServerLoop {
         this.connections = new Connections(server, this.map).start();
     }
 
-    update(time) {
+    update() {
         //update all projectiles
-        const deleteArray = this.map.update(time, time.tickRate);
+        const deleteArray = this.map.update(this.time, this.time.tickRate);
         for (const item of deleteArray) {
             if (item.type === TYPES.player) {
                 //ignore
@@ -37,7 +37,7 @@ class ServerLoop {
         this.time.update();
         while (this.time.dt > this.time.tickRate) {
             this.time.dt = this.time.dt - this.time.tickRate;
-            this.update(this.time);
+            this.update();
         }
         //sendToClients(this.time);
         setImmediate(this.tick.bind(this));

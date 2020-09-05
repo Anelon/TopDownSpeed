@@ -48,12 +48,16 @@ class Projectile extends Entity {
      * @param {Player|Projectile|Entity} other 
      */
     hit(other) {
-        if(other.type === TYPES.player) {
+        //if hitting a player deal damage
+        if(other.category === CATEGORY.damageable) {
             /** @type {Player} */(other).currHealth -= this.damage;
-            console.log(/** @type {Player} */(other).currHealth, this.damage);
+            //console.log(/** @type {Player} */(other).currHealth, this.damage);
             return true;
         } else if (other.type === this.type) {
-            //do nothing
+            //Same type do nothing
+            return false;
+        } else if (other.category === CATEGORY.void) {
+            //Projectiles go over void
             return false;
         } else {
             //flag to be deleted

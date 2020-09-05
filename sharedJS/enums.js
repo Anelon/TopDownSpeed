@@ -13,9 +13,8 @@ const CATEGORY = {
     //terain types
     wall: "wall",
     void: "void",
-    //Entities
-    player: "player",
-    monster: "monster",
+    //can be damaged
+    damageable: "damageable",
     //Projectile
     projectile: "projectile",
     //base

@@ -25,7 +25,7 @@ class Player extends Entity {
         this.currHealth = health;
         
         this.type = TYPES.basic;
-        this.category = CATEGORY.player;
+        this.category = CATEGORY.damageable;
     }
     /**
      * Updates where the player is based on the json data given
