@@ -21,7 +21,7 @@ class Player extends Entity {
         super(location, imgSrc, newHitbox, speed);
         this.name = name;
         this.maxHealth = health;
-        this.currHealth = health / 2;
+        this.currHealth = health;
         
         this.type = TYPES.player;
     }

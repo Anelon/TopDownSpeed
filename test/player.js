@@ -3,9 +3,8 @@ const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should;
 
-import Entity from "../sharedJS/entity.js";
 import Player from "../sharedJS/player.js";
-import { Circle, Rectangle } from '../sharedJS/shapes.js';
+import { Circle } from '../sharedJS/shapes.js';
 import Point from "../sharedJS/point.js";
 import Vec2 from '../sharedJS/vec2.js';
 import Time from "../serverJS/serverTime.js";
@@ -15,7 +14,7 @@ describe('Player', function () {
     //variables for entity testing
     const location = new Vec2(1, 2);
     const imgSrc = "img/test.png";
-    const hitbox = new Circle(location, 8);
+    const hitbox = new Circle(location, 16);
     const speed = 100;
     const health = 200;
     const name = "testPlayer";
@@ -38,7 +37,7 @@ describe('Player', function () {
 
     context('Make functions', function () {
         it('makePoint() makes a Point', function () {
-            let expectedPoint = new Point(location, player, 8);
+            let expectedPoint = new Point(location, player, 16);
             let point = player.makePoint();
             assert.instanceOf(point, Point);
             expect(point).to.eql(expectedPoint);
@@ -46,12 +45,12 @@ describe('Player', function () {
         });
 
         it('makeShape() makes a Circle', function () {
-            let expectedShape = new Circle(location, 8);
+            let expectedShape = new Circle(location, 16);
             let shape = player.makeShape();
             assert.instanceOf(shape, Circle);
             expect(shape).to.eql(expectedShape);
 
-            expectedShape = new Circle(location, 16);
+            expectedShape = new Circle(location, 32);
             shape = player.makeShape(2);
             assert.instanceOf(shape, Circle);
             expect(shape).to.eql(expectedShape);
