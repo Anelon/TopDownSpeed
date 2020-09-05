@@ -1,0 +1,9 @@
+{
+   "all": true,
+      "include": [
+         "test/**.js"
+      ],
+      "exclude": [
+         "node_modules/*"
+      ]
+}
