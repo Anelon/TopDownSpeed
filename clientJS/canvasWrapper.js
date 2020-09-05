@@ -33,7 +33,6 @@ class CanvasWrapper {
 		this.ctx.lineWidth = 1;
 
 		this.tileSize = tileSize;
-		//TODO: refactor to map
 		this.drawables = new Map();
 	}
 	get width() {
@@ -168,13 +167,14 @@ class CanvasWrapper {
 	drawHealthBar(origin, dimentions, value, maxValue, fillColor = "red", strokeColor = "black", alpha = 0.7, strokeWeight = 2) {
 		this.ctx.save();
 
+        //multiply by 0.5 to get half dimentions so thhat it puts in the top left
 		const topLeft = origin.sub(dimentions.multiplyScalar(0.5));
-		const barArea = origin.sub(dimentions.multiplyScalar(0.5));
-		barArea.x *= value / maxValue;
+		const barDimentions = dimentions.clone();
+		barDimentions.x *= value / maxValue;
 
 		this.ctx.globalAlpha = alpha;
 		this.ctx.fillStyle = fillColor;
-		this.ctx.fillRect(topLeft.x, topLeft.y, dimentions.x, dimentions.y);
+		this.ctx.fillRect(topLeft.x, topLeft.y, barDimentions.x, barDimentions.y);
 
 		this.ctx.lineWidth = strokeWeight;
 		this.ctx.strokeStyle = strokeColor;
