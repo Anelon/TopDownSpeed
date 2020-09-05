@@ -1,13 +1,13 @@
 //left click is button 0, middle is 1, right is 2
 const MOUSE_STR = "mouse";
-const keyBinds = {
+export const keyBinds = {
     UP: "w", DOWN: "s", LEFT: "a", RIGHT: "d",
     DODGE: "shift", JUMP: " ",
     ABILITY1: "q", ABILITY2: "e", ABILITY3: "r",
     MELEE: MOUSE_STR+"0", RANGE: MOUSE_STR+"2", UNLOCK: MOUSE_STR+"1",
 }
 
-const keyPress = {
+export const keyPress = {
     [keyBinds.UP]: false, //up
     [keyBinds.LEFT]: false, //left
     [keyBinds.DOWN]: false, //down

@@ -3,9 +3,22 @@ import { Circle } from "../sharedJS/shapes.js";
 import Ability from "../sharedJS/ability.js";
 import CHANNELS from "../sharedJS/channels.js";
 import Player from "../sharedJS/player.js";
+import { keyBinds, keyPress } from "./keyBinds.js";
+import GameMap from "../sharedJS/map.js";
+import CanvasWrapper from "./canvasWrapper.js";
+import Time from "./time.js";
 
 //class for handling the current player
 class PlayerController extends Player {
+    /**
+     * 
+     * @param {Vec2} location 
+     * @param {string} name 
+     * @param {string} imgSrc 
+     * @param {number} speed 
+     * @param {number} health 
+     * @param {*} bounds 
+     */
     constructor(location, name, imgSrc, speed, health, bounds) {
         //create hitbox
         let image = new Image();
@@ -14,11 +27,12 @@ class PlayerController extends Player {
         super(location, name, imgSrc, speed, health, hitbox);
         this.name = name;
         this.image = image;
+        this.offset = image.width * 2;
 
         //create default abilities
         this.abilities = {
-            [keyBinds.MELEE]: new Ability("Melee",imgSrc, 100, 100, 100),
-            [keyBinds.RANGE]: new Ability("Arrow",imgSrc, 200, 100, 200),
+            [keyBinds.MELEE]: new Ability("Melee", "./img/arrow.png", 100, 100, 100),
+            [keyBinds.RANGE]: new Ability("Arrow", "./img/arrow.png", 200, 100, 200),
         };
         //set up mouse object
         this.mouse = {
@@ -37,6 +51,15 @@ class PlayerController extends Player {
         this.lookDirection = new Vec2(this.mouse.x, this.mouse.y).subS(this.location);
         return this.lookDirection;
     }
+    /**
+     * 
+     * @param {Time} time 
+     * @param {number} step 
+     * @param {GameMap} map 
+     * @param {CanvasWrapper} canvas 
+     * @param {*} socket 
+     */
+    // @ts-ignore
     update(time, step, map, canvas, socket) {
         this.moved = false;
         //console.log(step);
@@ -65,7 +88,7 @@ class PlayerController extends Player {
         }
         if(keyPress[keyBinds.RANGE]) {
             //attempt to use the ability
-            let arrow = this.abilities[keyBinds.RANGE].use(time.now, this.location, this.look);
+            let arrow = this.abilities[keyBinds.RANGE].use(time.now, this.location, this.look, this.offset);
             //if the ability was successful
             if (arrow) {
                 //add projectile to the map

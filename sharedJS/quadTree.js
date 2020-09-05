@@ -2,6 +2,7 @@ import Vec2 from "./vec2.js";
 import { Rectangle, Circle } from "./shapes.js";
 import Point from "./point.js";
 
+//Heavily inspired by https://github.com/CodingTrain/QuadTree 
 class QuadTree {
     /**
      * 

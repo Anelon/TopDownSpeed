@@ -1,17 +1,23 @@
 import Vec2 from "../sharedJS/vec2.js";
 import Drawable from "./drawable.js";
 import Entity from "../sharedJS/entity.js";
+import Player from "../sharedJS/player.js";
+import Projectile from "../sharedJS/projectile.js";
 
+//TODO figure out resizing
+//https://stackoverflow.com/questions/1664785/resize-html5-canvas-to-fit-window
 
 //this handles all canvas drawing and holding the canvas
 class CanvasWrapper {
 	/**
 	 * 
-	 * @param {string} [id="game"] Target Canvas ID from HTML
-	 * @param {Vec2} [canvasSize] 
-	 * @param {Vec2} [tileSize=new Vec2(16,16)] 
+	 * @param {Object} [params] 
+	 * @property {string} [id="game"]
 	 */
-	constructor(id = "game", canvasSize = null, tileSize = new Vec2(16,16)) {
+	constructor(params) {
+		const id = params.id || "game";
+		const canvasSize = params.canvasSize || null;
+		const tileSize = params.tileSize || new Vec2(16, 16);
 		/** @type {HTMLCanvasElement} */
 		this.canvas = (document.getElementById(id));
 		this.ctx = this.canvas.getContext('2d');
@@ -38,7 +44,7 @@ class CanvasWrapper {
 	}
 	/**
 	 * Adds a drawable to drawables
-	 * @param {Drawable|Entity} drawable 
+	 * @param {Drawable|Entity|Player|Projectile} drawable 
 	 */
 	addDrawable(drawable) {
 		if(drawable instanceof Drawable) {

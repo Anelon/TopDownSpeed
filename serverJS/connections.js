@@ -18,7 +18,7 @@ class Connections {
             console.log("a user has connected");
             //add client to the list of connections
             this.connections[client.id] = client;
-            let player = new Player(new Vec2(50, 50), "Player", "./img/arrow.png", 200, 200);
+            let player = new Player(new Vec2(50, 50), "Player", "./img/player.png", 200, 200);
             //set player id to client id for easier lookup
             player.id = client.id;
             console.log(player);

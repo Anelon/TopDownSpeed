@@ -1,6 +1,7 @@
 import Vec2 from "./vec2.js";
 import Point from "./point.js";
 
+//Heavily inspired by https://github.com/CodingTrain/QuadTree 
 class Circle {
     /**
      * Makes a new Circle
@@ -33,6 +34,11 @@ class Circle {
         if(!(other instanceof Circle)) return false;
         return (this.center.equals(other.center) && this.radius === other.radius);
     }
+    /**
+     * Check if the point is inside the circle
+     * @param {Point} point 
+     * @returns {boolean}
+     */
     contains(point) {
         if (!(point instanceof Point))
             throw TypeError("Contains point not a Point");
@@ -72,6 +78,12 @@ class Circle {
 }
 
 class Rectangle {
+    /**
+     * 
+     * @param {Vec2} center Center of the rectangle
+     * @param {number} width 
+     * @param {number} height 
+     */
     constructor(center, width, height) {
         console.assert(center instanceof Vec2, "Rectangle center not a Vec2");
         this.center = center;

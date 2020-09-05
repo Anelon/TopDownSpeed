@@ -7,13 +7,12 @@ import CanvasWrapper from "./canvasWrapper.js";
 import PlayerController from "./playerController.js";
 import CHANNELS from "../sharedJS/channels.js";
 import Projectile from "../sharedJS/projectile.js";
+import TYPES from "../sharedJS/types.js";
+import Player from "../sharedJS/player.js";
 
 //setup the sockets and listening
 // @ts-ignore
 let socket = io();
-
-//TODO figure out resizing
-//https://stackoverflow.com/questions/1664785/resize-html5-canvas-to-fit-window
 
 //global defaults
 const defaultImg = './img/arrow.png';
@@ -22,15 +21,12 @@ let canvas = new CanvasWrapper();
 let map = new Map(canvas.width, canvas.height);
 let time = new Time();
 
-//declare players (will get moved to server when player connects)
-//makes new player with map, Vec2 location, string name, img, and number speed
 let bounds = canvas.getBoundingClientRect();
 let you;
 
 //set up socket listening
 
 //wait for the server to give the player its location
-console.log(CHANNELS.newPlayer);
 socket.on(CHANNELS.newPlayer, function(playerInfo) {
     let playerExists = false;
     if(you) {
@@ -50,6 +46,7 @@ socket.on(CHANNELS.newPlayer, function(playerInfo) {
     //this should be redundant as when you span you probably should have full health
     you.currHealth = currHealth;
     if (!playerExists) {
+        // @ts-ignore
         map.addPlayer(you);
     } else {
 
@@ -66,9 +63,9 @@ socket.on(CHANNELS.newProjectile, function(newProjectile) {
 });
 socket.on(CHANNELS.playerMove, function(playerInfo) {
     const updated = JSON.parse(playerInfo.json);
-    console.log(updated);
+    //console.log(updated);
     const newPlayer = map.updatePlayer(updated);
-    if(newPlayer) canvas.addDrawable(newPlayer);
+    if(newPlayer) canvas.addDrawable(/** @type {Player} */(newPlayer));
 });
 socket.on(CHANNELS.deletePlayer, function(playerID) {
     console.log("Deleting", playerID);
@@ -80,15 +77,32 @@ socket.on(CHANNELS.deletePlayer, function(playerID) {
 //map.players.push(enemy);
 
 //Updates the game state
+/**
+ * 
+ * @param {Time} time 
+ * @param {number} step Tick rate of server
+ */
 function update(time, step) {
     //TODO move to serverside 
     //change to send and receive information
     you.update(time, step, map, canvas, socket);
-    map.update(time, step, canvas);
+    const deleteArray = map.update(time, step, canvas);
+    for(const item of deleteArray) {
+        if(item.type === TYPES.player) {
+            //ignore
+        } else {
+            map.removeProjectile(/** @type {Projectile} */(item));
+            //canvas.removeDrawable(item);
+        }
+    }
 }
 
 const step = 1/30; // 30 tics per second
 
+/**
+ * Renders the canvas
+ * @param {PlayerController} you 
+ */
 function render(you) {
     //clear the map
     canvas.clear();
@@ -96,7 +110,7 @@ function render(you) {
     //probably best to move this to update rather than render
     if (you.moved || you.mouse.changed) {
         // if player moved send update to server
-        console.log(you, you.makeObject());
+        //console.log(you, you.makeObject());
         socket.emit("playerMove", you.makeObject());
     }
 

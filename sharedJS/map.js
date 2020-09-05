@@ -6,7 +6,8 @@ import Projectile from "./projectile.js";
 import Player from "./player.js";
 import CanvasWrapper from "../clientJS/canvasWrapper.js";
 import Time from "../clientJS/time.js";
-import PlayerController from "../clientJS/playerController.js";
+//import PlayerController from "../clientJS/playerController.js";
+import Entity from "./entity.js";
 //import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 
 
@@ -35,10 +36,12 @@ class GameMap {
      * @param {Time} time 
      * @param {number} step The tick time
      * @param {CanvasWrapper} [canvas=null] Will be passed on clientside code
+     * @returns {Array<Entity>} Objects that should be deleted
      */
     update(time, step, canvas = null) {
         //reset quadTree, might change to updating locations of each item later if we end up with too many static items
         this.collisionTree = new QuadTree(this.boundry, this.qTreeCapacity);
+        const deleteList = new Array();
 
         //move everything and place in collision quad tree
         for (const player of this.players.values()) {
@@ -50,10 +53,7 @@ class GameMap {
             const added = this.collisionTree.push(projectile.makePoint());
             //if projectile is out of the map region delete it
             if(!added) {
-                this.projectiles.delete(projectile.id);
-                if(canvas !== null) {
-                    canvas.removeDrawable(projectile);
-                }
+                deleteList.push(projectile);
             }
             projectile.overlapping = false;
         }
@@ -66,13 +66,18 @@ class GameMap {
             this.staticObjects.query(doubleShape, others);
             for(const other of others) {
                 if(other.owner === player) continue;
-                if(playerShape.intersects(other.owner.makeShape(1))) {
+                if(playerShape.intersects(other.owner.makeShape())) {
                     player.overlapping = true;
+                    //should probably do something other for the players rather than deleting
+                    if(player.hit(other.owner)) deleteList.push(player);
                     other.owner.overlapping = true;
+                    if(other.owner.hit(player)) deleteList.push(other.owner);
                 }
             }
         }
         for (const projectile of this.projectiles.values()) {
+            //skip projectiles that have already done something
+            if (deleteList.includes(projectile)) continue;
             const projectileShape = projectile.makeShape();
             const doubleShape = projectile.makeShape(2);
             //make shape with 2 to have it search an area double the size of the projectile
@@ -82,17 +87,22 @@ class GameMap {
             this.staticObjects.query(doubleShape, others);
             for(const other of others) {
                 if(other.owner === projectile) continue;
-                if(projectileShape.intersects(other.owner.makeShape(1))) {
+                if(projectileShape.intersects(other.owner.makeShape())) {
                     projectile.overlapping = true;
+                    if(projectile.hit(other.owner)) deleteList.push(projectile);
                     other.owner.overlapping = true;
+                    if(other.owner.hit(projectile)) deleteList.push(other.owner);
                 }
             }
         }
+        return deleteList;
+        //TODO see if returning delete list would be better
+        //delete everything in the delete list
     }
 
     /**
      * Adds player to the players Map
-     * @param {Player|PlayerController} newPlayer 
+     * @param {Player} newPlayer 
      */
     addPlayer(newPlayer) {
         this.players.set(newPlayer.id, newPlayer);
@@ -110,6 +120,11 @@ class GameMap {
         }
     }
 
+    /**
+     * Updates the player on the map or creates a new player
+     * @param {Player} playerJSON 
+     * @returns {Player|boolean}
+     */
     updatePlayer(playerJSON) {
         const player = this.players.get(playerJSON.id);
         //this should not happen in production hopefully

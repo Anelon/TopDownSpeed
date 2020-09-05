@@ -3,6 +3,7 @@ import Point from "./point.js";
 import { Circle, Rectangle } from "./shapes.js";
 //import GameMap from "./map.js";
 import Time from "../clientJS/time.js";
+import TYPES from "./types.js";
 /* global GameMap */
 
 let idGen = 0;
@@ -31,6 +32,8 @@ class Entity {
         this.speed = speed;
         //mostly for debugging now
         this.overlapping = false;
+
+        this.type = TYPES.basic;
     }
     get x() {
         return this.location.x;
@@ -76,6 +79,11 @@ class Entity {
             this.move(dt, this.lookDirection);
         }
     }
+    /**
+     * Moves the character in direction at this.speed * dt
+     * @param {number} dt 
+     * @param {Vec2} direction 
+     */
     move(dt, direction) {
         if(!(direction instanceof Vec2)) {
             throw TypeError("Moveable move: Direction not Vec2");
@@ -105,10 +113,15 @@ class Entity {
     }
     //placeholder for the colision to call when hit
     //might want to return a bool saying if this should be deleted from the hit
+    /**
+     * 
+     * @param {Entity} other 
+     */
     hit(other) {
+        return false;
     }
     //should be called when projectile hits max range
-    think(world) {
+    think(map) {
     }
 }
 
