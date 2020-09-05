@@ -14,7 +14,7 @@ class CanvasWrapper {
 	 * @param {Object} [params] 
 	 * @property {string} [id="game"]
 	 */
-	constructor(params) {
+	constructor(params = {}) {
 		const id = params.id || "game";
 		const canvasSize = params.canvasSize || null;
 		const tileSize = params.tileSize || new Vec2(16, 16);

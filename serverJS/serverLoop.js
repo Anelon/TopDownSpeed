@@ -18,7 +18,6 @@ class ServerLoop {
     update(time) {
         //update all projectiles
         const deleteArray = this.map.update(time, time.tickRate);
-
         for (const item of deleteArray) {
             if (item.type === TYPES.player) {
                 //ignore

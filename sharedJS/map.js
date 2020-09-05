@@ -96,8 +96,6 @@ class GameMap {
             }
         }
         return deleteList;
-        //TODO see if returning delete list would be better
-        //delete everything in the delete list
     }
 
     /**

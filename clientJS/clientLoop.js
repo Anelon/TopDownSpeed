@@ -92,7 +92,7 @@ function update(time, step) {
             //ignore
         } else {
             map.removeProjectile(/** @type {Projectile} */(item));
-            //canvas.removeDrawable(item);
+            canvas.removeDrawable(item);
         }
     }
 }
