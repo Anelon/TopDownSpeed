@@ -3,6 +3,7 @@ import Drawable from "./drawable.js";
 import Entity from "../sharedJS/entity.js";
 import Player from "../sharedJS/player.js";
 import Projectile from "../sharedJS/projectile.js";
+/** @typedef { import("./playerController.js").default } PlayerController; */
 
 //TODO figure out resizing
 //https://stackoverflow.com/questions/1664785/resize-html5-canvas-to-fit-window
@@ -13,6 +14,9 @@ class CanvasWrapper {
 	 * 
 	 * @param {Object} [params] 
 	 * @property {string} [id="game"]
+	 * @property {Vec2} [canvasSize=null]
+	 * @property {Vec2} [tileSize=new Vec2(16,16)]
+	 * @property {number} [scale=1]
 	 */
 	constructor(params = {}) {
 		const id = params.id || "game";
@@ -72,13 +76,23 @@ class CanvasWrapper {
 	clear() {
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 	}
+	/**
+	 * Draws all drawables to the canvas
+	 * @param {PlayerController|Player|Entity} [skip] Optional object to skip
+	 */
 	render(skip) {
 		for (let draw of this.drawables.values()) {
 			if (draw.owner !== skip)
 				draw.draw(this);
 		}
 	}
-	//draws an image with a vec2 origin, vec2 look direction, bool if you want to have an outline around the image
+	/**
+	 * Draws an image with a vec2 origin, vec2 look direction, bool if you want to have an outline around the image
+	 * @param {CanvasImageSource} img Image to be drawn
+	 * @param {Vec2} origin Center of image
+	 * @param {Vec2} look Direction the image is looking at
+	 * @param {boolean} withOutline If an outline should be drawn
+	 */
 	drawImageLookat(img, origin, look, withOutline = false) {
 		//save context 
 		this.ctx.save();
@@ -100,6 +114,7 @@ class CanvasWrapper {
 			//this.ctx.globalCompositeOperation = "source-in";
 			this.ctx.globalCompositeOperation = "source-atop";
 			this.ctx.fillStyle = "red";
+			// @ts-ignore image.width and height will be a number
 			this.ctx.fillRect(-img.width / 2 - s, -img.height / 2 - s, img.width + 2 * s, img.height + 2 * s);
 
 			// draw original image in normal mode
@@ -128,7 +143,11 @@ class CanvasWrapper {
 		}
 	}
 
-	//draws the player's crosshair with vec2 origin and string color
+	/**
+	 * Draws the player's crosshair with vec2 origin and string color
+	 * @param {Vec2} origin Location of the crosshair
+	 * @param {string} color Color string
+	 */
 	drawCrossHair(origin, color) {
 		const x = origin.x, y = origin.y;
 		this.ctx.strokeStyle = color;
@@ -140,6 +159,13 @@ class CanvasWrapper {
 		this.ctx.stroke();
 	}
 
+	/**
+	 * Draws a line from origin to destination
+	 * @param {Vec2} origin Start of line
+	 * @param {Vec2} destination End of line
+	 * @param {string} [color="black"] Color of line
+	 * @param {number} [alpha=0.2] Transparency of line
+	 */
 	drawLine(origin, destination, color = "black", alpha = 0.2) {
 		this.ctx.save();
 
