@@ -1,9 +1,11 @@
 import chai from 'chai';
 let assert = chai.assert;
 let expect = chai.expect;
+// @ts-ignore
 let should = chai.should;
 
 import Entity from "../sharedJS/entity.js";
+// @ts-ignore
 import { Circle, Rectangle } from '../sharedJS/shapes.js';
 import Point from "../sharedJS/point.js";
 import Vec2 from '../sharedJS/vec2.js';
@@ -25,9 +27,9 @@ describe('Entity', function () {
 
     context('Constructor', function () {
         it('Contructor made an entity', function () {
-            assert(entity.location.equals(location), "Location is not set correctly");
+            expect(entity.location).to.eql((location), "Location is not set correctly");
             assert.strictEqual(entity.imgSrc, imgSrc, "ImgSrc not set correctly");
-            assert(entity.hitbox, hitbox, "Hitbox not set correctly");
+            expect(entity.hitbox).to.eql(hitbox, "Hitbox not set correctly");
             assert.strictEqual(entity.speed, speed, "Speed not set correctly");
             assert(entity.lookDirection.equals(new Vec2(1,0)), "Default look not set correctly");
         });
@@ -65,6 +67,7 @@ describe('Entity', function () {
             //force id to be the same
             expectedEntity.id = entity.id;
             entity.speed = 0;
+            // @ts-ignore
             entity.update(time, time.dt, null);
             expect(entity).to.eql(expectedEntity);
         });
@@ -74,6 +77,7 @@ describe('Entity', function () {
             expectedEntity.location.addS(new Vec2(1,0).multiplyScalarS(speed));
             //force id to be the same
             expectedEntity.id = entity.id;
+            // @ts-ignore
             entity.update(time, time.dt, null);
             expect(entity).to.eql(expectedEntity);
         });

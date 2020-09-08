@@ -12,6 +12,7 @@ describe('Vec2', function () {
             assert.equal(vec.x, 0, "Default Constructor x = 0");
             assert.equal(vec.y, 0, "Default Constructor y = 0");
             assert.equal(vec.equals(new Vec2(0,0)), true, "Checks against normal Constructor");
+            expect(vec.log()).to.equal("{0,0}");
         });
     });
 
@@ -20,6 +21,7 @@ describe('Vec2', function () {
             let vec = new Vec2(2,3);
             assert.equal(vec.x, 2);
             assert.equal(vec.y, 3);
+            expect(vec.getXY()).to.eql([2,3]);
         });
     });
 
@@ -85,6 +87,14 @@ describe('Vec2', function () {
 
         it('dot product', function () {
             assert.equal(vec1.dot(vec2), 5);
+        });
+
+        it('floor', function () {
+            let vec = new Vec2(3.5, 5.6);
+            let test = vec.floor();
+            expect(test).to.eql(new Vec2(3,5));
+            vec.floorS();
+            expect(vec).to.eql(new Vec2(3,5));
         });
     });
 });
