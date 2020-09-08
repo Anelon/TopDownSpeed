@@ -29,7 +29,7 @@ describe('Player', function () {
         it('Contructor made an player', function () {
             assert(player.location.equals(location), "Location is not set correctly");
             assert.strictEqual(player.imgSrc, imgSrc, "ImgSrc not set correctly");
-            assert(player.hitbox, hitbox, "Hitbox not set correctly");
+            expect(player.hitbox).to.eql(hitbox);
             assert.strictEqual(player.speed, speed, "Speed not set correctly");
             assert(player.lookDirection.equals(new Vec2(1,0)), "Default look not set correctly");
         });
@@ -67,6 +67,7 @@ describe('Player', function () {
             //force id to be the same
             expectedPlayer.id = player.id;
             player.speed = 0;
+            // @ts-ignore
             player.update(time, time.dt, null);
             expect(player).to.eql(expectedPlayer);
         });
@@ -76,6 +77,7 @@ describe('Player', function () {
             expectedPlayer.location.addS(new Vec2(1,0).multiplyScalarS(speed));
             //force id to be the same
             expectedPlayer.id = player.id;
+            // @ts-ignore
             player.update(time, time.dt, null);
             expect(player).to.eql(expectedPlayer);
         });
@@ -90,6 +92,23 @@ describe('Player', function () {
             expect(updated.location).to.eql(location);
             expect(updated.speed).to.eql(speed);
             expect(updated.hitbox).to.eql(hitbox);
+        });
+    });
+    context('UpdateInfo', function() {
+        it('Check that everything is updated in the player object', function() {
+            const object = player.makeObject();
+            const updated = JSON.parse(object.json);
+            player.currHealth = 10;
+            player.maxHealth = 20;
+            player.lookDirection = new Vec2(5,5);
+            player.location = new Vec2(5,5);
+            player.speed = 10;
+            player.updateInfo(updated);
+            expect(player.currHealth).to.eql(health);
+            expect(player.maxHealth).to.eql(health);
+            expect(player.location).to.eql(location);
+            expect(player.lookDirection).to.eql(new Vec2(1,0));
+            expect(player.speed).to.eql(speed);
         });
     });
     //TODO add tests for hit when hit is written
