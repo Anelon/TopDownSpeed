@@ -71,7 +71,7 @@ class Vec2 {
     }
     /**
      * Makes new Vec2 with this?s x and y multiplied by scalar
-     * @param {Vec2} scalar 
+     * @param {number} scalar 
      * @returns {Vec2}
      */
     multiplyScalar(scalar) {
@@ -81,7 +81,7 @@ class Vec2 {
     /**
      * Adds other?s x and y to this?s x and y
      * @param {Vec2} other 
-     * @returns {Vec2}
+     * @returns {Vec2} reference to this
      */
     addS(other) {
         this.x += other.x;
@@ -91,7 +91,7 @@ class Vec2 {
     /**
      * Subtracts other?s x and y to this?s x and y
      * @param {Vec2} other 
-     * @returns {Vec2}
+     * @returns {Vec2} reference to this
      */
     subS(other) {
         this.x -= other.x;
@@ -100,18 +100,17 @@ class Vec2 {
     }
     /**
      * Multiplies this?s x and y by scalar
-     * @param {Vec2} other 
-     * @returns {Vec2}
+     * @param {number} scalar 
+     * @returns {Vec2} reference to this
      */
     multiplyScalarS(scalar) {
         this.x *= scalar;
         this.y *= scalar;
         return this;
     }
-    //convert vector to unit
     /**
      * Converts this to a unit length Vec2
-     * @returns {Vec2}
+     * @returns {Vec2} reference to this
      */
     makeUnit() {
         let len = this.length();

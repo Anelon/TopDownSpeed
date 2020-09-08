@@ -1,6 +1,10 @@
 import Vec2 from "./vec2.js";
 import Point from "./point.js";
 import { Circle, Rectangle } from "./shapes.js";
+//import GameMap from "./map.js";
+import Time from "../clientJS/time.js";
+import { TYPES, CATEGORY } from "./enums.js";
+/* global GameMap */
 
 let idGen = 0;
 class Entity {
@@ -18,7 +22,7 @@ class Entity {
         if(!(location instanceof Vec2)) {
             throw TypeError("Entity: Location not Vec2");
         }
-        this.id = idGen++;
+        this.id = (idGen++).toString();
         this.location = location.clone();
         this.oldLocation = location.clone();
         //this.image = new Image();
@@ -28,6 +32,10 @@ class Entity {
         this.speed = speed;
         //mostly for debugging now
         this.overlapping = false;
+        this.damage = 0;
+
+        this.type = TYPES.basic;
+        this.category = CATEGORY.none;
     }
     get x() {
         return this.location.x;
@@ -55,7 +63,7 @@ class Entity {
 
     /**
      * Converts an Entity to a JSON object with the type as constructor name
-     * @returns {JSON}
+     * @returns {object}
      */
     makeObject() {
         let objectType = this.constructor.name;
@@ -67,14 +75,18 @@ class Entity {
      * Updates the Entity based on how much time has passed and the map state
      * @param {Time} time 
      * @param {number} dt The time sinse last frame
-     * @param {GameMap} map 
      */
-    update(time, dt, map) {
+    update(time, dt) {
         if(this.speed > 0) {
-            this.move(dt, this.lookDirection, map);
+            this.move(dt, this.lookDirection);
         }
     }
-    move(dt, direction, map) {
+    /**
+     * Moves the character in direction at this.speed * dt
+     * @param {number} dt 
+     * @param {Vec2} direction 
+     */
+    move(dt, direction) {
         if(!(direction instanceof Vec2)) {
             throw TypeError("Moveable move: Direction not Vec2");
         }
@@ -86,7 +98,8 @@ class Entity {
 
     /**
      * Given a JSON object it updates the entity
-     * @param {JSON} infoJSON Contains what needs to be updated
+     * @param {Entity} infoJSON Contains what needs to be updated
+     * @retruns {Entity}
      */
     updateInfo(infoJSON) {
         if(infoJSON.id) this.id = infoJSON.id;
@@ -101,12 +114,15 @@ class Entity {
         }
         return this;
     }
-    //placeholder for the colision to call when hit
-    //might want to return a bool saying if this should be deleted from the hit
+    /**
+     * Returns false saying do nothing be default to default entity
+     * @param {Entity} other 
+     */
     hit(other) {
+        return false;
     }
     //should be called when projectile hits max range
-    think(world) {
+    think(map) {
     }
 }
 
