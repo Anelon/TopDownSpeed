@@ -1,17 +1,19 @@
 import Projectile from "./projectile.js";
 import Vec2 from "./vec2.js";
+import Player from "./player.js";
 
 class Ability {
     /**
-     * 
-     * @param {string} abilityName 
-     * @param {string} abilityImgSrc 
-     * @param {number} speed 
-     * @param {number} range 
-     * @param {number} cooldownTime 
-     * @param {number} damage 
+     * @param {string} abilityName
+     * @param {string} abilityImgSrc
+     * @param {number} speed
+     * @param {number} range
+     * @param {number} cooldownTime
+     * @param {number} damage
+     * @param {typeof Projectile} projectileConstructor
+     * @param {Player} owner
      */
-    constructor(abilityName, abilityImgSrc, speed, range, cooldownTime, damage=10) {
+    constructor(abilityName, abilityImgSrc, speed, range, cooldownTime, damage, projectileConstructor, owner) {
         this.abilityName = abilityName;
         this.abilityImgSrc = abilityImgSrc;
         this.cooldownTime = cooldownTime;
@@ -19,6 +21,8 @@ class Ability {
         this.speed = speed;
         this.range = range;
         this.damage = damage;
+        this.projectileConstructor = projectileConstructor;
+        this.owner = owner;
     }
     //now is the current time
     /**
@@ -33,7 +37,7 @@ class Ability {
         if(now >= this.nextAvailable) {
             //make projectile
             const location = origin.clone().addS(look.getUnit().multiplyScalarS(offset))
-            const abilityProjectile = new Projectile(location, this.abilityName, this.abilityImgSrc, this.speed, look.clone(), this.range, this.damage);
+            const abilityProjectile = new this.projectileConstructor(location, this.abilityName, this.abilityImgSrc, this.speed, look.clone(), this.range, this.damage, this.owner);
             //console.log("Spawned: ", abilityProjectile);
 
             //set the cooldown
