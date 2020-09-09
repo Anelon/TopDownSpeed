@@ -33,6 +33,9 @@ class PlayerController extends Player {
         this.abilities = {
             [keyBinds.MELEE]: new Ability("Melee", "./img/arrow.png", 100, 100, 100),
             [keyBinds.RANGE]: new Ability("Arrow", "./img/arrow.png", 200, 100, 200),
+            [keyBinds.ABILITY1]: new Ability("Fireball", "./img/abilities/fireballGif.gif", 200, 100, 200),
+            [keyBinds.ABILITY2]: new Ability("Fireball", "./img/abilities/fireballGif.gif", 200, 100, 200),
+            [keyBinds.ABILITY3]: new Ability("Fireball", "./img/abilities/fireballGif.gif", 200, 100, 200),
         };
         //set up mouse object
         this.mouse = {
@@ -82,10 +85,13 @@ class PlayerController extends Player {
             this.moved = true;
         }
 
-        //abilities
+        // --- Abilities ---
+
+        //TODO make melee ability (currently debugging prints this)
         if(keyPress[keyBinds.MELEE]) {
             console.log(this);
         }
+        //basic arrow ability
         if(keyPress[keyBinds.RANGE]) {
             //attempt to use the ability
             let arrow = this.abilities[keyBinds.RANGE].use(time.now, this.location, this.look, this.offset);
@@ -96,6 +102,50 @@ class PlayerController extends Player {
                 map.addProjectile(arrow);
                 canvas.addDrawable(arrow);
                 socket.emit(CHANNELS.newProjectile, arrow.makeObject());
+            } else {
+                console.log("On CoolDown");
+            }
+        }
+
+        //TODO make ranged ability right now does fireball
+        if(keyPress[keyBinds.ABILITY1]) {
+            //attempt to use the ability
+            let fireball = this.abilities[keyBinds.ABILITY1].use(time.now, this.location, this.look, this.offset);
+            //if the ability was successful
+            if (fireball) {
+                //add projectile to the map
+                //console.log(fireball.location.log());
+                map.addProjectile(fireball);
+                canvas.addDrawable(fireball);
+                socket.emit(CHANNELS.newProjectile, fireball.makeObject());
+            } else {
+                console.log("On CoolDown");
+            }
+        }
+        if(keyPress[keyBinds.ABILITY2]) {
+            //attempt to use the ability
+            let waterball = this.abilities[keyBinds.ABILITY2].use(time.now, this.location, this.look, this.offset);
+            //if the ability was successful
+            if (waterball) {
+                //add projectile to the map
+                //console.log(waterball.location.log());
+                map.addProjectile(waterball);
+                canvas.addDrawable(waterball);
+                socket.emit(CHANNELS.newProjectile, waterball.makeObject());
+            } else {
+                console.log("On CoolDown");
+            }
+        }
+        if(keyPress[keyBinds.ABILITY3]) {
+            //attempt to use the ability
+            let plantSeed = this.abilities[keyBinds.ABILITY3].use(time.now, this.location, this.look, this.offset);
+            //if the ability was successful
+            if (plantSeed) {
+                //add projectile to the map
+                //console.log(plantSeed.location.log());
+                map.addProjectile(plantSeed);
+                canvas.addDrawable(plantSeed);
+                socket.emit(CHANNELS.newProjectile, plantSeed.makeObject());
             } else {
                 console.log("On CoolDown");
             }

@@ -99,36 +99,41 @@ class CanvasWrapper {
 	 * @param {CanvasImageSource} img Image to be drawn
 	 * @param {Vec2} origin Center of image
 	 * @param {Vec2} look Direction the image is looking at
-	 * @param {boolean} withOutline If an outline should be drawn
+	 * @param {boolean} [withOutline=false] If an outline should be drawn
+	 * @param {number} [scale=1] Image scale
 	 */
-	drawImageLookat(img, origin, look, withOutline = false) {
+	drawImageLookat(img, origin, look, withOutline = false, scale = 1) {
 		//save context 
 		this.ctx.save();
 
 		this.ctx.setTransform(1, 0, 0, 1, origin.x, origin.y);
 		this.ctx.rotate(Math.atan2(look.y, look.x)); // Adjust image 90 degree anti clockwise (PI/2) because the image  is pointing in the wrong direction.
+		// @ts-ignore
+		const imgWidthScale = img.width * scale;
+		// @ts-ignore
+		const imgHeightScale = img.height * scale;
 		if (withOutline) {
 			let dArr = [-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1], // offset array
-				s = 2,  // thickness scale
+				s = 2 + scale,  // thickness scale
 				i = 0,  // iterator
-				bx = -img.width / 2,  // image position
-				by = -img.height / 2;
+				bx = -img.width * scale / 2,  // image position
+				by = -img.height * scale / 2;
 
 			// draw images at offsets from the array scaled by s
 			for (; i < dArr.length; i += 2)
-				this.ctx.drawImage(img, bx + dArr[i] * s, by + dArr[i + 1] * s);
+				this.drawImage(img, bx + dArr[i] * s, by + dArr[i + 1] * s, scale);
 
 			// fill with color
 			//this.ctx.globalCompositeOperation = "source-in";
 			this.ctx.globalCompositeOperation = "source-atop";
 			this.ctx.fillStyle = "red";
 			// @ts-ignore image.width and height will be a number
-			this.ctx.fillRect(-img.width / 2 - s, -img.height / 2 - s, img.width + 2 * s, img.height + 2 * s);
+			this.ctx.fillRect(-img.width * scale / 2 - s, -img.height * scale / 2 - s, img.width * scale + 2 * s, img.height * scale + 2 * s);
 
 			// draw original image in normal mode
 			this.ctx.globalCompositeOperation = "source-over";
 		}
-		this.ctx.drawImage(img, -img.width / 2, -img.height / 2);
+		this.drawImage(img, (-img.width * scale) / 2, (-img.height * scale) / 2, scale);
 
 		//restore back to previous settings
 		this.ctx.restore();
@@ -138,16 +143,18 @@ class CanvasWrapper {
 	 * @param {CanvasImageSource} img Image to draw
 	 * @param {number} x X location of top right corner
 	 * @param {number} y Y location of top right corner
+	 * @param {number} [scale] Images X location to start drawing
 	 * @param {number} [sx=null] Images X location to start drawing
 	 * @param {number} [sy] 
 	 * @param {number} [width] Width of image to print
 	 * @param {number} [height] Height of image to print
 	 */
-	drawImage(img, x, y, sx = null, sy, width, height) {
+	drawImage(img, x, y, scale, sx = null, sy, width, height) {
 		if(sx !== null) {
-			this.ctx.drawImage(img, sx, sy, width, height, x, y, width, height);
+			this.ctx.drawImage(img, sx, sy, width, height, x, y, width * scale, height * scale);
 		} else {
-			this.ctx.drawImage(img, x, y);
+			// @ts-ignore
+			this.ctx.drawImage(img, 0, 0, img.width, img.height, x, y, img.width * scale, img.height * scale);
 		}
 	}
 
