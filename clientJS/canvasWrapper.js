@@ -108,30 +108,8 @@ class CanvasWrapper {
 
 		this.ctx.setTransform(1, 0, 0, 1, origin.x, origin.y);
 		this.ctx.rotate(Math.atan2(look.y, look.x)); // Adjust image 90 degree anti clockwise (PI/2) because the image  is pointing in the wrong direction.
-		// @ts-ignore
-		const imgWidthScale = img.width * scale;
-		// @ts-ignore
-		const imgHeightScale = img.height * scale;
 		if (withOutline) {
-			let dArr = [-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1], // offset array
-				s = 2 + scale,  // thickness scale
-				i = 0,  // iterator
-				bx = -img.width * scale / 2,  // image position
-				by = -img.height * scale / 2;
-
-			// draw images at offsets from the array scaled by s
-			for (; i < dArr.length; i += 2)
-				this.drawImage(img, bx + dArr[i] * s, by + dArr[i + 1] * s, scale);
-
-			// fill with color
-			//this.ctx.globalCompositeOperation = "source-in";
-			this.ctx.globalCompositeOperation = "source-atop";
-			this.ctx.fillStyle = "red";
-			// @ts-ignore image.width and height will be a number
-			this.ctx.fillRect(-img.width * scale / 2 - s, -img.height * scale / 2 - s, img.width * scale + 2 * s, img.height * scale + 2 * s);
-
-			// draw original image in normal mode
-			this.ctx.globalCompositeOperation = "source-over";
+			this.drawOutline(img, scale);
 		}
 		this.drawImage(img, (-img.width * scale) / 2, (-img.height * scale) / 2, scale);
 
@@ -156,6 +134,31 @@ class CanvasWrapper {
 			// @ts-ignore
 			this.ctx.drawImage(img, 0, 0, img.width, img.height, x, y, img.width * scale, img.height * scale);
 		}
+	}
+	/**
+	 * Draws an image with a vec2 origin, vec2 look direction, bool if you want to have an outline around the image
+	 * @param {CanvasImageSource} img Image to be outlined
+	 * @param {number} scale Scale of image
+	 */
+	drawOutline(img, scale) {
+		const dArr = [-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1], // offset array
+			s = 2 + scale,  // thickness scale
+			bx = -img.width * scale / 2,  // image position
+			by = -img.height * scale / 2;
+
+		// draw images at offsets from the array scaled by s
+		for (let i = 0; i < dArr.length; i += 2)
+			this.drawImage(img, bx + dArr[i] * s, by + dArr[i + 1] * s, scale);
+
+		// fill with color
+		//this.ctx.globalCompositeOperation = "source-in";
+		this.ctx.globalCompositeOperation = "source-atop";
+		this.ctx.fillStyle = "red";
+		// @ts-ignore image.width and height will be a number
+		this.ctx.fillRect(-img.width * scale / 2 - s, -img.height * scale / 2 - s, img.width * scale + 2 * s, img.height * scale + 2 * s);
+
+		// draw original image in normal mode
+		this.ctx.globalCompositeOperation = "source-over";
 	}
 
 	/**

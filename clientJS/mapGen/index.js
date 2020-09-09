@@ -26,16 +26,6 @@ canvas.addEventListener("mouseup", function(e) {
     updateRoom(regionStart, regionEnd, grassTileMap);
 });
 
-/*
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext('2d');
-const borderSize = 40;
-canvas.width = window.innerWidth - borderSize;
-canvas.height = window.innerHeight - borderSize;
-ctx.font = "18px arial";
-ctx.lineWidth = 1;
-*/
-
 let room = new Array();
 let mobs = new Map();
 
@@ -74,6 +64,9 @@ class Tile {
         this.isWalkable = isWalkable;
         this.around = around;
     }
+    /**
+     * @param {CanvasWrapper} canvas 
+     */
     draw(canvas) {
         this.tileImage.draw(canvas, this.location, this.around);
     }
