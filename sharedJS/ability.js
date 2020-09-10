@@ -1,6 +1,8 @@
 import Projectile from "./projectile.js";
 import Vec2 from "./vec2.js";
 import Player from "./player.js";
+import PlayerController from "../clientJS/playerController.js";
+import { Circle } from "./shapes.js";
 
 class Ability {
     /**
@@ -11,8 +13,10 @@ class Ability {
      * @param {number} cooldownTime
      * @param {number} damage
      * @param {typeof Projectile} projectileConstructor
+     * @param {number} projectileScale
+     * @param {Circle} projectileHitbox
      */
-    constructor(abilityName, abilityImgSrc, speed, range, cooldownTime, damage, projectileConstructor) {
+    constructor(abilityName, abilityImgSrc, speed, range, cooldownTime, damage, projectileConstructor, projectileScale, projectileHitbox) {
         this.abilityName = abilityName;
         this.abilityImgSrc = abilityImgSrc;
         this.cooldownTime = cooldownTime;
@@ -21,21 +25,24 @@ class Ability {
         this.range = range;
         this.damage = damage;
         this.projectileConstructor = projectileConstructor;
+        this.projectileScale = projectileScale;
+        this.projectileHitbox = projectileHitbox;
     }
     //now is the current time
     /**
      * Attempts to use the ability
      * @param {number} now Current time
-     * @param {Vec2} origin Starting location of projecile
-     * @param {Vec2} look Direction projectile is aimed
-     * @param {number} offset How far from origin to spawn the ability
+     * @param {PlayerController} owner How far from origin to spawn the ability
      * @returns {Projectile|null} Spawned projectile if it was avaialable
      */
-    use(now, origin, look, offset, owner) {
+    use(now, owner) {
         if(now >= this.nextAvailable) {
+            const offset = owner.hitbox.width + this.projectileHitbox.width;
             //make projectile
-            const location = origin.clone().addS(look.getUnit().multiplyScalarS(offset))
-            const abilityProjectile = new this.projectileConstructor(location, this.abilityName, this.abilityImgSrc, this.speed, look.clone(), this.range, this.damage, owner);
+            const location = owner.location.clone().addS(owner.look.getUnit().multiplyScalarS(offset));
+            const abilityProjectile = new this.projectileConstructor(
+                location, this.abilityName, this.abilityImgSrc, this.speed, this.projectileScale, owner.look.clone(), this.range, this.damage, this.projectileHitbox, owner
+            );
             //console.log("Spawned: ", abilityProjectile);
 
             //set the cooldown

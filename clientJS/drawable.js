@@ -4,11 +4,13 @@ import Vec2 from "../sharedJS/vec2.js";
 class Drawable {
     /**
      * @param {import("../sharedJS/entity.js").default | import("../sharedJS/player.js").default | import("../sharedJS/projectile.js").default} owner
+     * @param {number} scale
      */
-    constructor(owner) {
+    constructor(owner, scale) {
         this.owner = owner;
         this.image = new Image();
         this.image.src = owner.imgSrc;
+        this.scale = scale;
         console.log(this.image);
     }
     //function to pass an update to the owner
@@ -23,7 +25,7 @@ class Drawable {
      * @param {CanvasWrapper} canvas
      */
     draw(canvas) {
-        canvas.drawImageLookat(this.image, this.owner.location, this.owner.lookDirection, this.owner.overlapping);
+        canvas.drawImageLookat(this.image, this.owner.location, this.owner.lookDirection, this.owner.overlapping, this.scale);
         //if object has health draw health bar, might change this to be just player or monsters later
         if(this.owner.maxHealth) {
             this.drawHealthBar(canvas);

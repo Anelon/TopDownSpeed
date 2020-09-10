@@ -2,7 +2,7 @@ import { DIRBITS, DIRS } from "./dirsMap.js";
 import CanvasWrapper from "./canvasWrapper.js";
 import Vec2 from "../sharedJS/vec2.js";
 
-export default class TileMap {
+export default class TileSprite {
     //strange JS way of doing const static
     static get width() { return 16 };
     static get height() { return 16 };
@@ -14,19 +14,20 @@ export default class TileMap {
      */
     constructor(imgSrc, char, connects = [char]) {
         //add one to imagesLoading
-        TileMap.imagesToLoad++;
+        TileSprite.imagesToLoad++;
         this.imgSrc = imgSrc;
         this.image = new Image();
         this.image.addEventListener('load', () => {
-            this.tilesWide = this.image.width / TileMap.width;
-            TileMap.imagesToLoad--;
-            if (TileMap.imagesToLoad === 0) {
+            this.tilesWide = this.image.width / TileSprite.width;
+            TileSprite.imagesToLoad--;
+            if (TileSprite.imagesToLoad === 0) {
                 //drawMap();
             }
         });
         this.image.src = imgSrc;
         this.char = char;
         this.connects = connects;
+        this.scale = 2;
     }
     /**
      * @param {number} around bitmap with the tiles that are around this
@@ -130,25 +131,25 @@ static aroundToIndex(around) {
      * @param {number} around Bitmap of similar tiles that are around this
      */
     draw(canvas, location, around = null) {
-        const x = location.x * TileMap.width;
-        const y = location.y * TileMap.height;
+        const x = location.x * TileSprite.width * this.scale;
+        const y = location.y * TileSprite.height * this.scale;
         if (around !== null) {
             let sx = 0, sy = 0;
             //if it doesn't contain around I probably did something wrong but default to the first tile in the map
-            let index = TileMap.aroundToIndex(around);
+            let index = TileSprite.aroundToIndex(around);
             if (index !== -1) {
-                sx = Math.floor(index % this.tilesWide) * TileMap.width;
-                sy = Math.floor(index / this.tilesWide) * TileMap.height;
+                sx = Math.floor(index % this.tilesWide) * TileSprite.width;
+                sy = Math.floor(index / this.tilesWide) * TileSprite.height;
             } else {
                 console.log(location.log(), "tile not found ", around.toString(2));
-                let aroundStr = TileMap.aroundToString(around);
+                let aroundStr = TileSprite.aroundToString(around);
                 console.log(aroundStr);
             }
             //console.log("sx: ", sx, " sy: ", sy);
-            canvas.drawImage(this.image, x, y, 2, sx, sy, TileMap.width, TileMap.height);
+            canvas.drawImage(this.image, x, y, 2, sx, sy, TileSprite.width, TileSprite.height);
             //ctx.drawImage(this.image, x, y);
         } else {
-            canvas.drawImage(this.image, x, y);
+            canvas.drawImage(this.image, x, y, this.scale);
         }
     }
 }

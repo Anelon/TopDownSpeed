@@ -7,7 +7,7 @@ import CanvasWrapper from "./canvasWrapper.js";
 import PlayerController from "./playerController.js";
 import CHANNELS from "../sharedJS/channels.js";
 import Projectile from "../sharedJS/projectile.js";
-import { TYPES } from "../sharedJS/enums.js";
+import { TYPES, CATEGORY } from "../sharedJS/enums.js";
 import Player from "../sharedJS/player.js";
 
 //setup the sockets and listening
@@ -22,6 +22,7 @@ let collisionEngine = new CollisionEngine(canvas.width, canvas.height);
 let time = new Time();
 
 let bounds = canvas.getBoundingClientRect();
+/** @type {PlayerController} */
 let you;
 
 //set up socket listening
@@ -46,7 +47,6 @@ socket.on(CHANNELS.newPlayer, function(playerInfo) {
     //this should be redundant as when you span you probably should have full health
     you.currHealth = currHealth;
     if (!playerExists) {
-        // @ts-ignore
         collisionEngine.addPlayer(you);
     } else {
 
@@ -56,9 +56,10 @@ socket.on(CHANNELS.newPlayer, function(playerInfo) {
 });
 socket.on(CHANNELS.newProjectile, function(newProjectile) {
     const updated = JSON.parse(newProjectile.json);
-    //console.log("From Server", updated);
+    console.log("From Server", updated);
     const projectile = Projectile.makeFromJSON(updated);
     collisionEngine.addProjectile(projectile);
+    //TODO make Sprite (make canvaswrapper compattable with sprites)
     canvas.addDrawable(projectile);
 });
 socket.on(CHANNELS.playerMove, function(playerInfo) {
@@ -83,14 +84,16 @@ socket.on(CHANNELS.deletePlayer, function(playerID) {
  * @param {number} step Tick rate of server
  */
 function update(time, step) {
-    //TODO move to serverside 
-    //change to send and receive information
+    //update the PlayerController
     you.update(time, step, collisionEngine, canvas, socket);
+
+    //run the collision engine and catch anything flagged for deleting
     const deleteArray = collisionEngine.update(time, step, canvas);
     for(const item of deleteArray) {
-        if(item.type === TYPES.player) {
-            //ignore
+        if(item.category === CATEGORY.player) {
+            //TODO respawn player (or have server respawn player)
         } else {
+            console.log("Deleting", item)
             collisionEngine.removeProjectile(/** @type {Projectile} */(item));
             canvas.removeDrawable(item);
         }

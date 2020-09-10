@@ -14,9 +14,9 @@ class Player extends Entity {
      * @param {string} imgSrc Client Path to image
      * @param {number} speed 
      * @param {number} health 
-     * @param {Circle} [hitbox=new Circle(location, 16)]
+     * @param {Circle} [hitbox=new Circle(location, 64)]
      */
-    constructor(location, name, imgSrc, speed, health, hitbox=new Circle(location,16)) {
+    constructor(location, name, imgSrc, speed, health, hitbox=new Circle(location,64)) {
         console.assert(typeof health === "number");
         let newHitbox = hitbox;
         super(location, imgSrc, newHitbox, speed);
@@ -25,7 +25,7 @@ class Player extends Entity {
         this.currHealth = health;
         
         this.type = TYPES.basic;
-        this.category = CATEGORY.damageable;
+        this.category = CATEGORY.player;
     }
     /**
      * Updates where the player is based on the json data given

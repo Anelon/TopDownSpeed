@@ -13,9 +13,11 @@ export default class Fireball extends Projectile {
      * @param {number} range
      * @param {number} damage
      * @param {import("./player").default} owner
+     * @param {number} scale
+     * @param {import("./shapes.js").Circle} hitbox
      */
-    constructor(origin, name, imgSrc, speed, look, range, damage, owner) {
-        super(origin, name, imgSrc, speed, look, range, damage, owner);
+    constructor(origin, name, imgSrc, speed, scale, look, range, damage, hitbox, owner) {
+        super(origin, name, imgSrc, speed, scale, look, range, damage, hitbox, owner);
 
         this.type = TYPES.fire;
     }
@@ -26,7 +28,7 @@ export default class Fireball extends Projectile {
      */
     hit(other) {
         //if hitting a player deal damage
-        if(other.category === CATEGORY.damageable) {
+        if(other.category === CATEGORY.damageable || other.category === CATEGORY.player) {
             /** @type {Player} */(other).currHealth -= this.damage;
             //console.log(/** @type {Player} */(other).currHealth, this.damage);
             return true;

@@ -62,7 +62,7 @@ class CanvasWrapper {
 			this.drawables.set(drawable.owner.id, drawable);
 			//this.drawables.push(drawable);
 		} else {
-			this.drawables.set(drawable.id, new Drawable(drawable));
+			this.drawables.set(drawable.id, new Drawable(drawable, drawable.scale));
 		}
 	}
 	/**
@@ -121,7 +121,7 @@ class CanvasWrapper {
 	 * @param {CanvasImageSource} img Image to draw
 	 * @param {number} x X location of top right corner
 	 * @param {number} y Y location of top right corner
-	 * @param {number} [scale] Images X location to start drawing
+	 * @param {number} scale Images X location to start drawing
 	 * @param {number} [sx=null] Images X location to start drawing
 	 * @param {number} [sy] 
 	 * @param {number} [width] Width of image to print

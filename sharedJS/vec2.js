@@ -77,6 +77,14 @@ class Vec2 {
     multiplyScalar(scalar) {
         return new Vec2(this.x * scalar, this.y * scalar);
     }
+    /**
+     * Makes new Vec2 with this's x and y multiplied by other's x and y
+     * @param {Vec2} other 
+     * @returns {Vec2}
+     */
+    multiplyVec(other) {
+        return new Vec2(this.x * other.x, this.y * other.y);
+    }
     //does operation on this
     /**
      * Adds other?s x and y to this?s x and y
@@ -112,6 +120,16 @@ class Vec2 {
      * Converts this to a unit length Vec2
      * @returns {Vec2} reference to this
      */
+    /**
+     * Multiplies this's x and y multiplied by other's x and y
+     * @param {Vec2} other 
+     * @returns {Vec2}
+     */
+    multiplyVecS(other) {
+        this.x * other.x;
+        this.y * other.y;
+        return this;
+    }
     makeUnit() {
         let len = this.length();
         this.x /= len;
@@ -147,6 +165,12 @@ class Vec2 {
      */
     floor() {
         return new Vec2(Math.floor(this.x), Math.floor(this.y));
+    }
+    /**
+     * Makes new Vec2 with inverted x and y
+     */
+    invert() {
+        return new Vec2(1/this.x, 1/this.y);
     }
 }
 

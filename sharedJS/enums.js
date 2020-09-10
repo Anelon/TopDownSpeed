@@ -15,6 +15,7 @@ const CATEGORY = {
     void: "void",
     //can be damaged
     damageable: "damageable",
+    player: "player",
     //Projectile
     projectile: "projectile",
     //base

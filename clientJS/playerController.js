@@ -31,15 +31,11 @@ class PlayerController extends Player {
         super(location, name, imgSrc, speed, health, hitbox);
         this.name = name;
         this.image = image;
-        this.offset = image.width * 2;
 
         //create default abilities
         this.abilities = {
-            // @ts-ignore
-            [keyBinds.MELEE]: new Ability("Melee", "./img/arrow.png", 100, 100, 100, 10, Projectile),
-            // @ts-ignore
-            [keyBinds.RANGE]: new Ability("Arrow", "./img/arrow.png", 200, 100, 200, 10, Projectile),
-            // @ts-ignore
+            [keyBinds.MELEE]: new Ability("Melee", "./img/arrow.png", 100, 100, 100, 10, Projectile, 1, new Circle(new Vec2(), 16)),
+            [keyBinds.RANGE]: new Ability("Arrow", "./img/arrow.png", 200, 100, 200, 10, Projectile, 1, new Circle(new Vec2(), 16)),
             [keyBinds.ABILITY1]: new FireballAbility(),
             [keyBinds.ABILITY2]: new WaterballAbility(),
             [keyBinds.ABILITY3]: new PlantSeedAbility(),
@@ -62,15 +58,13 @@ class PlayerController extends Player {
         return this.lookDirection;
     }
     /**
-     * 
-     * @param {Time} time 
-     * @param {number} step 
-     * @param {CollisionEngine} collisions 
-     * @param {CanvasWrapper} canvas 
-     * @param {*} socket 
+     * @param {Time} time
+     * @param {number} dt
+     * @param {CollisionEngine} [collisions]
+     * @param {CanvasWrapper} [canvas]
+     * @param {any} [socket]
      */
-    // @ts-ignore
-    update(time, step, collisions, canvas, socket) {
+    update(time, dt, collisions, canvas, socket) {
         this.moved = false;
         //console.log(step);
         let direction = new Vec2();
@@ -88,7 +82,7 @@ class PlayerController extends Player {
             direction.x += 1;
         }
         if(direction.x || direction.y) {
-            this.move(step, direction);
+            this.move(dt, direction);
             this.moved = true;
         }
 
@@ -97,11 +91,12 @@ class PlayerController extends Player {
         //TODO make melee ability (currently debugging prints this)
         if(keyPress[keyBinds.MELEE]) {
             console.log(this);
+            console.log(collisions.projectiles);
         }
         //basic arrow ability
         if(keyPress[keyBinds.RANGE]) {
             //attempt to use the ability
-            let arrow = this.abilities[keyBinds.RANGE].use(time.now, this.location, this.look, this.offset, this);
+            let arrow = this.abilities[keyBinds.RANGE].use(time.now, this);
             //if the ability was successful
             if (arrow) {
                 //add projectile to the collisions
@@ -117,7 +112,7 @@ class PlayerController extends Player {
         //TODO make ranged ability right now does fireball
         if(keyPress[keyBinds.ABILITY1]) {
             //attempt to use the ability
-            let fireball = this.abilities[keyBinds.ABILITY1].use(time.now, this.location, this.look, this.offset, this);
+            let fireball = this.abilities[keyBinds.ABILITY1].use(time.now, this);
             //if the ability was successful
             if (fireball) {
                 //add projectile to the collisions
@@ -131,7 +126,7 @@ class PlayerController extends Player {
         }
         if(keyPress[keyBinds.ABILITY2]) {
             //attempt to use the ability
-            let waterball = this.abilities[keyBinds.ABILITY2].use(time.now, this.location, this.look, this.offset, this);
+            let waterball = this.abilities[keyBinds.ABILITY2].use(time.now, this);
             //if the ability was successful
             if (waterball) {
                 //add projectile to the collisions
@@ -145,7 +140,7 @@ class PlayerController extends Player {
         }
         if(keyPress[keyBinds.ABILITY3]) {
             //attempt to use the ability
-            let plantSeed = this.abilities[keyBinds.ABILITY3].use(time.now, this.location, this.look, this.offset, this);
+            let plantSeed = this.abilities[keyBinds.ABILITY3].use(time.now, this);
             //if the ability was successful
             if (plantSeed) {
                 //add projectile to the collisions

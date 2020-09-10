@@ -1,13 +1,14 @@
 import Vec2 from "../../sharedJS/vec2.js";
 import CanvasWrapper from "../canvasWrapper.js";
-import TileMap from "../tileMap.js";
+import TileSprite from "../tileSprite.js";
 import { DIRS, DIRBITS } from "../dirsMap.js";
+import { tileSprites } from "../sprites.js";
 
 //Globals
 let width = 0;
 let height = 0;
 //set up canvas
-const canvas = new CanvasWrapper();
+const canvas = new CanvasWrapper({tileSize: new Vec2(32,32)});
 let bounds = canvas.getBoundingClientRect();
 
 let regionStart = new Vec2();
@@ -15,31 +16,20 @@ let regionEnd = new Vec2();
 canvas.addEventListener("mousedown", function(e) {
     //console.log(e);
     const clickLocation = new Vec2(e.offsetX, e.offsetY);
-    regionStart = clickLocation.multiplyScalar(1 / TileMap.width).floorS();
+    regionStart = clickLocation.multiplyVec(canvas.tileSize.invert()).floorS();
     //console.log(clickLocation.log(), regionStart.log());
 });
 canvas.addEventListener("mouseup", function(e) {
     //console.log(e);
     const clickLocation = new Vec2(e.offsetX, e.offsetY);
-    regionEnd = clickLocation.multiplyScalar(1 / TileMap.width).floorS();
+    console.log(canvas.tileSize.invert());
+    regionEnd = clickLocation.multiplyVec(canvas.tileSize.invert()).floorS();
     //console.log(clickLocation.log(), regionEnd.log());
-    updateRoom(regionStart, regionEnd, grassTileMap);
+    updateRoom(regionStart, regionEnd, tileSprites.get("grassTileMap"));
 });
 
 let room = new Array();
 let mobs = new Map();
-
-const tileMapPath = "/img/tileMaps/";
-const grassTileMap = new TileMap(tileMapPath + "grasstiles.png", "g", ["g","d"]);
-const snowTileMap = new TileMap(tileMapPath + "snowTiles.png", "s");
-const dirtTileMap = new TileMap(tileMapPath + "dirtPathTiles.png", "d");
-const waterTileMap = new TileMap(tileMapPath + "waterTiles.png", "w");
-
-const tileImages = new Array();
-tileImages.push(grassTileMap);
-tileImages.push(snowTileMap);
-tileImages.push(dirtTileMap);
-tileImages.push(waterTileMap);
 
 
 
@@ -47,19 +37,19 @@ class Tile {
     /**
      * Constructor
      * @param {Vec2} location 
-     * @param {TileMap} tileImage 
+     * @param {TileSprite} tileSprite 
      * @param {boolean} isWalkable 
      * @param {number} around 
      */
-    constructor(location, tileImage, isWalkable, around) {
+    constructor(location, tileSprite, isWalkable, around) {
         console.assert((location instanceof Vec2), "Location not a Vec2", location);
-        console.assert((tileImage instanceof TileMap), "tileImage not a TileMap", tileImage);
-        console.assert((typeof (isWalkable) === 'boolean'), "tileImage not a TileImage", tileImage);
+        console.assert((tileSprite instanceof TileSprite), "tileSprite not a TileSprite", tileSprite);
+        console.assert((typeof (isWalkable) === 'boolean'), "tileSprite not a TileImage", tileSprite);
 
         //location
         this.location = location;
         //image
-        this.tileImage = tileImage;
+        this.tileSprite = tileSprite;
         //walkable
         this.isWalkable = isWalkable;
         this.around = around;
@@ -68,7 +58,7 @@ class Tile {
      * @param {CanvasWrapper} canvas 
      */
     draw(canvas) {
-        this.tileImage.draw(canvas, this.location, this.around);
+        this.tileSprite.draw(canvas, this.location, this.around);
     }
 }
 
@@ -97,7 +87,7 @@ function getAround(i, j, curr) {
     return around;
 }
 
-function setTile(tileCoord, tileImage) {
+function setTile(tileCoord, tileSprite) {
     room[tileCoord.y][tileCoord.x] = "g";
 }
 
@@ -115,10 +105,10 @@ async function drawMap() {
     for (let j = 0; j < height; j++) {
         for (let i = 0; i < width; i++) {
             const curr = room[j][i];
-            for(const tileImage of tileImages) {
-                if (curr === tileImage.char) {
-                    const around = getAround(i, j, tileImage.connects);
-                    const tile = new Tile(new Vec2(i, j), tileImage, false, around);
+            for(const tileSprite of tileSprites.values()) {
+                if (curr === tileSprite.char) {
+                    const around = getAround(i, j, tileSprite.connects);
+                    const tile = new Tile(new Vec2(i, j), tileSprite, false, around);
                     tile.draw(canvas);
                 }
             }
@@ -128,6 +118,7 @@ async function drawMap() {
     canvas.drawGrid();
 }
 
+//TODO move to GameMap class
 function mapInit() {
     //clear the room
     room = new Array();
@@ -157,9 +148,9 @@ mapInit();
  * Updates the room from start to end with TileImage
  * @param {Vec2} regionStart 
  * @param {Vec2} regionEnd 
- * @param {TileMap} tileImage 
+ * @param {TileSprite} tileSprite 
  */
-function updateRoom(regionStart, regionEnd, tileImage) {
+function updateRoom(regionStart, regionEnd, tileSprite) {
     console.assert(regionStart instanceof Vec2, "regionStart Not Vec2", regionStart);
     console.assert(regionEnd instanceof Vec2, "regionEnd Not Vec2", regionEnd);
     console.log(regionStart, regionEnd);
@@ -174,8 +165,9 @@ function updateRoom(regionStart, regionEnd, tileImage) {
     //build replacement string
     let newStr = "";
     for (let i = startX; i <= endX; i++) {
-        newStr += tileImage.char;
+        newStr += tileSprite.char;
     }
+    //for each y replace section
     for(let j = startY; j <= endY; j++) {
         room[j] = room[j].slice(0, startX) + newStr + room[j].slice(endX+1);
     }
