@@ -12,8 +12,12 @@ class Drawable {
         console.log(this.image);
     }
     //function to pass an update to the owner
-    update(dt, map) {
-        this.owner.update(dt, map);
+    /**
+     * @param {import("./time.js").default} time
+     * @param {number} dt
+     */
+    update(time, dt) {
+        this.owner.update(time, dt);
     }
     /**
      * @param {CanvasWrapper} canvas
@@ -26,7 +30,7 @@ class Drawable {
         }
     }
     /**
-     * Draws the health Bar on the canvas (warning only call in clientside code)
+     * Draws the health Bar on the canvas
      * @param {CanvasWrapper} canvas 
      */
     drawHealthBar(canvas) {

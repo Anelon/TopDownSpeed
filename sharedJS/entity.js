@@ -1,10 +1,8 @@
 import Vec2 from "./vec2.js";
 import Point from "./point.js";
 import { Circle, Rectangle } from "./shapes.js";
-//import GameMap from "./map.js";
 import Time from "../clientJS/time.js";
 import { TYPES, CATEGORY } from "./enums.js";
-/* global GameMap */
 
 let idGen = 0;
 class Entity {

@@ -11,13 +11,13 @@ import Entity from "./entity.js";
 //import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 
 
-class GameMap {
+export default class CollisionEngine {
     /**
-     * Constructs a GameMap
+     * Constructs a CollisionEngine
      * @param {number} width Width of map region
      * @param {number} height Height of map region
      */
-    constructor(width, height) {//TODO: add mapdata
+    constructor(width, height) {
         this.width = width;
         this.height = height;
 
@@ -159,5 +159,3 @@ class GameMap {
         this.projectiles.delete(oldProjectile.id);
     }
 }
-
-export default GameMap;

@@ -1,4 +1,4 @@
-import Map from "../sharedJS/map.js";
+import CollisionEngine from "../sharedJS/collisionEngine.js";
 import Vec2 from "../sharedJS/vec2.js";
 import Time from "./time.js";
 import CanvasWrapper from "./canvasWrapper.js";
@@ -18,7 +18,7 @@ let socket = io();
 const defaultImg = './img/arrow.png';
 
 let canvas = new CanvasWrapper();
-let map = new Map(canvas.width, canvas.height);
+let collisionEngine = new CollisionEngine(canvas.width, canvas.height);
 let time = new Time();
 
 let bounds = canvas.getBoundingClientRect();
@@ -47,7 +47,7 @@ socket.on(CHANNELS.newPlayer, function(playerInfo) {
     you.currHealth = currHealth;
     if (!playerExists) {
         // @ts-ignore
-        map.addPlayer(you);
+        collisionEngine.addPlayer(you);
     } else {
 
     }
@@ -58,23 +58,23 @@ socket.on(CHANNELS.newProjectile, function(newProjectile) {
     const updated = JSON.parse(newProjectile.json);
     //console.log("From Server", updated);
     const projectile = Projectile.makeFromJSON(updated);
-    map.addProjectile(projectile);
+    collisionEngine.addProjectile(projectile);
     canvas.addDrawable(projectile);
 });
 socket.on(CHANNELS.playerMove, function(playerInfo) {
     const updated = JSON.parse(playerInfo.json);
     //console.log(updated);
-    const newPlayer = map.updatePlayer(updated);
+    const newPlayer = collisionEngine.updatePlayer(updated);
     if(newPlayer) canvas.addDrawable(/** @type {Player} */(newPlayer));
 });
 socket.on(CHANNELS.deletePlayer, function(playerID) {
     console.log("Deleting", playerID);
-    map.removePlayer(playerID);
+    collisionEngine.removePlayer(playerID);
     canvas.removeDrawable(playerID);
 });
 
-//let enemy = new Monster(new Vec2(map.width/2, map.height/2), defaultImg, defaultSpeed);
-//map.players.push(enemy);
+//let enemy = new Monster(new Vec2(collisionEngine.width/2, collisionEngine.height/2), defaultImg, defaultSpeed);
+//collisionEngine.players.push(enemy);
 
 //Updates the game state
 /**
@@ -85,13 +85,13 @@ socket.on(CHANNELS.deletePlayer, function(playerID) {
 function update(time, step) {
     //TODO move to serverside 
     //change to send and receive information
-    you.update(time, step, map, canvas, socket);
-    const deleteArray = map.update(time, step, canvas);
+    you.update(time, step, collisionEngine, canvas, socket);
+    const deleteArray = collisionEngine.update(time, step, canvas);
     for(const item of deleteArray) {
         if(item.type === TYPES.player) {
             //ignore
         } else {
-            map.removeProjectile(/** @type {Projectile} */(item));
+            collisionEngine.removeProjectile(/** @type {Projectile} */(item));
             canvas.removeDrawable(item);
         }
     }
@@ -104,7 +104,7 @@ const step = 1/30; // 30 tics per second
  * @param {PlayerController} you 
  */
 function render(you) {
-    //clear the map
+    //clear the collisionEngine
     canvas.clear();
 
     //probably best to move this to update rather than render

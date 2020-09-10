@@ -2,15 +2,19 @@ import io from "socket.io";
 import Vec2 from "../sharedJS/vec2.js";
 import Player from "../sharedJS/player.js";
 import CHANNELS from "../sharedJS/channels.js";
-import GameMap from "../sharedJS/map.js";
+import CollisionEngine from "../sharedJS/collisionEngine.js";
 import Projectile from "../sharedJS/projectile.js";
 
 class Connections {
-    constructor(server, map, connections = {}) {
-        if(!(map instanceof GameMap)) throw TypeError("map is not a Map object;");
+    /**
+     * @param {import("http").Server | import("https").Server} server
+     * @param {CollisionEngine} collisionEngine
+     */
+    constructor(server, collisionEngine, connections = {}) {
+        if(!(collisionEngine instanceof CollisionEngine)) throw TypeError("collisionEngine is not a collisionEngine object;");
         this.sockets = io(server);
         this.connections = connections;
-        this.map = map;
+        this.collisionEngine = collisionEngine;
     }
 
     start() {
@@ -22,16 +26,16 @@ class Connections {
             //set player id to client id for easier lookup
             player.id = client.id;
             console.log(player);
-            this.map.addPlayer(player);
+            this.collisionEngine.addPlayer(player);
             client.emit(CHANNELS.newPlayer, player.makeObject());
             this.broadcast(CHANNELS.playerMove, player.makeObject(), client);
-            //console.log("map:", this.map.players);
+            //console.log("collisionEngine:", this.collisionEngine.players);
 
             client.on("disconnect", (event) => {
                 console.log("a user has disconnected");
                 this.broadcast(CHANNELS.deletePlayer, client.id);
-                this.map.removePlayer(client.id);
-                //console.log("map:", this.map.players);
+                this.collisionEngine.removePlayer(client.id);
+                //console.log("collisionEngine:", this.collisionEngine.players);
             });
 
             client.on("event", (event) => {
@@ -41,7 +45,7 @@ class Connections {
             client.on(CHANNELS.playerMove, (playerInfo) => {
                 let updated = JSON.parse(playerInfo.json);
                 //console.log("PlayerMove: ", updated);
-                this.map.updatePlayer(updated);
+                this.collisionEngine.updatePlayer(updated);
                 //TODO: add validation of move here
                 //broadcast the message (add client to prevent echoing)
                 this.broadcast(CHANNELS.playerMove, playerInfo, client);
@@ -50,8 +54,8 @@ class Connections {
             client.on(CHANNELS.newProjectile, (newProjectile) => {
                 const updated = JSON.parse(newProjectile.json);
                 //console.log(updated);
-                this.map.addProjectile(Projectile.makeFromJSON(updated));
-                //console.log(this.map);
+                this.collisionEngine.addProjectile(Projectile.makeFromJSON(updated));
+                //console.log(this.collisionEngine);
                 //TODO: add validation of move here
                 //broadcast the message (add client to prevent echoing)
                 this.broadcast(CHANNELS.newProjectile, newProjectile, client);
@@ -60,11 +64,19 @@ class Connections {
         });
     }
 
+    /**
+     * @param {{ id: string | number; }} client
+     */
     add(client) {
         this.connections[client.id] = client;
     }
 
     //broadcasts a message on a channel, if sender exists it sends to everyone else
+    /**
+     * @param {string} channel
+     * @param {string} message
+     * @param {io.Socket} [sender]
+     */
     broadcast(channel, message, sender) {
         if(sender) {
             sender.broadcast.emit(channel, message);

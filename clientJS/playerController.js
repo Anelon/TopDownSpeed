@@ -4,7 +4,7 @@ import Ability from "../sharedJS/ability.js";
 import CHANNELS from "../sharedJS/channels.js";
 import Player from "../sharedJS/player.js";
 import { keyBinds, keyPress } from "./keyBinds.js";
-import GameMap from "../sharedJS/map.js";
+import CollisionEngine from "../sharedJS/collisionEngine.js";
 import CanvasWrapper from "./canvasWrapper.js";
 import Time from "./time.js";
 import Projectile from "../sharedJS/projectile.js";
@@ -65,12 +65,12 @@ class PlayerController extends Player {
      * 
      * @param {Time} time 
      * @param {number} step 
-     * @param {GameMap} map 
+     * @param {CollisionEngine} collisions 
      * @param {CanvasWrapper} canvas 
      * @param {*} socket 
      */
     // @ts-ignore
-    update(time, step, map, canvas, socket) {
+    update(time, step, collisions, canvas, socket) {
         this.moved = false;
         //console.log(step);
         let direction = new Vec2();
@@ -104,9 +104,9 @@ class PlayerController extends Player {
             let arrow = this.abilities[keyBinds.RANGE].use(time.now, this.location, this.look, this.offset, this);
             //if the ability was successful
             if (arrow) {
-                //add projectile to the map
+                //add projectile to the collisions
                 //console.log(arrow.location.log());
-                map.addProjectile(arrow);
+                collisions.addProjectile(arrow);
                 canvas.addDrawable(arrow);
                 socket.emit(CHANNELS.newProjectile, arrow.makeObject());
             } else {
@@ -120,9 +120,9 @@ class PlayerController extends Player {
             let fireball = this.abilities[keyBinds.ABILITY1].use(time.now, this.location, this.look, this.offset, this);
             //if the ability was successful
             if (fireball) {
-                //add projectile to the map
+                //add projectile to the collisions
                 //console.log(fireball.location.log());
-                map.addProjectile(fireball);
+                collisions.addProjectile(fireball);
                 canvas.addDrawable(fireball);
                 socket.emit(CHANNELS.newProjectile, fireball.makeObject());
             } else {
@@ -134,9 +134,9 @@ class PlayerController extends Player {
             let waterball = this.abilities[keyBinds.ABILITY2].use(time.now, this.location, this.look, this.offset, this);
             //if the ability was successful
             if (waterball) {
-                //add projectile to the map
+                //add projectile to the collisions
                 //console.log(waterball.location.log());
-                map.addProjectile(waterball);
+                collisions.addProjectile(waterball);
                 canvas.addDrawable(waterball);
                 socket.emit(CHANNELS.newProjectile, waterball.makeObject());
             } else {
@@ -148,9 +148,9 @@ class PlayerController extends Player {
             let plantSeed = this.abilities[keyBinds.ABILITY3].use(time.now, this.location, this.look, this.offset, this);
             //if the ability was successful
             if (plantSeed) {
-                //add projectile to the map
+                //add projectile to the collisions
                 //console.log(plantSeed.location.log());
-                map.addProjectile(plantSeed);
+                collisions.addProjectile(plantSeed);
                 canvas.addDrawable(plantSeed);
                 socket.emit(CHANNELS.newProjectile, plantSeed.makeObject());
             } else {
@@ -179,7 +179,7 @@ class PlayerController extends Player {
         canvas.drawHealthBar(origin, healthBarDimentions, this.currHealth, this.maxHealth);
     }
     mouseEvent(e) {  // get the mouse coordinates relative to the canvas top left
-        //let bounds = map.canvas.getBoundingClientRect();
+        //let bounds = collisions.canvas.getBoundingClientRect();
         this.mouse.x = e.pageX - this.bounds.left;
         this.mouse.y = e.pageY - this.bounds.top;
         this.mouse.cx = e.clientX - this.bounds.left; // to compare the difference between client and page coordinates
