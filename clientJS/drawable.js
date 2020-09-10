@@ -2,15 +2,22 @@ import CanvasWrapper from "./canvasWrapper.js";
 import Vec2 from "../sharedJS/vec2.js";
 
 class Drawable {
+    /**
+     * @param {import("../sharedJS/entity.js").default | import("../sharedJS/player.js").default | import("../sharedJS/projectile.js").default} owner
+     */
     constructor(owner) {
         this.owner = owner;
         this.image = new Image();
         this.image.src = owner.imgSrc;
+        console.log(this.image);
     }
     //function to pass an update to the owner
     update(dt, map) {
         this.owner.update(dt, map);
     }
+    /**
+     * @param {CanvasWrapper} canvas
+     */
     draw(canvas) {
         canvas.drawImageLookat(this.image, this.owner.location, this.owner.lookDirection, this.owner.overlapping);
         //if object has health draw health bar, might change this to be just player or monsters later

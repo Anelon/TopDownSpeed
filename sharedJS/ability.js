@@ -11,9 +11,8 @@ class Ability {
      * @param {number} cooldownTime
      * @param {number} damage
      * @param {typeof Projectile} projectileConstructor
-     * @param {Player} owner
      */
-    constructor(abilityName, abilityImgSrc, speed, range, cooldownTime, damage, projectileConstructor, owner) {
+    constructor(abilityName, abilityImgSrc, speed, range, cooldownTime, damage, projectileConstructor) {
         this.abilityName = abilityName;
         this.abilityImgSrc = abilityImgSrc;
         this.cooldownTime = cooldownTime;
@@ -22,7 +21,6 @@ class Ability {
         this.range = range;
         this.damage = damage;
         this.projectileConstructor = projectileConstructor;
-        this.owner = owner;
     }
     //now is the current time
     /**
@@ -33,11 +31,11 @@ class Ability {
      * @param {number} offset How far from origin to spawn the ability
      * @returns {Projectile|null} Spawned projectile if it was avaialable
      */
-    use(now, origin, look, offset) {
+    use(now, origin, look, offset, owner) {
         if(now >= this.nextAvailable) {
             //make projectile
             const location = origin.clone().addS(look.getUnit().multiplyScalarS(offset))
-            const abilityProjectile = new this.projectileConstructor(location, this.abilityName, this.abilityImgSrc, this.speed, look.clone(), this.range, this.damage, this.owner);
+            const abilityProjectile = new this.projectileConstructor(location, this.abilityName, this.abilityImgSrc, this.speed, look.clone(), this.range, this.damage, owner);
             //console.log("Spawned: ", abilityProjectile);
 
             //set the cooldown

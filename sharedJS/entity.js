@@ -33,6 +33,8 @@ class Entity {
         //mostly for debugging now
         this.overlapping = false;
         this.damage = 0;
+        this.maxHealth = 0;
+        this.currHealth = 0;
 
         this.type = TYPES.basic;
         this.category = CATEGORY.none;

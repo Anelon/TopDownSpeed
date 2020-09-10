@@ -7,6 +7,10 @@ import { keyBinds, keyPress } from "./keyBinds.js";
 import GameMap from "../sharedJS/map.js";
 import CanvasWrapper from "./canvasWrapper.js";
 import Time from "./time.js";
+import Projectile from "../sharedJS/projectile.js";
+import FireballAbility from "../sharedJS/fireballAbility.js";
+import WaterballAbility from "../sharedJS/waterballAbility.js";
+import PlantSeedAbility from "../sharedJS/plantSeedAbility.js";
 
 //class for handling the current player
 class PlayerController extends Player {
@@ -31,11 +35,14 @@ class PlayerController extends Player {
 
         //create default abilities
         this.abilities = {
-            [keyBinds.MELEE]: new Ability("Melee", "./img/arrow.png", 100, 100, 100),
-            [keyBinds.RANGE]: new Ability("Arrow", "./img/arrow.png", 200, 100, 200),
-            [keyBinds.ABILITY1]: new Ability("Fireball", "./img/abilities/fireballGif.gif", 200, 100, 200),
-            [keyBinds.ABILITY2]: new Ability("Fireball", "./img/abilities/fireballGif.gif", 200, 100, 200),
-            [keyBinds.ABILITY3]: new Ability("Fireball", "./img/abilities/fireballGif.gif", 200, 100, 200),
+            // @ts-ignore
+            [keyBinds.MELEE]: new Ability("Melee", "./img/arrow.png", 100, 100, 100, 10, Projectile),
+            // @ts-ignore
+            [keyBinds.RANGE]: new Ability("Arrow", "./img/arrow.png", 200, 100, 200, 10, Projectile),
+            // @ts-ignore
+            [keyBinds.ABILITY1]: new FireballAbility(),
+            [keyBinds.ABILITY2]: new WaterballAbility(),
+            [keyBinds.ABILITY3]: new PlantSeedAbility(),
         };
         //set up mouse object
         this.mouse = {
@@ -94,7 +101,7 @@ class PlayerController extends Player {
         //basic arrow ability
         if(keyPress[keyBinds.RANGE]) {
             //attempt to use the ability
-            let arrow = this.abilities[keyBinds.RANGE].use(time.now, this.location, this.look, this.offset);
+            let arrow = this.abilities[keyBinds.RANGE].use(time.now, this.location, this.look, this.offset, this);
             //if the ability was successful
             if (arrow) {
                 //add projectile to the map
@@ -110,7 +117,7 @@ class PlayerController extends Player {
         //TODO make ranged ability right now does fireball
         if(keyPress[keyBinds.ABILITY1]) {
             //attempt to use the ability
-            let fireball = this.abilities[keyBinds.ABILITY1].use(time.now, this.location, this.look, this.offset);
+            let fireball = this.abilities[keyBinds.ABILITY1].use(time.now, this.location, this.look, this.offset, this);
             //if the ability was successful
             if (fireball) {
                 //add projectile to the map
@@ -124,7 +131,7 @@ class PlayerController extends Player {
         }
         if(keyPress[keyBinds.ABILITY2]) {
             //attempt to use the ability
-            let waterball = this.abilities[keyBinds.ABILITY2].use(time.now, this.location, this.look, this.offset);
+            let waterball = this.abilities[keyBinds.ABILITY2].use(time.now, this.location, this.look, this.offset, this);
             //if the ability was successful
             if (waterball) {
                 //add projectile to the map
@@ -138,7 +145,7 @@ class PlayerController extends Player {
         }
         if(keyPress[keyBinds.ABILITY3]) {
             //attempt to use the ability
-            let plantSeed = this.abilities[keyBinds.ABILITY3].use(time.now, this.location, this.look, this.offset);
+            let plantSeed = this.abilities[keyBinds.ABILITY3].use(time.now, this.location, this.look, this.offset, this);
             //if the ability was successful
             if (plantSeed) {
                 //add projectile to the map
