@@ -15,10 +15,10 @@ class Player extends Entity {
      * @param {string} imgSrc Client Path to image
      * @param {number} speed 
      * @param {number} health 
-     * @param {Circle} [hitbox=new Circle(location, 64)]
+     * @param {Circle} hitbox
      * @param {number} scale 
      */
-    constructor(location, name, imgSrc, speed, health, hitbox=new Circle(location,Player.WIDTH/2), scale) {
+    constructor(location, name, imgSrc, speed, health, hitbox, scale) {
         let newHitbox = hitbox;
         super(location, imgSrc, newHitbox, speed, scale);
         this.name = name;

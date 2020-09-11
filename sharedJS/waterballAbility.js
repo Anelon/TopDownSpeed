@@ -9,7 +9,7 @@ export default class WaterballAbility extends Ability {
     static get RANGE() { return 1000; }
     static get COOLDOWN() { return 1000; }
     static get DAMAGE() { return 1000; }
-    static HITBOX = new Circle(new Vec2(), 32);
+    static HITBOX = new Circle(new Vec2(), 16);
     static SCALE = 1;
 
     constructor() {

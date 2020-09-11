@@ -50,11 +50,11 @@ socket.on(CHANNELS.newPlayer, function(playerInfo) {
 
     //pull the information from json
     const {
-        location, name, imgSrc, speed, currHealth, maxHealth, id
+        location, name, imgSrc, speed, currHealth, maxHealth, id, scale
     } = playerInfoJson;
     const locationVec = new Vec2(location.x, location.y);
     //make new player
-    you = new PlayerController(locationVec, "Player " + name, imgSrc, speed, maxHealth, bounds, 4);
+    you = new PlayerController(locationVec, "Player " + name, imgSrc, speed, maxHealth, bounds, scale);
     you.id = id;
     //this should be redundant as when you spawn you probably should have full health
     you.currHealth = currHealth;

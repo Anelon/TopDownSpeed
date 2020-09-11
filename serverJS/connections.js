@@ -25,7 +25,7 @@ class Connections {
             //add client to the list of connections
             this.connections[client.id] = client; 
             const location = new Vec2(50,50);//TODO set spawn based on map infoation
-            let player = new Player(location, "Player", "./img/player.png", 200, 200, new Circle(location, 32), 4);
+            let player = new Player(location, "Player", "./img/player.png", 200, 200, new Circle(location, 32), 2);
             //set player id to client id for easier lookup
             player.id = client.id;
             console.log(player);

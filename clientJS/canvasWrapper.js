@@ -165,6 +165,7 @@ class CanvasWrapper {
 			by = -img.height * scale / 2;
 
 		// draw images at offsets from the array scaled by s
+		//TODO fix for drawing sprite sheets as well
 		for (let i = 0; i < dArr.length; i += 2)
 			this.drawImage(img, bx + dArr[i] * s, by + dArr[i + 1] * s, scale);
 

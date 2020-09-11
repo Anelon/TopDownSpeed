@@ -82,7 +82,6 @@ export default class CollisionEngine {
             const doubleShape = projectile.makeShape(2);
             //make shape with 2 to have it search an area double the size of the projectile
             const others = this.collisionTree.query(doubleShape);
-            this.staticObjects.query(doubleShape, others);
             //check static objects as well
             this.staticObjects.query(doubleShape, others);
             for(const other of others) {

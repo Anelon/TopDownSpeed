@@ -9,7 +9,7 @@ export default class PlantSeedAbility extends Ability {
     static get RANGE() { return 1000; }
     static get COOLDOWN() { return 500; }
     static get DAMAGE() { return 100; }
-    static hitbox = new Circle(new Vec2(), 32);
+    static hitbox = new Circle(new Vec2(), 16);
     static scale = 1;
 
     constructor() {
