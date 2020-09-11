@@ -3,22 +3,29 @@ import Entity from "./entity.js";
 import { Circle } from "./shapes.js";
 import { TYPES, CATEGORY } from "./enums.js";
 import Player from "./player.js";
+import Drawable from "../clientJS/drawable.js";
 
 class Projectile extends Entity {
+    static get IMAGE() { return "./img/arrow.png"; }
     /**
      * Constructs a new Projectile
      * @param {Vec2} origin Location of Projectile
-     * @param {string} name 
-     * @param {string} imgSrc Image sprite path
+     * @param {string} name
      * @param {number} speed How fast the projectile movies
-     * @param {Vec2} look 
+     * @param {number} scale
+     * @param {Vec2} look
      * @param {number} range How far the projectile can go
      * @param {number} damage How much damage the projectile does
+     * @param {Circle} hitbox
+     * @param {Player} owner Who spaned the projectile
+     * @param {string} [imgSrc] Image sprite path
      */
-    constructor(origin, name, imgSrc, speed, look, range, damage=0) {
+    constructor(origin, name, speed, scale, look, range, damage, hitbox, owner, imgSrc) {
+        console.assert(hitbox instanceof Circle, "Hitbox not cirlce?");
         //temporary hitbox, need to find better place for this at somepoint (probably when we make specific abilities)
-        let hitbox = new Circle(origin, 8);
-        super(origin, imgSrc, hitbox, speed, look);
+        hitbox = hitbox || new Circle(origin, 8);
+        imgSrc = imgSrc || Projectile.IMAGE;
+        super(origin, imgSrc, hitbox, speed, scale, look);
         //save the origin to do distance calculations?
         this.origin = origin.clone();
         this.name = name;
@@ -26,8 +33,10 @@ class Projectile extends Entity {
         //how far the projectile can go
         this.range = range;
         this.damage = damage;
+        this.owner = owner;
         
         this.type = TYPES.basic;
+        this.category = CATEGORY.projectile;
     }
     /**
      * Makes a Projectile based on json sent to it
@@ -35,12 +44,13 @@ class Projectile extends Entity {
      */
     static makeFromJSON(json) {
         const {
-            location, name, imgSrc, speed, lookDirection, range, hitbox, damage
+            location, name, imgSrc, speed, scale, lookDirection, range, hitbox, damage, owner, type, category
         } = json;
         //console.log("look", lookDirection);
         //construct projectile
+        const loc = new Vec2(location.x, location.y);
         return new Projectile(
-            new Vec2(location.x, location.y), name, imgSrc, speed, new Vec2(lookDirection.x, lookDirection.y), range, damage
+            loc, name, speed, scale, new Vec2(lookDirection.x, lookDirection.y), range, damage, new Circle(loc, hitbox.radius), owner, imgSrc
         );
     }
     /**
@@ -49,7 +59,7 @@ class Projectile extends Entity {
      */
     hit(other) {
         //if hitting a player deal damage
-        if(other.category === CATEGORY.damageable) {
+        if(other.category === CATEGORY.damageable || other.category === CATEGORY.player) {
             /** @type {Player} */(other).currHealth -= this.damage;
             //console.log(/** @type {Player} */(other).currHealth, this.damage);
             return true;
@@ -63,6 +73,10 @@ class Projectile extends Entity {
             //flag to be deleted
             return true;
         }
+    }
+
+    makeSprite() {
+        return new Drawable(this.owner, this.owner.scale);
     }
 }
 

@@ -3,6 +3,7 @@ import Drawable from "./drawable.js";
 import Entity from "../sharedJS/entity.js";
 import Player from "../sharedJS/player.js";
 import Projectile from "../sharedJS/projectile.js";
+import Sprite from "./sprite.js";
 /** @typedef { import("./playerController.js").default } PlayerController; */
 
 //TODO figure out resizing
@@ -27,6 +28,14 @@ class CanvasWrapper {
 		/** @type {HTMLCanvasElement} */
 		this.canvas = (document.getElementById(id));
 		this.ctx = this.canvas.getContext('2d');
+		//https://stackoverflow.com/questions/195262/can-i-turn-off-antialiasing-on-an-html-canvas-element
+		//supposed to fix antialiasing but its not =(
+		this.ctx['imageSmoothingEnabled'] = false;       /* standard */
+		this.ctx['mozImageSmoothingEnabled'] = false;    /* Firefox */
+		this.ctx['oImageSmoothingEnabled'] = false;      /* Opera */
+		this.ctx['webkitImageSmoothingEnabled'] = false; /* Safari */
+		this.ctx['msImageSmoothingEnabled'] = false;     /* IE */
+
 		this.borderSize = 40;
 		if(canvasSize === null) {
 			this.canvas.width = window.innerWidth - this.borderSize;
@@ -55,22 +64,23 @@ class CanvasWrapper {
 	}
 	/**
 	 * Adds a drawable to drawables
-	 * @param {Drawable|Entity|Player|Projectile} drawable 
+	 * @param {Drawable|Entity|Player|Projectile|Sprite} drawable 
 	 */
 	addDrawable(drawable) {
-		if(drawable instanceof Drawable) {
+		console.log(drawable);
+		if(drawable instanceof Drawable || drawable instanceof Sprite) {
 			this.drawables.set(drawable.owner.id, drawable);
 			//this.drawables.push(drawable);
 		} else {
-			this.drawables.set(drawable.id, new Drawable(drawable));
+			this.drawables.set(drawable.id, new Drawable(drawable, drawable.scale));
 		}
 	}
 	/**
 	 * Deletes a drawable from drawables
-	 * @param {Drawable|Entity} drawable 
+	 * @param {Drawable|Entity|Sprite} drawable 
 	 */
 	removeDrawable(drawable) {
-		if(drawable instanceof Drawable) {
+		if(drawable instanceof Drawable || drawable instanceof Sprite) {
 			this.drawables.delete(drawable.owner.id);
 		} else {
 			//if drawable has an id use it for the delete
@@ -99,36 +109,27 @@ class CanvasWrapper {
 	 * @param {CanvasImageSource} img Image to be drawn
 	 * @param {Vec2} origin Center of image
 	 * @param {Vec2} look Direction the image is looking at
-	 * @param {boolean} withOutline If an outline should be drawn
+	 * @param {boolean} [withOutline] If an outline should be drawn
+	 * @param {number} [scale] Image scale
+	 * @param {number} [sx]
+	 * @param {number} [sy]
+	 * @param {number} [width]
+	 * @param {number} [height]
 	 */
-	drawImageLookat(img, origin, look, withOutline = false) {
+	drawImageLookat(img, origin, look, withOutline = false, scale = 1, sx=null, sy, width, height) {
 		//save context 
 		this.ctx.save();
 
 		this.ctx.setTransform(1, 0, 0, 1, origin.x, origin.y);
 		this.ctx.rotate(Math.atan2(look.y, look.x)); // Adjust image 90 degree anti clockwise (PI/2) because the image  is pointing in the wrong direction.
 		if (withOutline) {
-			let dArr = [-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1], // offset array
-				s = 2,  // thickness scale
-				i = 0,  // iterator
-				bx = -img.width / 2,  // image position
-				by = -img.height / 2;
-
-			// draw images at offsets from the array scaled by s
-			for (; i < dArr.length; i += 2)
-				this.ctx.drawImage(img, bx + dArr[i] * s, by + dArr[i + 1] * s);
-
-			// fill with color
-			//this.ctx.globalCompositeOperation = "source-in";
-			this.ctx.globalCompositeOperation = "source-atop";
-			this.ctx.fillStyle = "red";
-			// @ts-ignore image.width and height will be a number
-			this.ctx.fillRect(-img.width / 2 - s, -img.height / 2 - s, img.width + 2 * s, img.height + 2 * s);
-
-			// draw original image in normal mode
-			this.ctx.globalCompositeOperation = "source-over";
+			this.drawOutline(img, scale);
 		}
-		this.ctx.drawImage(img, -img.width / 2, -img.height / 2);
+		if (sx !== null) {
+			this.drawImage(img, (-width * scale) / 2, (-height * scale) / 2, scale, sx, sy, width, height);
+		} else {
+			this.drawImage(img, (-img.width * scale) / 2, (-img.height * scale) / 2, scale);
+		}
 
 		//restore back to previous settings
 		this.ctx.restore();
@@ -138,17 +139,45 @@ class CanvasWrapper {
 	 * @param {CanvasImageSource} img Image to draw
 	 * @param {number} x X location of top right corner
 	 * @param {number} y Y location of top right corner
+	 * @param {number} scale Images X location to start drawing
 	 * @param {number} [sx=null] Images X location to start drawing
 	 * @param {number} [sy] 
 	 * @param {number} [width] Width of image to print
 	 * @param {number} [height] Height of image to print
 	 */
-	drawImage(img, x, y, sx = null, sy, width, height) {
+	drawImage(img, x, y, scale, sx = null, sy, width, height) {
 		if(sx !== null) {
-			this.ctx.drawImage(img, sx, sy, width, height, x, y, width, height);
+			this.ctx.drawImage(img, sx, sy, width, height, x, y, width * scale, height * scale);
 		} else {
-			this.ctx.drawImage(img, x, y);
+			// @ts-ignore
+			this.ctx.drawImage(img, 0, 0, img.width, img.height, x, y, img.width * scale, img.height * scale);
 		}
+	}
+	/**
+	 * Draws an image with a vec2 origin, vec2 look direction, bool if you want to have an outline around the image
+	 * @param {CanvasImageSource} img Image to be outlined
+	 * @param {number} scale Scale of image
+	 */
+	drawOutline(img, scale) {
+		const dArr = [-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1], // offset array
+			s = 2 + scale,  // thickness scale
+			bx = -img.width * scale / 2,  // image position
+			by = -img.height * scale / 2;
+
+		// draw images at offsets from the array scaled by s
+		//TODO fix for drawing sprite sheets as well
+		for (let i = 0; i < dArr.length; i += 2)
+			this.drawImage(img, bx + dArr[i] * s, by + dArr[i + 1] * s, scale);
+
+		// fill with color
+		//this.ctx.globalCompositeOperation = "source-in";
+		this.ctx.globalCompositeOperation = "source-atop";
+		this.ctx.fillStyle = "red";
+		// @ts-ignore image.width and height will be a number
+		this.ctx.fillRect(-img.width * scale / 2 - s, -img.height * scale / 2 - s, img.width * scale + 2 * s, img.height * scale + 2 * s);
+
+		// draw original image in normal mode
+		this.ctx.globalCompositeOperation = "source-over";
 	}
 
 	/**

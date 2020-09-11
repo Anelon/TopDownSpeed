@@ -8,24 +8,25 @@ import Projectile from "./projectile.js";
 
 //class for holding the other players and as a parent to PlayerController
 class Player extends Entity {
+    static get WIDTH() {return 64;}
     /**
      * @param {Vec2} location 
      * @param {string} name 
      * @param {string} imgSrc Client Path to image
      * @param {number} speed 
      * @param {number} health 
-     * @param {Circle} [hitbox=new Circle(location, 16)]
+     * @param {Circle} hitbox
+     * @param {number} scale 
      */
-    constructor(location, name, imgSrc, speed, health, hitbox=new Circle(location,16)) {
-        console.assert(typeof health === "number");
+    constructor(location, name, imgSrc, speed, health, hitbox, scale) {
         let newHitbox = hitbox;
-        super(location, imgSrc, newHitbox, speed);
+        super(location, imgSrc, newHitbox, speed, scale);
         this.name = name;
         this.maxHealth = health;
         this.currHealth = health;
         
         this.type = TYPES.basic;
-        this.category = CATEGORY.damageable;
+        this.category = CATEGORY.player;
     }
     /**
      * Updates where the player is based on the json data given

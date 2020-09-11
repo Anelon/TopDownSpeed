@@ -1,28 +1,41 @@
-import Map from "../sharedJS/map.js";
+import CollisionEngine from "../sharedJS/collisionEngine.js";
 import Vec2 from "../sharedJS/vec2.js";
 import Time from "./time.js";
 import CanvasWrapper from "./canvasWrapper.js";
-//import { Moveable } from "./entity.js";
-//import Monster from "./monster.js";
 import PlayerController from "./playerController.js";
 import CHANNELS from "../sharedJS/channels.js";
 import Projectile from "../sharedJS/projectile.js";
-import { TYPES } from "../sharedJS/enums.js";
+import { TYPES, CATEGORY } from "../sharedJS/enums.js";
 import Player from "../sharedJS/player.js";
+import Waterball from "../sharedJS/waterball.js";
+import WaterballAbility from "../sharedJS/waterballAbility.js";
+import { Circle } from "../sharedJS/shapes.js";
+import { makeFromJSON } from "../sharedJS/utils.js";
+import Fireball from "../sharedJS/fireball.js";
+import PlantSeed from "../sharedJS/plantSeed.js";
+import FireballAbility from "../sharedJS/fireballAbility.js";
+import PlantSeedAbility from "../sharedJS/plantSeedAbility.js";
 
 //setup the sockets and listening
 // @ts-ignore
 let socket = io();
 
-//global defaults
-const defaultImg = './img/arrow.png';
-
 let canvas = new CanvasWrapper();
-let map = new Map(canvas.width, canvas.height);
+let collisionEngine = new CollisionEngine(canvas.width, canvas.height);
 let time = new Time();
 
 let bounds = canvas.getBoundingClientRect();
+/** @type {PlayerController} */
 let you;
+
+//spawn one of each of the abilities to preload the image
+let location = new Vec2(-100,-100);
+let waterBall = new Waterball(location, "test", 0, 1, new Vec2(1,0), 100, 100, new Circle(location, 0), you);
+let fireBall = new Fireball(location, "test", 0, 1, new Vec2(1,0), 100, 100, new Circle(location, 0), you);
+let plantSeed = new PlantSeed(location, "test", 0, 1, new Vec2(1,0), 100, 100, new Circle(location, 0), you);
+canvas.addDrawable(waterBall.makeSprite());
+canvas.addDrawable(fireBall.makeSprite());
+canvas.addDrawable(plantSeed.makeSprite());
 
 //set up socket listening
 
@@ -37,44 +50,51 @@ socket.on(CHANNELS.newPlayer, function(playerInfo) {
 
     //pull the information from json
     const {
-        location, name, imgSrc, speed, currHealth, maxHealth, id
+        location, name, imgSrc, speed, currHealth, maxHealth, id, scale
     } = playerInfoJson;
     const locationVec = new Vec2(location.x, location.y);
     //make new player
-    you = new PlayerController(locationVec, "Player " + name, imgSrc, speed, maxHealth, bounds);
+    you = new PlayerController(locationVec, "Player " + name, imgSrc, speed, maxHealth, bounds, scale);
     you.id = id;
-    //this should be redundant as when you span you probably should have full health
+    //this should be redundant as when you spawn you probably should have full health
     you.currHealth = currHealth;
     if (!playerExists) {
-        // @ts-ignore
-        map.addPlayer(you);
+        collisionEngine.addPlayer(you);
     } else {
 
     }
-    //you.updateInfo(playerInfoJson);
     requestAnimationFrame(frame);
 });
 socket.on(CHANNELS.newProjectile, function(newProjectile) {
     const updated = JSON.parse(newProjectile.json);
-    //console.log("From Server", updated);
-    const projectile = Projectile.makeFromJSON(updated);
-    map.addProjectile(projectile);
-    canvas.addDrawable(projectile);
+    console.log("From Server", updated);
+    const projectile = makeFromJSON(newProjectile);
+    collisionEngine.addProjectile(projectile);
+    //TODO make Sprite (make canvaswrapper compattable with sprites)
+    console.log(projectile);
+    if (newProjectile.type === "Projectile") {
+        console.log("projectile");
+        canvas.addDrawable(projectile);
+    } else {
+        console.log("Ability", projectile);
+        // @ts-ignore
+        canvas.addDrawable(projectile.makeSprite());
+    }
 });
 socket.on(CHANNELS.playerMove, function(playerInfo) {
     const updated = JSON.parse(playerInfo.json);
     //console.log(updated);
-    const newPlayer = map.updatePlayer(updated);
+    const newPlayer = collisionEngine.updatePlayer(updated);
     if(newPlayer) canvas.addDrawable(/** @type {Player} */(newPlayer));
 });
 socket.on(CHANNELS.deletePlayer, function(playerID) {
     console.log("Deleting", playerID);
-    map.removePlayer(playerID);
+    collisionEngine.removePlayer(playerID);
     canvas.removeDrawable(playerID);
 });
 
-//let enemy = new Monster(new Vec2(map.width/2, map.height/2), defaultImg, defaultSpeed);
-//map.players.push(enemy);
+//let enemy = new Monster(new Vec2(collisionEngine.width/2, collisionEngine.height/2), defaultImg, defaultSpeed);
+//collisionEngine.players.push(enemy);
 
 //Updates the game state
 /**
@@ -83,15 +103,17 @@ socket.on(CHANNELS.deletePlayer, function(playerID) {
  * @param {number} step Tick rate of server
  */
 function update(time, step) {
-    //TODO move to serverside 
-    //change to send and receive information
-    you.update(time, step, map, canvas, socket);
-    const deleteArray = map.update(time, step, canvas);
+    //update the PlayerController
+    you.update(time, step, collisionEngine, canvas, socket);
+
+    //run the collision engine and catch anything flagged for deleting
+    const deleteArray = collisionEngine.update(time, step, canvas);
     for(const item of deleteArray) {
-        if(item.type === TYPES.player) {
-            //ignore
+        if(item.category === CATEGORY.player) {
+            //TODO respawn player (or have server respawn player)
         } else {
-            map.removeProjectile(/** @type {Projectile} */(item));
+            console.log("Deleting", item)
+            collisionEngine.removeProjectile(/** @type {Projectile} */(item));
             canvas.removeDrawable(item);
         }
     }
@@ -104,7 +126,7 @@ const step = 1/30; // 30 tics per second
  * @param {PlayerController} you 
  */
 function render(you) {
-    //clear the map
+    //clear the collisionEngine
     canvas.clear();
 
     //probably best to move this to update rather than render

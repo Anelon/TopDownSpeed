@@ -3,7 +3,8 @@ const MOUSE_STR = "mouse";
 export const keyBinds = {
     UP: "w", DOWN: "s", LEFT: "a", RIGHT: "d",
     DODGE: "shift", JUMP: " ",
-    ABILITY1: "q", ABILITY2: "e", ABILITY3: "r",
+    ABILITY1: "q", ABILITY2: "e", ABILITY3: "f",
+    ROTATE: "r",
     MELEE: MOUSE_STR+"0", RANGE: MOUSE_STR+"2", UNLOCK: MOUSE_STR+"1",
 }
 
@@ -19,6 +20,7 @@ export const keyPress = {
     [keyBinds.ABILITY1]: false, //ability1
     [keyBinds.ABILITY2]: false, //ability2
     [keyBinds.ABILITY3]: false, //ult?
+    [keyBinds.ROTATE]: false, //ult?
     [keyBinds.MELEE]: false, //melee
     [keyBinds.RANGE]: false, //ranged charge
 }

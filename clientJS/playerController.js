@@ -4,9 +4,14 @@ import Ability from "../sharedJS/ability.js";
 import CHANNELS from "../sharedJS/channels.js";
 import Player from "../sharedJS/player.js";
 import { keyBinds, keyPress } from "./keyBinds.js";
-import GameMap from "../sharedJS/map.js";
+import CollisionEngine from "../sharedJS/collisionEngine.js";
 import CanvasWrapper from "./canvasWrapper.js";
 import Time from "./time.js";
+import Projectile from "../sharedJS/projectile.js";
+import FireballAbility from "../sharedJS/fireballAbility.js";
+import WaterballAbility from "../sharedJS/waterballAbility.js";
+import PlantSeedAbility from "../sharedJS/plantSeedAbility.js";
+import Waterball from "../sharedJS/waterball.js";
 
 //class for handling the current player
 class PlayerController extends Player {
@@ -18,21 +23,24 @@ class PlayerController extends Player {
      * @param {number} speed 
      * @param {number} health 
      * @param {*} bounds 
+     * @param {number} scale 
      */
-    constructor(location, name, imgSrc, speed, health, bounds) {
+    constructor(location, name, imgSrc, speed, health, bounds, scale) {
         //create hitbox
         let image = new Image();
         image.src = imgSrc;
-        let hitbox = new Circle(location, image.width/2);
-        super(location, name, imgSrc, speed, health, hitbox);
+        let hitbox = new Circle(location, 32);
+        super(location, name, imgSrc, speed, health, hitbox, scale);
         this.name = name;
         this.image = image;
-        this.offset = image.width * 2;
 
         //create default abilities
         this.abilities = {
-            [keyBinds.MELEE]: new Ability("Melee", "./img/arrow.png", 100, 100, 100),
-            [keyBinds.RANGE]: new Ability("Arrow", "./img/arrow.png", 200, 100, 200),
+            [keyBinds.MELEE]: new Ability("Melee",  100, 100, 100, 10, Projectile, 1, new Circle(new Vec2(), 16)),
+            [keyBinds.RANGE]: new Ability("Arrow",  200, 100, 200, 10, Projectile, 1, new Circle(new Vec2(), 16)),
+            [keyBinds.ABILITY1]: new FireballAbility(),
+            [keyBinds.ABILITY2]: new WaterballAbility(),
+            [keyBinds.ABILITY3]: new PlantSeedAbility(),
         };
         //set up mouse object
         this.mouse = {
@@ -52,15 +60,13 @@ class PlayerController extends Player {
         return this.lookDirection;
     }
     /**
-     * 
-     * @param {Time} time 
-     * @param {number} step 
-     * @param {GameMap} map 
-     * @param {CanvasWrapper} canvas 
-     * @param {*} socket 
+     * @param {Time} time
+     * @param {number} dt
+     * @param {CollisionEngine} [collisions]
+     * @param {CanvasWrapper} [canvas]
+     * @param {any} [socket]
      */
-    // @ts-ignore
-    update(time, step, map, canvas, socket) {
+    update(time, dt, collisions, canvas, socket) {
         this.moved = false;
         //console.log(step);
         let direction = new Vec2();
@@ -78,24 +84,73 @@ class PlayerController extends Player {
             direction.x += 1;
         }
         if(direction.x || direction.y) {
-            this.move(step, direction);
+            this.move(dt, direction);
             this.moved = true;
         }
 
-        //abilities
+        // --- Abilities ---
+
+        //TODO make melee ability (currently debugging prints this)
         if(keyPress[keyBinds.MELEE]) {
             console.log(this);
+            console.log(collisions.projectiles);
         }
+        //basic arrow ability
         if(keyPress[keyBinds.RANGE]) {
             //attempt to use the ability
-            let arrow = this.abilities[keyBinds.RANGE].use(time.now, this.location, this.look, this.offset);
+            let arrow = this.abilities[keyBinds.RANGE].use(time.now, this);
             //if the ability was successful
             if (arrow) {
-                //add projectile to the map
+                //add projectile to the collisions
                 //console.log(arrow.location.log());
-                map.addProjectile(arrow);
+                collisions.addProjectile(arrow);
                 canvas.addDrawable(arrow);
                 socket.emit(CHANNELS.newProjectile, arrow.makeObject());
+            } else {
+                console.log("On CoolDown");
+            }
+        }
+
+        //TODO make ranged ability right now does fireball
+        if(keyPress[keyBinds.ABILITY1]) {
+            //attempt to use the ability
+            let fireball = this.abilities[keyBinds.ABILITY1].use(time.now, this);
+            //if the ability was successful
+            if (fireball) {
+                //add projectile to the collisions
+                //console.log(fireball.location.log());
+                collisions.addProjectile(fireball);
+                canvas.addDrawable(fireball.makeSprite());
+                socket.emit(CHANNELS.newProjectile, fireball.makeObject());
+            } else {
+                console.log("On CoolDown");
+            }
+        }
+        if(keyPress[keyBinds.ABILITY2]) {
+            //attempt to use the ability
+            /** @type {Waterball} */
+            // @ts-ignore
+            let waterball = this.abilities[keyBinds.ABILITY2].use(time.now, this);
+            //if the ability was successful
+            if (waterball) {
+                //add projectile to the collisions
+                collisions.addProjectile(waterball);
+                canvas.addDrawable(waterball.makeSprite());
+                socket.emit(CHANNELS.newProjectile, waterball.makeObject());
+            } else {
+                console.log("On CoolDown");
+            }
+        }
+        if(keyPress[keyBinds.ABILITY3]) {
+            //attempt to use the ability
+            let plantSeed = this.abilities[keyBinds.ABILITY3].use(time.now, this);
+            //if the ability was successful
+            if (plantSeed) {
+                //add projectile to the collisions
+                //console.log(plantSeed.location.log());
+                collisions.addProjectile(plantSeed);
+                canvas.addDrawable(plantSeed.makeSprite());
+                socket.emit(CHANNELS.newProjectile, plantSeed.makeObject());
             } else {
                 console.log("On CoolDown");
             }
@@ -109,7 +164,7 @@ class PlayerController extends Player {
         this.mouse.changed = false; // flag that the mouse coords have been rendered
         // get mouse canvas coordinate correcting for page scroll
         let target = new Vec2(this.mouse.x, this.mouse.y);
-        canvas.drawImageLookat(this.image, this.location, this.look);
+        canvas.drawImageLookat(this.image, this.location, this.look, this.overlapping, this.scale);
         // Draw mouse at its canvas position
         canvas.drawCrossHair(target, "black");
         // draw line from you center to mouse to check alignment is perfect
@@ -122,7 +177,7 @@ class PlayerController extends Player {
         canvas.drawHealthBar(origin, healthBarDimentions, this.currHealth, this.maxHealth);
     }
     mouseEvent(e) {  // get the mouse coordinates relative to the canvas top left
-        //let bounds = map.canvas.getBoundingClientRect();
+        //let bounds = collisions.canvas.getBoundingClientRect();
         this.mouse.x = e.pageX - this.bounds.left;
         this.mouse.y = e.pageY - this.bounds.top;
         this.mouse.cx = e.clientX - this.bounds.left; // to compare the difference between client and page coordinates
