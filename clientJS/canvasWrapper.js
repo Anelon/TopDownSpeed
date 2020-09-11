@@ -3,6 +3,7 @@ import Drawable from "./drawable.js";
 import Entity from "../sharedJS/entity.js";
 import Player from "../sharedJS/player.js";
 import Projectile from "../sharedJS/projectile.js";
+import Sprite from "./sprite.js";
 /** @typedef { import("./playerController.js").default } PlayerController; */
 
 //TODO figure out resizing
@@ -27,6 +28,14 @@ class CanvasWrapper {
 		/** @type {HTMLCanvasElement} */
 		this.canvas = (document.getElementById(id));
 		this.ctx = this.canvas.getContext('2d');
+		//https://stackoverflow.com/questions/195262/can-i-turn-off-antialiasing-on-an-html-canvas-element
+		//supposed to fix antialiasing but its not =(
+		this.ctx['imageSmoothingEnabled'] = false;       /* standard */
+		this.ctx['mozImageSmoothingEnabled'] = false;    /* Firefox */
+		this.ctx['oImageSmoothingEnabled'] = false;      /* Opera */
+		this.ctx['webkitImageSmoothingEnabled'] = false; /* Safari */
+		this.ctx['msImageSmoothingEnabled'] = false;     /* IE */
+
 		this.borderSize = 40;
 		if(canvasSize === null) {
 			this.canvas.width = window.innerWidth - this.borderSize;
@@ -55,10 +64,11 @@ class CanvasWrapper {
 	}
 	/**
 	 * Adds a drawable to drawables
-	 * @param {Drawable|Entity|Player|Projectile} drawable 
+	 * @param {Drawable|Entity|Player|Projectile|Sprite} drawable 
 	 */
 	addDrawable(drawable) {
-		if(drawable instanceof Drawable) {
+		//console.log(drawable);
+		if(drawable instanceof Drawable || drawable instanceof Sprite) {
 			this.drawables.set(drawable.owner.id, drawable);
 			//this.drawables.push(drawable);
 		} else {
@@ -67,10 +77,10 @@ class CanvasWrapper {
 	}
 	/**
 	 * Deletes a drawable from drawables
-	 * @param {Drawable|Entity} drawable 
+	 * @param {Drawable|Entity|Sprite} drawable 
 	 */
 	removeDrawable(drawable) {
-		if(drawable instanceof Drawable) {
+		if(drawable instanceof Drawable || drawable instanceof Sprite) {
 			this.drawables.delete(drawable.owner.id);
 		} else {
 			//if drawable has an id use it for the delete
@@ -99,10 +109,14 @@ class CanvasWrapper {
 	 * @param {CanvasImageSource} img Image to be drawn
 	 * @param {Vec2} origin Center of image
 	 * @param {Vec2} look Direction the image is looking at
-	 * @param {boolean} [withOutline=false] If an outline should be drawn
-	 * @param {number} [scale=1] Image scale
+	 * @param {boolean} [withOutline] If an outline should be drawn
+	 * @param {number} [scale] Image scale
+	 * @param {number} [sx]
+	 * @param {number} [sy]
+	 * @param {number} [width]
+	 * @param {number} [height]
 	 */
-	drawImageLookat(img, origin, look, withOutline = false, scale = 1) {
+	drawImageLookat(img, origin, look, withOutline = false, scale = 1, sx=null, sy, width, height) {
 		//save context 
 		this.ctx.save();
 
@@ -111,7 +125,7 @@ class CanvasWrapper {
 		if (withOutline) {
 			this.drawOutline(img, scale);
 		}
-		this.drawImage(img, (-img.width * scale) / 2, (-img.height * scale) / 2, scale);
+		this.drawImage(img, (-img.width * scale) / 2, (-img.height * scale) / 2, scale, sx, sy, width, height);
 
 		//restore back to previous settings
 		this.ctx.restore();

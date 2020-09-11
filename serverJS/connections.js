@@ -4,6 +4,8 @@ import Player from "../sharedJS/player.js";
 import CHANNELS from "../sharedJS/channels.js";
 import CollisionEngine from "../sharedJS/collisionEngine.js";
 import Projectile from "../sharedJS/projectile.js";
+import { Circle } from "../sharedJS/shapes.js";
+import { makeFromJSON } from "../sharedJS/utils.js";
 
 class Connections {
     /**
@@ -21,8 +23,9 @@ class Connections {
         this.sockets.on("connection", (client) => {
             console.log("a user has connected");
             //add client to the list of connections
-            this.connections[client.id] = client;
-            let player = new Player(new Vec2(50, 50), "Player", "./img/player.png", 200, 200);
+            this.connections[client.id] = client; 
+            const location = new Vec2(50,50);//TODO set spawn based on map infoation
+            let player = new Player(location, "Player", "./img/player.png", 200, 200, new Circle(location, 32), 4);
             //set player id to client id for easier lookup
             player.id = client.id;
             console.log(player);
@@ -54,7 +57,7 @@ class Connections {
             client.on(CHANNELS.newProjectile, (newProjectile) => {
                 const updated = JSON.parse(newProjectile.json);
                 //console.log(updated);
-                this.collisionEngine.addProjectile(Projectile.makeFromJSON(updated));
+                this.collisionEngine.addProjectile(makeFromJSON(newProjectile));
                 //console.log(this.collisionEngine);
                 //TODO: add validation of move here
                 //broadcast the message (add client to prevent echoing)

@@ -2,8 +2,13 @@ import Projectile from "./projectile.js";
 import { TYPES, CATEGORY } from "./enums.js";
 import Player from "./player.js";
 import Entity from "./entity.js";
+import Sprite from "../clientJS/sprite.js";
+import Vec2 from "./vec2.js";
 
 export default class Fireball extends Projectile {
+    static get FRAMES() {return 6;} //Number of frames of animation
+    static get ANIMSPEED() {return 3;} //Number of renders before next frame
+    static get SPRITEDIMS() {return new Vec2(32,32);} //Dimentions of each Sprite
     /**
      * @param {import("./vec2").default} origin
      * @param {string} name
@@ -20,6 +25,10 @@ export default class Fireball extends Projectile {
         super(origin, name, imgSrc, speed, scale, look, range, damage, hitbox, owner);
 
         this.type = TYPES.fire;
+    }
+
+    makeSprite() {
+        return new Sprite(this, Fireball.FRAMES, Fireball.ANIMSPEED, this.scale, Fireball.SPRITEDIMS);
     }
 
     /**

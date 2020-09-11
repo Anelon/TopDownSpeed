@@ -8,6 +8,7 @@ import Projectile from "./projectile.js";
 
 //class for holding the other players and as a parent to PlayerController
 class Player extends Entity {
+    static get WIDTH() {return 64;}
     /**
      * @param {Vec2} location 
      * @param {string} name 
@@ -15,11 +16,11 @@ class Player extends Entity {
      * @param {number} speed 
      * @param {number} health 
      * @param {Circle} [hitbox=new Circle(location, 64)]
+     * @param {number} scale 
      */
-    constructor(location, name, imgSrc, speed, health, hitbox=new Circle(location,64)) {
-        console.assert(typeof health === "number");
+    constructor(location, name, imgSrc, speed, health, hitbox=new Circle(location,Player.WIDTH/2), scale) {
         let newHitbox = hitbox;
-        super(location, imgSrc, newHitbox, speed);
+        super(location, imgSrc, newHitbox, speed, scale);
         this.name = name;
         this.maxHealth = health;
         this.currHealth = health;

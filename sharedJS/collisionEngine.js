@@ -1,7 +1,7 @@
 //this will probably change a lot when we make an actual map
 import Vec2 from "./vec2.js";
 import QuadTree from "./quadTree.js";
-import { Rectangle } from "./shapes.js";
+import { Rectangle, Circle } from "./shapes.js";
 import Projectile from "./projectile.js";
 import Player from "./player.js";
 import CanvasWrapper from "../clientJS/canvasWrapper.js";
@@ -133,10 +133,11 @@ export default class CollisionEngine {
         } else {
             //handle if the server reloads but the client doesn't (could just reset the client but this seems better for development)
             const {
-                location, name, imgSrc, speed, maxHealth
+                location, name, imgSrc, speed, maxHealth, hitbox, scale
             } = playerJSON;
             console.log(maxHealth);
-            let newPlayer = new Player(new Vec2(location.x, location.y), name, imgSrc, speed, maxHealth);
+            const loc = new Vec2(location.x, location.y);
+            let newPlayer = new Player(loc, name, imgSrc, speed, maxHealth, new Circle(loc, hitbox.radius), scale);
             newPlayer.id = playerJSON.id;
             this.addPlayer(newPlayer);
             return newPlayer;

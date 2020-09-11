@@ -2,8 +2,13 @@ import Projectile from "./projectile.js";
 import { TYPES, CATEGORY } from "./enums.js";
 import Player from "./player.js";
 import Entity from "./entity.js";
+import Sprite from "../clientJS/sprite.js";
+import Vec2 from "./vec2.js";
 
 export default class Waterball extends Projectile {
+    static get FRAMES() {return 9;} //Number of frames of animation
+    static get ANIMSPEED() {return 3;} //Number of renders before next frame
+    static get SPRITEDIMS() {return new Vec2(64,64);} //Dimentions of each Sprite
     /**
      * @param {import("./vec2").default} origin
      * @param {string} name
@@ -20,6 +25,10 @@ export default class Waterball extends Projectile {
         super(origin, name, imgSrc, speed, scale, look, range, damage, hitbox, owner);
 
         this.type = TYPES.water;
+    }
+
+    makeSprite() {
+        return new Sprite(this, Waterball.FRAMES, Waterball.ANIMSPEED, this.scale, Waterball.SPRITEDIMS);
     }
 
     /**

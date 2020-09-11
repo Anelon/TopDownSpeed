@@ -11,7 +11,6 @@ class Drawable {
         this.image = new Image();
         this.image.src = owner.imgSrc;
         this.scale = scale;
-        console.log(this.image);
     }
     //function to pass an update to the owner
     /**

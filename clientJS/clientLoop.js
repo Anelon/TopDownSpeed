@@ -9,13 +9,14 @@ import CHANNELS from "../sharedJS/channels.js";
 import Projectile from "../sharedJS/projectile.js";
 import { TYPES, CATEGORY } from "../sharedJS/enums.js";
 import Player from "../sharedJS/player.js";
+import Waterball from "../sharedJS/waterball.js";
+import WaterballAbility from "../sharedJS/waterballAbility.js";
+import { Circle } from "../sharedJS/shapes.js";
+import { makeFromJSON } from "../sharedJS/utils.js";
 
 //setup the sockets and listening
 // @ts-ignore
 let socket = io();
-
-//global defaults
-const defaultImg = './img/arrow.png';
 
 let canvas = new CanvasWrapper();
 let collisionEngine = new CollisionEngine(canvas.width, canvas.height);
@@ -24,6 +25,10 @@ let time = new Time();
 let bounds = canvas.getBoundingClientRect();
 /** @type {PlayerController} */
 let you;
+
+let location = new Vec2(100,100);
+let waterBall = new Waterball(location, "test", WaterballAbility.IMAGE, 0, 1, new Vec2(1,0), 100, 100, new Circle(location, 32), you);
+canvas.addDrawable(waterBall.makeSprite());
 
 //set up socket listening
 
@@ -42,25 +47,32 @@ socket.on(CHANNELS.newPlayer, function(playerInfo) {
     } = playerInfoJson;
     const locationVec = new Vec2(location.x, location.y);
     //make new player
-    you = new PlayerController(locationVec, "Player " + name, imgSrc, speed, maxHealth, bounds);
+    you = new PlayerController(locationVec, "Player " + name, imgSrc, speed, maxHealth, bounds, 4);
     you.id = id;
-    //this should be redundant as when you span you probably should have full health
+    //this should be redundant as when you spawn you probably should have full health
     you.currHealth = currHealth;
     if (!playerExists) {
         collisionEngine.addPlayer(you);
     } else {
 
     }
-    //you.updateInfo(playerInfoJson);
     requestAnimationFrame(frame);
 });
 socket.on(CHANNELS.newProjectile, function(newProjectile) {
     const updated = JSON.parse(newProjectile.json);
     console.log("From Server", updated);
-    const projectile = Projectile.makeFromJSON(updated);
+    const projectile = makeFromJSON(newProjectile);
     collisionEngine.addProjectile(projectile);
     //TODO make Sprite (make canvaswrapper compattable with sprites)
-    canvas.addDrawable(projectile);
+    console.log(projectile);
+    if (newProjectile.type === "Projectile") {
+        console.log("projectile");
+        canvas.addDrawable(projectile);
+    } else {
+        console.log("Ability");
+        // @ts-ignore
+        canvas.addDrawable(projectile.makeSprite());
+    }
 });
 socket.on(CHANNELS.playerMove, function(playerInfo) {
     const updated = JSON.parse(playerInfo.json);

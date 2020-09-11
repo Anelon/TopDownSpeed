@@ -3,6 +3,7 @@ import Entity from "./entity.js";
 import { Circle } from "./shapes.js";
 import { TYPES, CATEGORY } from "./enums.js";
 import Player from "./player.js";
+import Drawable from "../clientJS/drawable.js";
 
 class Projectile extends Entity {
     /**
@@ -40,7 +41,7 @@ class Projectile extends Entity {
      */
     static makeFromJSON(json) {
         const {
-            location, name, imgSrc, speed, scale, lookDirection, range, hitbox, damage, owner
+            location, name, imgSrc, speed, scale, lookDirection, range, hitbox, damage, owner, type, category
         } = json;
         //console.log("look", lookDirection);
         //construct projectile
@@ -69,6 +70,10 @@ class Projectile extends Entity {
             //flag to be deleted
             return true;
         }
+    }
+
+    makeSprite() {
+        return new Drawable(this.owner, this.owner.scale);
     }
 }
 

@@ -11,6 +11,7 @@ import Projectile from "../sharedJS/projectile.js";
 import FireballAbility from "../sharedJS/fireballAbility.js";
 import WaterballAbility from "../sharedJS/waterballAbility.js";
 import PlantSeedAbility from "../sharedJS/plantSeedAbility.js";
+import Waterball from "../sharedJS/waterball.js";
 
 //class for handling the current player
 class PlayerController extends Player {
@@ -22,13 +23,14 @@ class PlayerController extends Player {
      * @param {number} speed 
      * @param {number} health 
      * @param {*} bounds 
+     * @param {number} scale 
      */
-    constructor(location, name, imgSrc, speed, health, bounds) {
+    constructor(location, name, imgSrc, speed, health, bounds, scale) {
         //create hitbox
         let image = new Image();
         image.src = imgSrc;
-        let hitbox = new Circle(location, image.width/2);
-        super(location, name, imgSrc, speed, health, hitbox);
+        let hitbox = new Circle(location, 32);
+        super(location, name, imgSrc, speed, health, hitbox, scale);
         this.name = name;
         this.image = image;
 
@@ -118,7 +120,7 @@ class PlayerController extends Player {
                 //add projectile to the collisions
                 //console.log(fireball.location.log());
                 collisions.addProjectile(fireball);
-                canvas.addDrawable(fireball);
+                canvas.addDrawable(fireball.makeSprite());
                 socket.emit(CHANNELS.newProjectile, fireball.makeObject());
             } else {
                 console.log("On CoolDown");
@@ -126,13 +128,14 @@ class PlayerController extends Player {
         }
         if(keyPress[keyBinds.ABILITY2]) {
             //attempt to use the ability
+            /** @type {Waterball} */
+            // @ts-ignore
             let waterball = this.abilities[keyBinds.ABILITY2].use(time.now, this);
             //if the ability was successful
             if (waterball) {
                 //add projectile to the collisions
-                //console.log(waterball.location.log());
                 collisions.addProjectile(waterball);
-                canvas.addDrawable(waterball);
+                canvas.addDrawable(waterball.makeSprite());
                 socket.emit(CHANNELS.newProjectile, waterball.makeObject());
             } else {
                 console.log("On CoolDown");
@@ -146,7 +149,7 @@ class PlayerController extends Player {
                 //add projectile to the collisions
                 //console.log(plantSeed.location.log());
                 collisions.addProjectile(plantSeed);
-                canvas.addDrawable(plantSeed);
+                canvas.addDrawable(plantSeed.makeSprite());
                 socket.emit(CHANNELS.newProjectile, plantSeed.makeObject());
             } else {
                 console.log("On CoolDown");
@@ -161,7 +164,7 @@ class PlayerController extends Player {
         this.mouse.changed = false; // flag that the mouse coords have been rendered
         // get mouse canvas coordinate correcting for page scroll
         let target = new Vec2(this.mouse.x, this.mouse.y);
-        canvas.drawImageLookat(this.image, this.location, this.look);
+        canvas.drawImageLookat(this.image, this.location, this.look, this.overlapping, this.scale);
         // Draw mouse at its canvas position
         canvas.drawCrossHair(target, "black");
         // draw line from you center to mouse to check alignment is perfect
