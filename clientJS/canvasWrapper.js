@@ -125,7 +125,11 @@ class CanvasWrapper {
 		if (withOutline) {
 			this.drawOutline(img, scale);
 		}
-		this.drawImage(img, (-img.width * scale) / 2, (-img.height * scale) / 2, scale, sx, sy, width, height);
+		if (sx !== null) {
+			this.drawImage(img, (-width * scale) / 2, (-height * scale) / 2, scale, sx, sy, width, height);
+		} else {
+			this.drawImage(img, (-img.width * scale) / 2, (-img.height * scale) / 2, scale);
+		}
 
 		//restore back to previous settings
 		this.ctx.restore();
