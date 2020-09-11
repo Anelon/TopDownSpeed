@@ -67,7 +67,7 @@ class CanvasWrapper {
 	 * @param {Drawable|Entity|Player|Projectile|Sprite} drawable 
 	 */
 	addDrawable(drawable) {
-		//console.log(drawable);
+		console.log(drawable);
 		if(drawable instanceof Drawable || drawable instanceof Sprite) {
 			this.drawables.set(drawable.owner.id, drawable);
 			//this.drawables.push(drawable);

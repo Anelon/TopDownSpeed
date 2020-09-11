@@ -2,6 +2,7 @@ import Projectile from "./projectile.js";
 import { TYPES, CATEGORY } from "./enums.js";
 import Vec2 from "./vec2.js";
 import Sprite from "../clientJS/sprite.js";
+import PlantSeedAbility from "./plantSeedAbility.js";
 //TODO: Find unneccisary imports and replace with typedefs
 /** @typedef {import("./player").default} Player */
 /** @typedef {import("./entity").default} Entity */
@@ -10,10 +11,10 @@ export default class PlantSeed extends Projectile {
     static get FRAMES() {return 4;} //Number of frames of animation
     static get ANIMSPEED() {return 3;} //Number of renders before next frame
     static get SPRITEDIMS() {return new Vec2(64,64);} //Dimentions of each Sprite
+    static get IMAGE() { return "./img/abilities/seed/seed64.png"; }
     /**
      * @param {Vec2} origin
      * @param {string} name
-     * @param {string} imgSrc
      * @param {number} speed
      * @param {number} scale
      * @param {Vec2} look
@@ -22,8 +23,8 @@ export default class PlantSeed extends Projectile {
      * @param {import("./shapes.js").Circle} hitbox
      * @param {Player} owner
      */
-    constructor(origin, name, imgSrc, speed, scale, look, range, damage, hitbox, owner) {
-        super(origin, name, imgSrc, speed, scale, look, range, damage, hitbox, owner);
+    constructor(origin, name, speed, scale, look, range, damage, hitbox, owner) {
+        super(origin, name, speed, scale, look, range, damage, hitbox, owner, PlantSeed.IMAGE);
 
         this.type = TYPES.plant;
     }

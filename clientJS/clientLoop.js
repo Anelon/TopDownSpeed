@@ -2,8 +2,6 @@ import CollisionEngine from "../sharedJS/collisionEngine.js";
 import Vec2 from "../sharedJS/vec2.js";
 import Time from "./time.js";
 import CanvasWrapper from "./canvasWrapper.js";
-//import { Moveable } from "./entity.js";
-//import Monster from "./monster.js";
 import PlayerController from "./playerController.js";
 import CHANNELS from "../sharedJS/channels.js";
 import Projectile from "../sharedJS/projectile.js";
@@ -13,6 +11,10 @@ import Waterball from "../sharedJS/waterball.js";
 import WaterballAbility from "../sharedJS/waterballAbility.js";
 import { Circle } from "../sharedJS/shapes.js";
 import { makeFromJSON } from "../sharedJS/utils.js";
+import Fireball from "../sharedJS/fireball.js";
+import PlantSeed from "../sharedJS/plantSeed.js";
+import FireballAbility from "../sharedJS/fireballAbility.js";
+import PlantSeedAbility from "../sharedJS/plantSeedAbility.js";
 
 //setup the sockets and listening
 // @ts-ignore
@@ -26,9 +28,14 @@ let bounds = canvas.getBoundingClientRect();
 /** @type {PlayerController} */
 let you;
 
-let location = new Vec2(100,100);
-let waterBall = new Waterball(location, "test", WaterballAbility.IMAGE, 0, 1, new Vec2(1,0), 100, 100, new Circle(location, 32), you);
+//spawn one of each of the abilities to preload the image
+let location = new Vec2(-100,-100);
+let waterBall = new Waterball(location, "test", 0, 1, new Vec2(1,0), 100, 100, new Circle(location, 0), you);
+let fireBall = new Fireball(location, "test", 0, 1, new Vec2(1,0), 100, 100, new Circle(location, 0), you);
+let plantSeed = new PlantSeed(location, "test", 0, 1, new Vec2(1,0), 100, 100, new Circle(location, 0), you);
 canvas.addDrawable(waterBall.makeSprite());
+canvas.addDrawable(fireBall.makeSprite());
+canvas.addDrawable(plantSeed.makeSprite());
 
 //set up socket listening
 
@@ -69,7 +76,7 @@ socket.on(CHANNELS.newProjectile, function(newProjectile) {
         console.log("projectile");
         canvas.addDrawable(projectile);
     } else {
-        console.log("Ability");
+        console.log("Ability", projectile);
         // @ts-ignore
         canvas.addDrawable(projectile.makeSprite());
     }

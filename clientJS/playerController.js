@@ -36,8 +36,8 @@ class PlayerController extends Player {
 
         //create default abilities
         this.abilities = {
-            [keyBinds.MELEE]: new Ability("Melee", "./img/arrow.png", 100, 100, 100, 10, Projectile, 1, new Circle(new Vec2(), 16)),
-            [keyBinds.RANGE]: new Ability("Arrow", "./img/arrow.png", 200, 100, 200, 10, Projectile, 1, new Circle(new Vec2(), 16)),
+            [keyBinds.MELEE]: new Ability("Melee",  100, 100, 100, 10, Projectile, 1, new Circle(new Vec2(), 16)),
+            [keyBinds.RANGE]: new Ability("Arrow",  200, 100, 200, 10, Projectile, 1, new Circle(new Vec2(), 16)),
             [keyBinds.ABILITY1]: new FireballAbility(),
             [keyBinds.ABILITY2]: new WaterballAbility(),
             [keyBinds.ABILITY3]: new PlantSeedAbility(),

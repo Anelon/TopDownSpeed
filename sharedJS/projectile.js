@@ -6,11 +6,11 @@ import Player from "./player.js";
 import Drawable from "../clientJS/drawable.js";
 
 class Projectile extends Entity {
+    static get IMAGE() { return "./img/arrow.png"; }
     /**
      * Constructs a new Projectile
      * @param {Vec2} origin Location of Projectile
      * @param {string} name
-     * @param {string} imgSrc Image sprite path
      * @param {number} speed How fast the projectile movies
      * @param {number} scale
      * @param {Vec2} look
@@ -18,10 +18,13 @@ class Projectile extends Entity {
      * @param {number} damage How much damage the projectile does
      * @param {Circle} hitbox
      * @param {Player} owner Who spaned the projectile
+     * @param {string} [imgSrc] Image sprite path
      */
-    constructor(origin, name, imgSrc, speed, scale, look, range, damage, hitbox, owner) {
+    constructor(origin, name, speed, scale, look, range, damage, hitbox, owner, imgSrc) {
+        console.assert(hitbox instanceof Circle, "Hitbox not cirlce?");
         //temporary hitbox, need to find better place for this at somepoint (probably when we make specific abilities)
         hitbox = hitbox || new Circle(origin, 8);
+        imgSrc = imgSrc || Projectile.IMAGE;
         super(origin, imgSrc, hitbox, speed, scale, look);
         //save the origin to do distance calculations?
         this.origin = origin.clone();
@@ -47,7 +50,7 @@ class Projectile extends Entity {
         //construct projectile
         const loc = new Vec2(location.x, location.y);
         return new Projectile(
-            loc, name, imgSrc, speed, scale, new Vec2(lookDirection.x, lookDirection.y), range, damage, new Circle(loc, hitbox.radius), owner
+            loc, name, speed, scale, new Vec2(lookDirection.x, lookDirection.y), range, damage, new Circle(loc, hitbox.radius), owner, imgSrc
         );
     }
     /**

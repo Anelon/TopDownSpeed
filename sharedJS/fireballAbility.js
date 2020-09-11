@@ -5,15 +5,14 @@ import Vec2 from "./vec2.js";
 
 export default class FireballAbility extends Ability {
     static get NAME() { return "Fireball"; }
-    static get IMAGE() { return "./img/abilities/fireball/fireball.png"; }
-    static get SPEED() { return 1000; }
-    static get RANGE() { return 0; }
-    static get COOLDOWN() { return 1000; }
-    static get DAMAGE() { return 1000; }
+    static get SPEED() { return 400; }
+    static get RANGE() { return 1000; }
+    static get COOLDOWN() { return 500; }
+    static get DAMAGE() { return 100; }
     static hitbox = new Circle(new Vec2(), 32);
     static scale = 1;
 
     constructor() {
-        super("Fireball", FireballAbility.IMAGE , FireballAbility.SPEED, FireballAbility.RANGE, FireballAbility.COOLDOWN, FireballAbility.DAMAGE, Fireball, FireballAbility.scale, FireballAbility.hitbox);
+        super("Fireball", FireballAbility.SPEED, FireballAbility.RANGE, FireballAbility.COOLDOWN, FireballAbility.DAMAGE, Fireball, FireballAbility.scale, FireballAbility.hitbox);
     }
 }
