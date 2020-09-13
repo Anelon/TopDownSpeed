@@ -9,7 +9,8 @@ import Entity from "../sharedJS/entity.js";
 import { Circle, Rectangle } from '../sharedJS/shapes.js';
 import Point from "../sharedJS/point.js";
 import Vec2 from '../sharedJS/vec2.js';
-import Time from "../serverJS/serverTime.js";
+import Time from "../sharedJS/utils/time.js";
+import { performance } from "perf_hooks";
 
 
 describe('Entity', function () {
@@ -59,7 +60,7 @@ describe('Entity', function () {
     context('Update and Move functions', function() {
         let time = null;
         beforeEach(function() {
-            time = new Time(2, 1, 1, 1);
+            time = new Time(performance, 2, 1, 1, 1);
         });
 
         it("update with no speed doesn't move", function() {

@@ -7,7 +7,8 @@ import Player from "../sharedJS/player.js";
 import { Circle } from '../sharedJS/shapes.js';
 import Point from "../sharedJS/point.js";
 import Vec2 from '../sharedJS/vec2.js';
-import Time from "../serverJS/serverTime.js";
+import Time from "../sharedJS/utils/time.js";
+import { performance } from "perf_hooks";
 
 
 describe('Player', function () {
@@ -18,11 +19,11 @@ describe('Player', function () {
     const speed = 100;
     const health = 200;
     const name = "testPlayer";
-    let player = new Player(location, name, imgSrc, speed, health);
+    let player = new Player(location, name, imgSrc, speed, health, hitbox, 1);
 
     //reset player before each test
     beforeEach(function() {
-        player = new Player(location, name, imgSrc, speed, health);
+        player = new Player(location, name, imgSrc, speed, health, hitbox, 1);
     });
 
     context('Constructor', function () {
@@ -59,11 +60,11 @@ describe('Player', function () {
     context('Update and Move functions', function() {
         let time = null;
         beforeEach(function() {
-            time = new Time(2, 1, 1, 1);
+            time = new Time(performance, 2, 1, 1, 1);
         });
 
         it("update with no speed doesn't move", function() {
-            let expectedPlayer = new Player(location, name, imgSrc, 0, health);
+            let expectedPlayer = new Player(location, name, imgSrc, 0, health, hitbox, 1);
             //force id to be the same
             expectedPlayer.id = player.id;
             player.speed = 0;
@@ -73,7 +74,7 @@ describe('Player', function () {
         });
 
         it("update with speed 100 and dt 1", function() {
-            let expectedPlayer = new Player(location, name, imgSrc, speed, health);
+            let expectedPlayer = new Player(location, name, imgSrc, speed, health, hitbox, 1);
             expectedPlayer.location.addS(new Vec2(1,0).multiplyScalarS(speed));
             //force id to be the same
             expectedPlayer.id = player.id;

@@ -1,4 +1,4 @@
-import Time from "../serverJS/serverTime.js";
+import Time from "../sharedJS/utils/time.js";
 import Connections from "./connections.js";
 import { performance } from "perf_hooks";
 import CollisionEngine from "../sharedJS/collisionEngine.js";
