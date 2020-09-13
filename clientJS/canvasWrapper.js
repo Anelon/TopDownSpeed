@@ -30,6 +30,7 @@ class CanvasWrapper {
 		this.ctx = this.canvas.getContext('2d');
 		//https://stackoverflow.com/questions/195262/can-i-turn-off-antialiasing-on-an-html-canvas-element
 		//supposed to fix antialiasing but its not =(
+		//TODO just scale all of the images
 		this.ctx['imageSmoothingEnabled'] = false;       /* standard */
 		this.ctx['mozImageSmoothingEnabled'] = false;    /* Firefox */
 		this.ctx['oImageSmoothingEnabled'] = false;      /* Opera */
