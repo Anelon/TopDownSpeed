@@ -25,7 +25,7 @@ canvas.addEventListener("mouseup", function(e) {
     console.log(canvas.tileSize.invert());
     regionEnd = clickLocation.multiplyVec(canvas.tileSize.invert()).floorS();
     //console.log(clickLocation.log(), regionEnd.log());
-    updateRoom(regionStart, regionEnd, tileSprites.get("grassTileMap"));
+    updateRoom(regionStart, regionEnd, tileSprites.get("grassTile"));
 });
 
 let room = new Array();

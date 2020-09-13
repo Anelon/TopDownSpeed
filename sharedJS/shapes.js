@@ -121,12 +121,10 @@ class Rectangle {
 
     /**
      * Check if rectangle contains a point
-     * @param {Point} point The point to be checked
+     * @param {Point|Vec2} point The point to be checked
      * @returns {boolean}
      */
     contains(point) {
-        if (!(point instanceof Point))
-            throw TypeError("Contains point not a Point");
         return (
             point.x >= this.left &&
             point.x <= this.right &&

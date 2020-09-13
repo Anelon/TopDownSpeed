@@ -3,7 +3,7 @@ import Vec2 from "../sharedJS/vec2.js";
 
 class Drawable {
     /**
-     * @param {import("../sharedJS/entity.js").default | import("../sharedJS/player.js").default | import("../sharedJS/projectile.js").default} owner
+     * @param {import("../sharedJS/entity.js").default | import("../sharedJS/player.js").default | import("../sharedJS/ability/projectile.js").default} owner
      * @param {number} scale
      */
     constructor(owner, scale) {

@@ -1,9 +1,8 @@
 import Vec2 from "./vec2.js";
 import Entity from "./entity.js";
 import { Circle } from "./shapes.js";
-import CanvasWrapper from "../clientJS/canvasWrapper.js";
-import { TYPES, CATEGORY } from "./enums.js";
-import Projectile from "./projectile.js";
+import { TYPES, CATEGORY } from "./utils/enums.js";
+import Projectile from "./ability/projectile.js";
 //import Ability from "../../sharedJS/ability.js";
 
 //class for holding the other players and as a parent to PlayerController

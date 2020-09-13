@@ -2,7 +2,7 @@ import Vec2 from "./vec2.js";
 import Point from "./point.js";
 import { Circle } from "./shapes.js";
 import Time from "../clientJS/time.js";
-import { TYPES, CATEGORY } from "./enums.js";
+import { TYPES, CATEGORY } from "./utils/enums.js";
 
 let idGen = 0;
 class Entity {

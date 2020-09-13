@@ -1,17 +1,17 @@
 import Vec2 from "../sharedJS/vec2.js";
 import { Circle } from "../sharedJS/shapes.js";
-import Ability from "../sharedJS/ability.js";
-import CHANNELS from "../sharedJS/channels.js";
+import Ability from "../sharedJS/ability/ability.js";
+import CHANNELS from "../sharedJS/utils/channels.js";
 import Player from "../sharedJS/player.js";
 import { keyBinds, keyPress } from "./keyBinds.js";
 import CollisionEngine from "../sharedJS/collisionEngine.js";
 import CanvasWrapper from "./canvasWrapper.js";
 import Time from "./time.js";
-import Projectile from "../sharedJS/projectile.js";
-import FireballAbility from "../sharedJS/fireballAbility.js";
-import WaterballAbility from "../sharedJS/waterballAbility.js";
-import PlantSeedAbility from "../sharedJS/plantSeedAbility.js";
-import Waterball from "../sharedJS/waterball.js";
+import Projectile from "../sharedJS/ability/projectile.js";
+import FireballAbility from "../sharedJS/ability/fireballAbility.js";
+import WaterballAbility from "../sharedJS/ability/waterballAbility.js";
+import PlantSeedAbility from "../sharedJS/ability/plantSeedAbility.js";
+import Waterball from "../sharedJS/ability/waterball.js";
 
 //class for handling the current player
 class PlayerController extends Player {

@@ -1,7 +1,5 @@
 import Projectile from "./projectile.js";
-import Vec2 from "./vec2.js";
-import Player from "./player.js";
-import { Circle } from "./shapes.js";
+import { Circle } from "../shapes.js";
 
 class Ability {
     /**
@@ -31,7 +29,7 @@ class Ability {
     /**
      * Attempts to use the ability
      * @param {number} now Current time
-     * @param {import("../clientJS/playerController.js").default} owner How far from origin to spawn the ability
+     * @param {import("../../clientJS/playerController.js").default} owner How far from origin to spawn the ability
      * @returns {Projectile|null} Spawned projectile if it was avaialable
      */
     use(now, owner) {

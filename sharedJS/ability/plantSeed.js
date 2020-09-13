@@ -1,11 +1,11 @@
 import Projectile from "./projectile.js";
-import { TYPES, CATEGORY } from "./enums.js";
-import Vec2 from "./vec2.js";
-import Sprite from "../clientJS/sprite.js";
+import { TYPES, CATEGORY } from "../utils/enums.js";
+import Vec2 from "../vec2.js";
+import Sprite from "../../clientJS/sprite.js";
 import PlantSeedAbility from "./plantSeedAbility.js";
 //TODO: Find unneccisary imports and replace with typedefs
-/** @typedef {import("./player").default} Player */
-/** @typedef {import("./entity").default} Entity */
+/** @typedef {import("../player").default} Player */
+/** @typedef {import("../entity").default} Entity */
 
 export default class PlantSeed extends Projectile {
     static get FRAMES() {return 4;} //Number of frames of animation
@@ -20,7 +20,7 @@ export default class PlantSeed extends Projectile {
      * @param {Vec2} look
      * @param {number} range
      * @param {number} damage
-     * @param {import("./shapes.js").Circle} hitbox
+     * @param {import("../shapes.js").Circle} hitbox
      * @param {Player} owner
      */
     constructor(origin, name, speed, scale, look, range, damage, hitbox, owner) {

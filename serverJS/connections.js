@@ -1,11 +1,10 @@
 import io from "socket.io";
 import Vec2 from "../sharedJS/vec2.js";
 import Player from "../sharedJS/player.js";
-import CHANNELS from "../sharedJS/channels.js";
+import CHANNELS from "../sharedJS/utils/channels.js";
 import CollisionEngine from "../sharedJS/collisionEngine.js";
-import Projectile from "../sharedJS/projectile.js";
 import { Circle } from "../sharedJS/shapes.js";
-import { makeFromJSON } from "../sharedJS/utils.js";
+import { makeFromJSON } from "../sharedJS/utils/utils.js";
 
 class Connections {
     /**

@@ -3,18 +3,15 @@ import Vec2 from "../sharedJS/vec2.js";
 import Time from "./time.js";
 import CanvasWrapper from "./canvasWrapper.js";
 import PlayerController from "./playerController.js";
-import CHANNELS from "../sharedJS/channels.js";
-import Projectile from "../sharedJS/projectile.js";
-import { TYPES, CATEGORY } from "../sharedJS/enums.js";
+import CHANNELS from "../sharedJS/utils/channels.js";
+import Projectile from "../sharedJS/ability/projectile.js";
+import { TYPES, CATEGORY } from "../sharedJS/utils/enums.js";
 import Player from "../sharedJS/player.js";
-import Waterball from "../sharedJS/waterball.js";
-import WaterballAbility from "../sharedJS/waterballAbility.js";
+import Waterball from "../sharedJS/ability/waterball.js";
 import { Circle } from "../sharedJS/shapes.js";
-import { makeFromJSON } from "../sharedJS/utils.js";
-import Fireball from "../sharedJS/fireball.js";
-import PlantSeed from "../sharedJS/plantSeed.js";
-import FireballAbility from "../sharedJS/fireballAbility.js";
-import PlantSeedAbility from "../sharedJS/plantSeedAbility.js";
+import { makeFromJSON } from "../sharedJS/utils/utils.js";
+import Fireball from "../sharedJS/ability/fireball.js";
+import PlantSeed from "../sharedJS/ability/plantSeed.js";
 
 //setup the sockets and listening
 // @ts-ignore

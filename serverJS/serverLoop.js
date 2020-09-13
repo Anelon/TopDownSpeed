@@ -2,15 +2,18 @@ import Time from "../serverJS/serverTime.js";
 import Connections from "./connections.js";
 import { performance } from "perf_hooks";
 import CollisionEngine from "../sharedJS/collisionEngine.js";
-import { TYPES, CATEGORY } from "../sharedJS/enums.js";
-import Projectile from "../sharedJS/projectile.js";
+import { TYPES, CATEGORY } from "../sharedJS/utils/enums.js";
+import Projectile from "../sharedJS/ability/projectile.js";
 import Player from "../sharedJS/player.js";
 //import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 
 class ServerLoop {
+    /**
+     * @param {import("http").Server | import("https").Server} server
+     */
     constructor(server) {
         //basic time object to pass to funcitons
-        this.time = new Time();
+        this.time = new Time(performance);
         this.collisionEngine = new CollisionEngine(2000, 5000);
         this.connections = new Connections(server, this.collisionEngine).start();
     }
