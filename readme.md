@@ -1,3 +1,7 @@
+Mirrored Fantasy is a new take on the high speed team based combat from MOBAs, one of the most popular eSports genres, with more of a focus on: diverse map elements, ability interaction, and player versus environment. The main goal is to have interesting gameplay with isolated mirror lanes which no other MOBA has, with three dungeons of different types. A player versus player dungeon with the objective of this being the main interaction between teams. A player versus environment dungeon which shows player skill and knowledge of game mechanics. Last is a simple puzzle dungeon that has a mix between player versus environment and player versus player which can serve as a secondary point of contention between teams. 
+The purpose of this project is to fill a gap in the MOBA game genre with a greater focus on player versus environment elements and direct lockdowns of the other team’s progress. Bringing player versus environment skill to a genre that normally keeps its focus in player versus player and a focus on the ability interaction that is common in RPGs. This is targeted at fans of both the RPG and MOBA genre as well as just gamers in general.
+
+
 Requirements, nodejs (>=13.2.0 if you enable experimantal modules or >=14), and a modern web browser.
 From the project root run
 - npm install
