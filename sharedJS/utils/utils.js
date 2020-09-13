@@ -1,10 +1,9 @@
-import Vec2 from "./vec2.js";
-import Projectile from "./projectile.js";
-import { TYPES } from "./enums.js";
-import { Circle } from "./shapes.js";
-import Fireball from "./fireball.js";
-import Waterball from "./waterball.js";
-import PlantSeed from "./plantSeed.js";
+import Vec2 from "../vec2.js";
+import Projectile from "../ability/projectile.js";
+import { Circle } from "../shapes.js";
+import Fireball from "../ability/fireball.js";
+import Waterball from "../ability/waterball.js";
+import PlantSeed from "../ability/plantSeed.js";
 
 /**
  * @param {{ json: string; type: string; }} object

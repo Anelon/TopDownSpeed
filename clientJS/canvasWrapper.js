@@ -2,9 +2,9 @@ import Vec2 from "../sharedJS/vec2.js";
 import Drawable from "./drawable.js";
 import Entity from "../sharedJS/entity.js";
 import Player from "../sharedJS/player.js";
-import Projectile from "../sharedJS/projectile.js";
-import Sprite from "./sprite.js";
+import Projectile from "../sharedJS/ability/projectile.js";
 /** @typedef { import("./playerController.js").default } PlayerController; */
+/** @typedef { import("./sprite.js").default } Sprite; */
 
 //TODO figure out resizing
 //https://stackoverflow.com/questions/1664785/resize-html5-canvas-to-fit-window
@@ -30,6 +30,7 @@ class CanvasWrapper {
 		this.ctx = this.canvas.getContext('2d');
 		//https://stackoverflow.com/questions/195262/can-i-turn-off-antialiasing-on-an-html-canvas-element
 		//supposed to fix antialiasing but its not =(
+		//TODO just scale all of the images
 		this.ctx['imageSmoothingEnabled'] = false;       /* standard */
 		this.ctx['mozImageSmoothingEnabled'] = false;    /* Firefox */
 		this.ctx['oImageSmoothingEnabled'] = false;      /* Opera */
@@ -68,7 +69,7 @@ class CanvasWrapper {
 	 */
 	addDrawable(drawable) {
 		console.log(drawable);
-		if(drawable instanceof Drawable || drawable instanceof Sprite) {
+		if(drawable instanceof Drawable) {
 			this.drawables.set(drawable.owner.id, drawable);
 			//this.drawables.push(drawable);
 		} else {
@@ -80,7 +81,7 @@ class CanvasWrapper {
 	 * @param {Drawable|Entity|Sprite} drawable 
 	 */
 	removeDrawable(drawable) {
-		if(drawable instanceof Drawable || drawable instanceof Sprite) {
+		if(drawable instanceof Drawable) {
 			this.drawables.delete(drawable.owner.id);
 		} else {
 			//if drawable has an id use it for the delete

@@ -1,7 +1,7 @@
 import Ability from "./ability.js";
 import Fireball from "./fireball.js";
-import { Circle } from "./shapes.js";
-import Vec2 from "./vec2.js";
+import { Circle } from "../shapes.js";
+import Vec2 from "../vec2.js";
 
 export default class FireballAbility extends Ability {
     static get NAME() { return "Fireball"; }

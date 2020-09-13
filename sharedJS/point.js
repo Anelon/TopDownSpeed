@@ -24,20 +24,17 @@ class Point {
 	}
 
     /**
-     * Check if value of this is equal to other
-     * @param {Point} other 
-     * @returns {boolean}
-     */
 	equals(other) {
 		if(!(other instanceof Point)) return false;
 		return (this.location.equals(other.location) && this.owner.equals(other.owner) && this.radius === other.radius);
 	}
+     */
 
 	//leaving in for debugging
 	/**
 	 * Draws the Point onto the canvas
-	 * @param {Canvas.context} ctx HTML canvas object's context
 	 * @param {string} color Hex color string
+	 * @param {{ beginPath: () => void; arc: (arg0: number, arg1: number, arg2: number, arg3: number, arg4: number) => void; fillStyle: string; fill: () => void; }} ctx
 	 */
 	draw(ctx, color) {
 		ctx.beginPath();

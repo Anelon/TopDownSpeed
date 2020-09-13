@@ -4,7 +4,7 @@ import Vec2 from "../sharedJS/vec2.js";
 
 export default class Sprite extends Drawable {
     /**
-     * @param {import("../sharedJS/entity.js").default | import("../sharedJS/player.js").default | import("../sharedJS/projectile.js").default} owner
+     * @param {import("../sharedJS/entity.js").default | import("../sharedJS/player.js").default | import("../sharedJS/ability/projectile.js").default} owner
      * @param {number} numFrames //number of frames in sprite sheet
      * @param {number} animationSpeed //how fast animation should play
      * @param {number} scale
