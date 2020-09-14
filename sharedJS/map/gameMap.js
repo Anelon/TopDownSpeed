@@ -1,16 +1,15 @@
-import TileSprite from "../../clientJS/tileSprite";
-import Vec2 from "../vec2";
+import Lane from "./lane.js";
 
 export default class GameMap {
     /**
-     * @param {Vec2} dimentions In number of tiles wide, tall
-     * @param {Vec2} tileDimentions
-     * @param {number} numLayers
+     * @param {Lane} lane
+     * @param {number} voidWidth
      */
-    constructor(dimentions, tileDimentions, numLayers) {
-        this.dimentions = dimentions;
-        this.tileDimentions = tileDimentions;
-        /** @type {Array<TileSprite>} */
-        this.layers = new Array(numLayers);
+    constructor(lane, voidWidth) {
+        this.leftLane = lane;
+        this.rightLane = lane.mirror();
+        this.voidWidth = voidWidth;
+
+        this.editMode = false;
     }
 }

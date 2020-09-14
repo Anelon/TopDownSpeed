@@ -3,6 +3,8 @@ import CanvasWrapper from "../canvasWrapper.js";
 import TileSprite from "../tileSprite.js";
 import { DIRS, DIRBITS } from "../dirsMap.js";
 import { tileSprites } from "../sprites.js";
+import GameMap from "../../sharedJS/map/gameMap.js"
+import { TILE_NAMES } from "../../sharedJS/utils/enums.js";
 
 //Globals
 let width = 0;
@@ -25,7 +27,7 @@ canvas.addEventListener("mouseup", function(e) {
     console.log(canvas.tileSize.invert());
     regionEnd = clickLocation.multiplyVec(canvas.tileSize.invert()).floorS();
     //console.log(clickLocation.log(), regionEnd.log());
-    updateRoom(regionStart, regionEnd, tileSprites.get("grassTile"));
+    updateRoom(regionStart, regionEnd, tileSprites.get(TILE_NAMES.grass));
 });
 
 let room = new Array();
@@ -128,7 +130,7 @@ function mapInit() {
     room.push("ggwwwwwwwwwgdgwwwwwg");
     room.push("ggggwggwwwwgggwwwwwg");
     room.push("ggggwgggwwwwgwwwwwwg");
-    room.push("ggggggwwwwsssswwwwwg");
+    room.push("ggggggggwwsssswwwwwg");
     room.push("gwwwwwwwwwsssswwwwwg");
     room.push("gwwwwwgggggwwwggwwwg");
     room.push("gwwwwwgggggwwwggwwwg");
@@ -163,6 +165,7 @@ function updateRoom(regionStart, regionEnd, tileSprite) {
         [startY, endY] = [endY, startY];
 
     //build replacement string
+    console.log(tileSprite);
     let newStr = "";
     for (let i = startX; i <= endX; i++) {
         newStr += tileSprite.char;

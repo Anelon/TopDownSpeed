@@ -24,4 +24,14 @@ const CATEGORY = {
 //lock the enum
 Object.freeze(CATEGORY);
 
-export { TYPES, CATEGORY };
+const TILE_NAMES = {
+    grass: "grass",
+    snow: "snow",
+    dirt: "dirt",
+    water: "water",
+
+}
+//lock the enum
+Object.freeze(CATEGORY);
+
+export { TYPES, CATEGORY, TILE_NAMES };

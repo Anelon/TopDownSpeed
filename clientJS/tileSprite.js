@@ -4,8 +4,8 @@ import Vec2 from "../sharedJS/vec2.js";
 
 export default class TileSprite {
     //strange JS way of doing const static
-    static get width() { return 16 };
-    static get height() { return 16 };
+    static width = 16;
+    static height = 16;
     static imagesToLoad = 0;
     /**
      * @param {string} imgSrc

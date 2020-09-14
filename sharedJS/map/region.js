@@ -1,4 +1,4 @@
-import { Rectangle } from "../shapes";
+import { Rectangle } from "../shapes.js";
 
 export default class Region {
     /**
@@ -12,5 +12,6 @@ export default class Region {
 
     //call when player overlaps
     hit(other) {
+        console.log(other, "entered", this.name);
     }
 }

@@ -1,16 +1,39 @@
-import TileSprite from "../../clientJS/tileSprite";
-import Vec2 from "../vec2";
+import { Rectangle } from "../shapes.js";
+import Vec2 from "../vec2.js";
+import Layer from "./layer.js";
+import Region from "./region.js";
 
-export default class GameMap {
+export default class Lane {
     /**
      * @param {Vec2} dimentions In number of tiles wide, tall
-     * @param {Vec2} tileDimentions
      * @param {number} numLayers
+     * @param {Array<Layer>} [layers] Will fill with empty layers if not set
      */
-    constructor(dimentions, tileDimentions, numLayers) {
+    constructor(dimentions, numLayers, layers) {
         this.dimentions = dimentions;
-        this.tileDimentions = tileDimentions;
-        /** @type {Array<TileSprite>} */
-        this.layers = new Array(numLayers);
+        /** @type {Array<Layer>} */
+        this.layers;
+        if(layers) {
+            this.layers = layers;
+        } else {
+            this.layers = new Array(numLayers);
+            for (let layer of this.layers) {
+                layer = new Layer(dimentions);
+            }
+        }
+        //set spawn region
+        this.spawn = new Rectangle(new Vec2(500,100), 1000, 200);
+        //set dungeons
+        this.pvp = new Region("PVP", new Rectangle(new Vec2(1000,1000), 1000, 200))
+    }
+    mirror() {
+        let mirrored = new Lane(this.dimentions.clone(), this.layers.length);
+        for(let layer of mirrored.layers){ 
+            layer.mirror();
+        }
+        return mirrored;
+    }
+    getJSON() {
+        return JSON.stringify(this);
     }
 }

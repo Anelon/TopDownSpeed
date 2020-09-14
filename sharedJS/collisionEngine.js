@@ -35,10 +35,9 @@ export default class CollisionEngine {
      * Updates all player's and projectiles based on the changed time and checks for colisions
      * @param {Time} time 
      * @param {number} step The tick time
-     * @param {CanvasWrapper} [canvas=null] Will be passed on clientside code
      * @returns {Array<Entity>} Objects that should be deleted
      */
-    update(time, step, canvas = null) {
+    update(time, step) {
         //reset quadTree, might change to updating locations of each item later if we end up with too many static items
         this.collisionTree = new QuadTree(this.boundry, this.qTreeCapacity);
         const deleteList = new Array();
