@@ -16,7 +16,7 @@ app.use("/js/clientJS", express.static("clientJS"));
 
 app.engine("html", ejs.renderFile);
 app.set("port", process.env.PORT || "8080");
-app.set("ip", process.env.IP || "localhost");
+app.set("ip", process.env.IP || "0.0.0.0");
 app.use(express.static("public"));
 ejsLint("index");
 
