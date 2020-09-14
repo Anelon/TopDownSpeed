@@ -4,6 +4,9 @@
   "description": "2d 2 lane competitive speed running game",
   "main": "app.js",
   "type": "module",
+  "engines": {
+    "node": "14.x"
+  },
   "scripts": {
     "dev": "nodemon app.js -L --ext .js,.ejs,.css",
     "test": "mocha --exit",
