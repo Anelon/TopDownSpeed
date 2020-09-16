@@ -7,10 +7,12 @@ import GameMap from "../../sharedJS/map/gameMap.js"
 import { TILES, TILE_NAMES } from "../../sharedJS/utils/enums.js";
 
 //Globals
+const gameMap = new GameMap(5, new Vec2(15, 200));
+const tileSize = new Vec2(32,32);
+let layerSelected = 1;
 //set up canvas
-const canvas = new CanvasWrapper({tileSize: new Vec2(32,32)});
+const canvas = new CanvasWrapper({tileSize, canvasSize: gameMap.dimentions.clone().multiplyVecS(tileSize)});
 let bounds = canvas.getBoundingClientRect();
-const gameMap = new GameMap(5, new Vec2(10, 200));
 
 let regionStart = new Vec2();
 let regionEnd = new Vec2();
@@ -26,38 +28,11 @@ canvas.addEventListener("mouseup", function(e) {
     console.log(canvas.tileSize.invert());
     regionEnd = clickLocation.multiplyVec(canvas.tileSize.invert()).floorS();
     //console.log(clickLocation.log(), regionEnd.log());
-    updateRoom(regionStart, regionEnd, tileSprites.get(TILE_NAMES.g));
+    gameMap.update(regionStart, regionEnd, TILES[TILE_NAMES.g], layerSelected);
 });
 
 let room = new Array();
 let mobs = new Map();
-
-
-//TODO move to GameMap class
-function mapInit() {
-    //clear the room
-    room = new Array();
-    room.push("ggggddddddddddddgggg");
-    room.push("ggggdgggggddddddgggg");
-    room.push("gwwwwwwwwwgddggwwwwg");
-    room.push("ggwwwwwwwwwgdgwwwwwg");
-    room.push("ggggwggwwwwgggwwwwwg");
-    room.push("ggggwgggwwwwgwwwwwwg");
-    room.push("ggggggggwwsssswwwwwg");
-    room.push("gwwwwwwwwwsssswwwwwg");
-    room.push("gwwwwwgggggwwwggwwwg");
-    room.push("gwwwwwgggggwwwggwwwg");
-    room.push("gwwwwwgwwggggggwwwwg");
-    room.push("gwwwwwwwgggggwwwwwwg");
-    room.push("gwwwwwwwggwwwwwwwwwg");
-    room.push("gwwwwwwwwwwwwwwwwwwg");
-    room.push("gwwwgwwwwwwwwwwwwwwg");
-    room.push("gwwgggwwwwwwwwwwwwwg");
-    room.push("gwwgggwwwwwwwwwwwwwg");
-    room.push("gwgggggwwwwwwwwwwwwg");
-    room.push("gggggggggggggggggggg");
-}
-mapInit();
 
 /**
  * Updates the room from start to end with TileImage
@@ -65,7 +40,7 @@ mapInit();
  * @param {Vec2} regionEnd 
  * @param {TileSprite} tileSprite 
  */
-function updateRoom(regionStart, regionEnd, tileSprite) {
+function updateMap(regionStart, regionEnd, tileSprite) {
     console.assert(regionStart instanceof Vec2, "regionStart Not Vec2", regionStart);
     console.assert(regionEnd instanceof Vec2, "regionEnd Not Vec2", regionEnd);
     console.log(regionStart, regionEnd);

@@ -38,12 +38,11 @@ class CanvasWrapper {
 		this.ctx['msImageSmoothingEnabled'] = false;     /* IE */
 
 		this.borderSize = 40;
-		if(canvasSize === null) {
-			this.canvas.width = window.innerWidth - this.borderSize;
-			this.canvas.height = window.innerHeight - this.borderSize;
-		} else {
-			this.canvas.width = canvasSize.x;
-			this.canvas.height = canvasSize.y;
+		this.canvas.width = window.innerWidth - this.borderSize;
+		this.canvas.height = window.innerHeight - this.borderSize;
+		if(canvasSize) {
+			this.canvas.width = Math.min(canvasSize.x, this.canvas.width);
+			this.canvas.height = Math.min(canvasSize.y, this.canvas.height);
 		}
 		this.ctx.font = "18px arial";
 		this.ctx.lineWidth = 1;

@@ -126,8 +126,8 @@ class Vec2 {
      * @returns {Vec2}
      */
     multiplyVecS(other) {
-        this.x * other.x;
-        this.y * other.y;
+        this.x *= other.x;
+        this.y *= other.y;
         return this;
     }
     makeUnit() {

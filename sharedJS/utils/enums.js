@@ -32,6 +32,8 @@ const TILE_NAMES = {
     s: "snow",
     d: "dirt",
     w: "water",
+    v: "void",
+    " ": "none",
 }
 //lock the enum
 Object.freeze(CATEGORY);

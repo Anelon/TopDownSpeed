@@ -1,4 +1,5 @@
 import { Rectangle } from "../shapes.js";
+import { TILES, TILE_NAMES } from "../utils/enums.js";
 import Vec2 from "../vec2.js";
 import Layer from "./layer.js";
 import Region from "./region.js";
@@ -19,8 +20,9 @@ export default class Lane {
             this.layers = layers;
         } else {
             this.layers = new Array(numLayers);
-            for (let layer of this.layers) {
-                layer = new Layer(dimentions);
+            this.layers[0] = new Layer(dimentions, TILES[TILE_NAMES.g]);
+            for (let i = 1; i < numLayers; i++) {
+                this.layers[i] = new Layer(dimentions);
             }
         }
         //set spawn region
@@ -34,21 +36,28 @@ export default class Lane {
      * @param {boolean} [vertical]
      */
     mirror(vertical=true) {
-        let mirrored = new Lane(this.dimentions.clone(), this.layers.length, this.topRight, this.layers);
-        for(let layer of mirrored.layers) { 
-            layer.mirror(vertical);
-        }
+        //clone the layers
+        const mirroredLayers = this.layers.map((layer) => layer.mirror(vertical));
+
+        let mirrored = new Lane(this.dimentions.clone(), this.layers.length, this.topRight.clone(), mirroredLayers);
         return mirrored;
     }
     getJSON() {
         return JSON.stringify(this);
     }
+    static makeFromJSON(json) {
+
+    }
     /**
      * @param {import("../../clientJS/canvasWrapper.js").default} canvas
      */
     draw(canvas) {
+        //pass the draw command to the layers
         for(const layer of this.layers) {
-            layer.draw(canvas);
+            layer.draw(canvas, this.topRight);
         }
+    }
+    update(regionStart, regionEnd, layer, tile) {
+        this.layers[layer].update(regionStart,regionEnd,tile);
     }
 }

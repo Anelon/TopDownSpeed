@@ -7,11 +7,13 @@ import Tile from "./tile.js";
 export default class Layer {
     /**
      * @param {Vec2} dimentions
+     * @param {Tile} [baseTile]
      * @param {Array<Array<Tile>>} [tiles]
      */
-    constructor(dimentions, tiles) {
+    constructor(dimentions, baseTile, tiles) {
         /** @type {Array<Array<Tile>>} */
         this.tiles;
+        console.log(baseTile);
         if (tiles) {
             this.tiles = tiles;
         } else {
@@ -19,24 +21,40 @@ export default class Layer {
             for (let j = 0; j < dimentions.y; j++) {
                 this.tiles[j] = new Array(dimentions.x);
                 for (let i = 0; i < dimentions.x; i++) {
-                    this.tiles[j][i] = new Tile(new Vec2(i, j), "Void", false, true, 0);
+                    //default base layer to grass
+                    if (baseTile)
+                        this.tiles[j][i] = baseTile.clone().init(new Vec2(i, j), 0);
+                    else
+                        this.tiles[j][i] = new Tile(new Vec2(i, j), TILE_NAMES[" "], false, true, 0);
                 }
             }
         }
         this.dimentions = dimentions;
+        this.baseTile = baseTile;
         console.log(this.tiles.length, this.tiles[0].length);
     }
     /**
      * @param {boolean} [vertical]
      */
     mirror(vertical = true) {
+        let layer = new Layer(this.dimentions.clone(), this.baseTile);
         //TODO mirror all of the tiles
         if (vertical) {
             //mirror vertically
+            for(let j = 0; j < layer.dimentions.y; j++) {
+                for (let i = 0; i < layer.dimentions.x; i++) {
+                    layer.tiles[j][i] = this.tiles[j][this.dimentions.x - (i + 1)].clone().init(new Vec2(i, j), 0);
+                }
+            }
         } else {
             //mirror horizontally
+            for(let j = 0; j < layer.dimentions.y; j++) {
+                for (let i = 0; i < layer.dimentions.x; i++) {
+                    layer.tiles[j][i] = this.tiles[this.dimentions.y - (j + 1)][i].clone().init(new Vec2(i, j), 0);
+                }
+            }
         }
-        return this;
+        return layer;
     }
     /**
      * @param {Vec2} regionStart
@@ -61,7 +79,6 @@ export default class Layer {
         for (let j = startY; j <= endY; j++) {
             for (let i = startX; i <= endX; i++) {
                 this.tiles[j][i] = tile.clone().init(new Vec2(i, j), 0);
-                //room[j] = room[j].slice(0, startX) + newStr + room[j].slice(endX + 1);
             }
         }
     }
@@ -79,39 +96,41 @@ export default class Layer {
             //console.log(dirs[dir]);
             let newI = dir.x + i;
             let newJ = dir.y + j;
-            //if out of bounds count that as the tile
+            //if out of bounds skip the check
             if (newI < 0 || newJ < 0 || newI >= this.dimentions.x || newJ >= this.dimentions.y) {
-                around = around | dir.dir;
+                //around = around | dir.dir;
                 continue;
             }
-            if (curr.includes(this.tiles[newJ][newI])) {
+            if (curr.includes(this.tiles[newJ][newI].name)) {
                 around = around | dir.dir;
             }
         }
         return around;
     }
 
+    //this should probably get moved to a client class
     /**
-         * @param {import("../../clientJS/canvasWrapper.js").default} canvas
-         */
-    async draw(canvas) {
-        canvas.clear();
+     * @param {import("../../clientJS/canvasWrapper.js").default} canvas
+     * @param {Vec2} topRight
+     */
+    draw(canvas, topRight) {
         const height = this.tiles.length, width = this.tiles[0].length;
-        console.log("drawing map", width, height);
+        console.log("drawing map", width, height, this.baseTile);
         for (let j = 0; j < height; j++) {
             for (let i = 0; i < width; i++) {
+                //if(!TILE_NAMES[this.tiles[j][i]]) continue;
                 //grab tile name
-                const tileName = TILE_NAMES[this.tiles[j][i]];
+                const tileName = this.tiles[j][i].name;
+                //skip if tile name in none
+                if(!tileSprites.has(tileName)) continue;
                 //get the sprite
                 const sprite = tileSprites.get(tileName);
                 //get the around value
                 const around = this.getAround(i, j, sprite.connects);
                 const tile = TILES[tileName].clone().init(new Vec2(i, j), around);
                 //sprite.draw(canvas, tile.location, tile.around);
-                tileSprites.get(tile.name).draw(canvas, tile.location, tile.around);
-                //await sleep(.01);
+                tileSprites.get(tile.name).draw(canvas, tile.location.add(topRight), tile.around);
             }
         }
-        canvas.drawGrid();
     }
 }
