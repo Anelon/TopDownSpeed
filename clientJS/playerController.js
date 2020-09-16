@@ -6,7 +6,7 @@ import Player from "../sharedJS/player.js";
 import { keyBinds, keyPress } from "./keyBinds.js";
 import CollisionEngine from "../sharedJS/collisionEngine.js";
 import CanvasWrapper from "./canvasWrapper.js";
-import Time from "./time.js";
+import Time from "../sharedJS/utils/time.js";
 import Projectile from "../sharedJS/ability/projectile.js";
 import FireballAbility from "../sharedJS/ability/fireballAbility.js";
 import WaterballAbility from "../sharedJS/ability/waterballAbility.js";

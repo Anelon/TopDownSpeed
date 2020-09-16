@@ -9,7 +9,7 @@ export default class Lane {
      * @param {number} numLayers
      * @param {Array<Layer>} [layers] Will fill with empty layers if not set
      */
-    constructor(dimentions, numLayers, layers) {
+    constructor(dimentions, numLayers, layers, topRight=new Vec2()) {
         this.dimentions = dimentions;
         /** @type {Array<Layer>} */
         this.layers;
@@ -24,12 +24,17 @@ export default class Lane {
         //set spawn region
         this.spawn = new Rectangle(new Vec2(500,100), 1000, 200);
         //set dungeons
-        this.pvp = new Region("PVP", new Rectangle(new Vec2(1000,1000), 1000, 200))
+
+        /** @type {Array<Region>} */
+        this.regions = new Array();
     }
-    mirror() {
+    /**
+     * @param {boolean} [vertical]
+     */
+    mirror(vertical=true) {
         let mirrored = new Lane(this.dimentions.clone(), this.layers.length);
-        for(let layer of mirrored.layers){ 
-            layer.mirror();
+        for(let layer of mirrored.layers) { 
+            layer.mirror(vertical);
         }
         return mirrored;
     }

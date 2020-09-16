@@ -1,6 +1,6 @@
 import CollisionEngine from "../sharedJS/collisionEngine.js";
 import Vec2 from "../sharedJS/vec2.js";
-import Time from "./time.js";
+import Time from "../sharedJS/utils/time.js";
 import CanvasWrapper from "./canvasWrapper.js";
 import PlayerController from "./playerController.js";
 import CHANNELS from "../sharedJS/utils/channels.js";
@@ -19,7 +19,8 @@ let socket = io();
 
 let canvas = new CanvasWrapper();
 let collisionEngine = new CollisionEngine(canvas.width, canvas.height);
-let time = new Time();
+// @ts-ignore
+let time = new Time(performance);
 
 let bounds = canvas.getBoundingClientRect();
 /** @type {PlayerController} */
@@ -104,7 +105,7 @@ function update(time, step) {
     you.update(time, step, collisionEngine, canvas, socket);
 
     //run the collision engine and catch anything flagged for deleting
-    const deleteArray = collisionEngine.update(time, step, canvas);
+    const deleteArray = collisionEngine.update(time, step);
     for(const item of deleteArray) {
         if(item.category === CATEGORY.player) {
             //TODO respawn player (or have server respawn player)
@@ -146,9 +147,9 @@ function frame() {
     time.update();
     //console.log(time.dt);
     //run frames while they need to run fixed timestep gameloop
-    while(time.dt > step) {
-        time.dt -= step;
-        update(time, step);
+    while(time.dt > time.tickRate) {
+        time.dt -= time.tickRate;
+        update(time, time.tickRate);
     }
     render(you);
     time.last = time.now;

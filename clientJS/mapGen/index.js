@@ -1,10 +1,11 @@
 import Vec2 from "../../sharedJS/vec2.js";
 import CanvasWrapper from "../canvasWrapper.js";
 import TileSprite from "../tileSprite.js";
-import { DIRS, DIRBITS } from "../dirsMap.js";
+import { DIRS, DIRBITS } from "../../sharedJS/utils/dirsMap.js";
 import { tileSprites } from "../sprites.js";
 import GameMap from "../../sharedJS/map/gameMap.js"
-import { TILE_NAMES } from "../../sharedJS/utils/enums.js";
+import { TILES, TILE_NAMES } from "../../sharedJS/utils/enums.js";
+import Tile from "../../sharedJS/map/tile.js";
 
 //Globals
 let width = 0;
@@ -27,42 +28,12 @@ canvas.addEventListener("mouseup", function(e) {
     console.log(canvas.tileSize.invert());
     regionEnd = clickLocation.multiplyVec(canvas.tileSize.invert()).floorS();
     //console.log(clickLocation.log(), regionEnd.log());
-    updateRoom(regionStart, regionEnd, tileSprites.get(TILE_NAMES.grass));
+    updateRoom(regionStart, regionEnd, tileSprites.get(TILE_NAMES.g));
 });
 
 let room = new Array();
 let mobs = new Map();
 
-
-
-class Tile {
-    /**
-     * Constructor
-     * @param {Vec2} location 
-     * @param {TileSprite} tileSprite 
-     * @param {boolean} isWalkable 
-     * @param {number} around 
-     */
-    constructor(location, tileSprite, isWalkable, around) {
-        console.assert((location instanceof Vec2), "Location not a Vec2", location);
-        console.assert((tileSprite instanceof TileSprite), "tileSprite not a TileSprite", tileSprite);
-        console.assert((typeof (isWalkable) === 'boolean'), "tileSprite not a TileImage", tileSprite);
-
-        //location
-        this.location = location;
-        //image
-        this.tileSprite = tileSprite;
-        //walkable
-        this.isWalkable = isWalkable;
-        this.around = around;
-    }
-    /**
-     * @param {CanvasWrapper} canvas 
-     */
-    draw(canvas) {
-        this.tileSprite.draw(canvas, this.location, this.around);
-    }
-}
 
 /**
  * Gets where each tile is around the current tile
@@ -89,10 +60,6 @@ function getAround(i, j, curr) {
     return around;
 }
 
-function setTile(tileCoord, tileSprite) {
-    room[tileCoord.y][tileCoord.x] = "g";
-}
-
 /**
  * Waits given miliseconds
  * @param {number} ms 
@@ -104,16 +71,18 @@ function sleep(ms) {
 async function drawMap() {
     canvas.clear();
     height = room.length, width = room[0].length;
+    console.log("drawing map", width, height);
     for (let j = 0; j < height; j++) {
         for (let i = 0; i < width; i++) {
-            const curr = room[j][i];
-            for(const tileSprite of tileSprites.values()) {
-                if (curr === tileSprite.char) {
-                    const around = getAround(i, j, tileSprite.connects);
-                    const tile = new Tile(new Vec2(i, j), tileSprite, false, around);
-                    tile.draw(canvas);
-                }
-            }
+            //grab tile name
+            const tileName = TILE_NAMES[room[j][i]];
+            //get the sprite
+            const sprite = tileSprites.get(tileName);
+            //get the around value
+            const around = getAround(i, j, sprite.connects);
+            const tile = TILES[tileName].clone().init(new Vec2(i,j), around);
+            //sprite.draw(canvas, tile.location, tile.around);
+            tileSprites.get(tile.name).draw(canvas, tile.location, tile.around);
             //await sleep(.01);
         }
     }

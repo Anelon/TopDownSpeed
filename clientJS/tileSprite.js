@@ -1,4 +1,4 @@
-import { DIRBITS, DIRS } from "./dirsMap.js";
+import { DIRBITS, DIRS } from "../sharedJS/utils/dirsMap.js";
 import CanvasWrapper from "./canvasWrapper.js";
 import Vec2 from "../sharedJS/vec2.js";
 

@@ -5,7 +5,7 @@ import { Rectangle, Circle } from "./shapes.js";
 import Projectile from "./ability/projectile.js";
 import Player from "./player.js";
 import CanvasWrapper from "../clientJS/canvasWrapper.js";
-import Time from "../clientJS/time.js";
+import Time from "./utils/time.js";
 //import PlayerController from "../clientJS/playerController.js";
 import Entity from "./entity.js";
 //import { MinPriorityQueue } from '@datastructures-js/priority-queue';
