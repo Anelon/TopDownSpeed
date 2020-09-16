@@ -39,3 +39,11 @@ export function makeFromJSON(object) {
     }
     return Projectile.makeFromJSON(data);
 }
+
+/**
+ * Waits given miliseconds
+ * @param {number} ms 
+ */
+export function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
