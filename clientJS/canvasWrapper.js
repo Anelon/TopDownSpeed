@@ -25,8 +25,9 @@ class CanvasWrapper {
 		const tileSize = params.tileSize || new Vec2(16, 16);
 		this.scale = params.scale || 1;
 
-		/** @type {HTMLCanvasElement} */
-		this.canvas = (document.getElementById(id));
+		//using querySelector to garantee a canvas
+		/** @type HTMLCanvasElement */
+		this.canvas = document.querySelector(`canvas.${id}`);
 		this.ctx = this.canvas.getContext('2d');
 		//https://stackoverflow.com/questions/195262/can-i-turn-off-antialiasing-on-an-html-canvas-element
 		//supposed to fix antialiasing but its not =(

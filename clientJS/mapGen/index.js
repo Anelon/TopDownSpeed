@@ -7,9 +7,11 @@ import GameMap from "../../sharedJS/map/gameMap.js"
 import { TILES, TILE_NAMES } from "../../sharedJS/utils/enums.js";
 
 //Globals
-const gameMap = new GameMap(5, new Vec2(15, 200));
+const numLayers = 4;
+const gameMap = new GameMap(4, new Vec2(15, 200));
 const tileSize = new Vec2(32,32);
-let layerSelected = 1;
+let selectedLayer = 1;
+let selectedTileName = TILE_NAMES.g;
 //set up canvas
 const canvas = new CanvasWrapper({tileSize, canvasSize: gameMap.dimentions.clone().multiplyVecS(tileSize)});
 let bounds = canvas.getBoundingClientRect();
@@ -25,43 +27,40 @@ canvas.addEventListener("mousedown", function(e) {
 canvas.addEventListener("mouseup", function(e) {
     //console.log(e);
     const clickLocation = new Vec2(e.offsetX, e.offsetY);
-    console.log(canvas.tileSize.invert());
     regionEnd = clickLocation.multiplyVec(canvas.tileSize.invert()).floorS();
     //console.log(clickLocation.log(), regionEnd.log());
-    gameMap.update(regionStart, regionEnd, TILES[TILE_NAMES.g], layerSelected);
+    gameMap.update(regionStart, regionEnd, selectedLayer, TILES[selectedTileName]);
+    //redraw canvas
+    gameMap.draw(canvas);
 });
 
-let room = new Array();
-let mobs = new Map();
-
-/**
- * Updates the room from start to end with TileImage
- * @param {Vec2} regionStart 
- * @param {Vec2} regionEnd 
- * @param {TileSprite} tileSprite 
- */
-function updateMap(regionStart, regionEnd, tileSprite) {
-    console.assert(regionStart instanceof Vec2, "regionStart Not Vec2", regionStart);
-    console.assert(regionEnd instanceof Vec2, "regionEnd Not Vec2", regionEnd);
-    console.log(regionStart, regionEnd);
-    //Get x and y locations
-    let [startX, startY] = regionStart.getXY();
-    let [endX, endY] = regionEnd.getXY();
-    //if start is after end swap
-    if(startX > endX)
-        [startX, endX] = [endX, startX];
-    if(startY > endY)
-        [startY, endY] = [endY, startY];
-
-    //build replacement string
-    console.log(tileSprite);
-    let newStr = "";
-    for (let i = startX; i <= endX; i++) {
-        newStr += tileSprite.char;
-    }
-    //for each y replace section
-    for(let j = startY; j <= endY; j++) {
-        room[j] = room[j].slice(0, startX) + newStr + room[j].slice(endX+1);
-    }
-    gameMap.draw(canvas);
+const tileSelectList = document.querySelector("ul.tileSelectList");
+for(const tileName of Object.values(TILE_NAMES)) {
+    console.log(tileName);
+    if(!TILES[tileName]) continue;
+    const tileSelect = document.createElement("li");
+    tileSelect.innerText = tileName;
+    tileSelectList.appendChild(tileSelect);
 }
+tileSelectList.addEventListener("click", function(e) {
+    console.log(e, e.target);
+    const tileName = /** @type HTMLElement */(e.target).innerText;
+    selectedTileName = tileName;
+});
+
+const layerSelectList = document.querySelector("ul.layerSelectList");
+for(let i = 0; i < numLayers; i++) {
+    const layerSelect = document.createElement("li");
+    layerSelect.innerText = "Layer: " + i;
+    layerSelectList.appendChild(layerSelect);
+}
+layerSelectList.addEventListener("click", function(e) {
+    console.log(e, e.target);
+    const layerSelect = /** @type HTMLElement */(e.target).innerText;
+    selectedLayer = parseInt(layerSelect.split(" ")[1]);
+    console.log(selectedLayer);
+});
+
+
+
+gameMap.draw(canvas);

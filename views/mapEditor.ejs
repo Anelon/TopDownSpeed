@@ -3,15 +3,12 @@
 <link href="./css/game.css" rel="stylesheet">
 <link href="./css/mapEditor.css" rel="stylesheet">
 
-<canvas id="game" style="cursor: default;"></canvas>
+<canvas class="game" style="cursor: default;"></canvas>
 
 <div class="tileSelect" id="tileSelect">
     <h2>Select a Tile</h2>
-    <ul class="selectList">
-        <li><a href="#">Grass</a></li>
-        <li><a href="#">Path</a></li>
-        <li><a href="#">Snow</a></li>
-    </ul>
+    <ul class="tileSelectList"> </ul>
+    <ul class="layerSelectList"> </ul>
 </div>
 
 <script asyc type="module" src="js/clientJS/mapGen/index.js"></script>

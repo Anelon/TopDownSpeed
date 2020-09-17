@@ -1,3 +1,4 @@
+import Point from "../point.js";
 import Vec2 from "../vec2.js";
 import Lane from "./lane.js";
 
@@ -13,11 +14,12 @@ export default class GameMap {
         this.leftLane = lane;
         if(!lane) this.leftLane = new Lane(laneDimentions, 4)
         //TODO figure out if lane orientation is vertical or horizontal
-        this.rightLane = this.leftLane.mirror(verticalLanes);
+        const laneTopRight = this.leftLane.topRight.clone();
         if (verticalLanes)
-            this.rightLane.topRight.x += laneDimentions.x + voidWidth;
+            laneTopRight.x += laneDimentions.x + voidWidth;
         else
-            this.rightLane.topRight.y += laneDimentions.y + voidWidth;
+            laneTopRight.y += laneDimentions.y + voidWidth;
+        this.rightLane = this.leftLane.mirror(verticalLanes, laneTopRight);
         //set top right
 
         this.editMode = false;
@@ -26,7 +28,24 @@ export default class GameMap {
         else
             this.dimentions = new Vec2(laneDimentions.x, laneDimentions.y * 2 + voidWidth);
     }
-    update(regionStart, regionEnd, tile, layer) {
+    /**
+     * @param {Vec2} regionStart
+     * @param {Vec2} regionEnd
+     * @param {number} layer
+     * @param {import("./tile.js").default} tile
+     */
+    update(regionStart, regionEnd, layer, tile) {
+        const startPoint = new Point(regionStart);
+        const endPoint = new Point(regionEnd);
+        if(this.rightLane.region.contains(startPoint) && this.rightLane.region.contains(endPoint)) {
+            this.rightLane.update(regionStart, regionEnd, layer, tile);
+        }
+        else if(this.leftLane.region.contains(startPoint) && this.leftLane.region.contains(endPoint)) {
+            this.leftLane.update(regionStart, regionEnd, layer, tile);
+        } else {
+            console.log("Failed to place tiles");
+            console.log(startPoint, endPoint, this.leftLane.region, this.rightLane.region);
+        }
 
     }
     /**
@@ -34,7 +53,6 @@ export default class GameMap {
      */
     draw(canvas) {
         canvas.clear();
-        console.log(this.rightLane, this.leftLane);
         this.rightLane.draw(canvas);
         this.leftLane.draw(canvas);
         canvas.drawGrid();

@@ -14,6 +14,9 @@ export default class Layer {
         /** @type {Array<Array<Tile>>} */
         this.tiles;
         console.log(baseTile);
+        if(!baseTile) {
+            this.empty = true;
+        } else this.empty = false;
         if (tiles) {
             this.tiles = tiles;
         } else {
@@ -60,27 +63,25 @@ export default class Layer {
      * @param {Vec2} regionStart
      * @param {Vec2} regionEnd
      * @param {Tile} tile
+     * @param {Vec2} topRight
      */
-    update(regionStart, regionEnd, tile) {
+    update(regionStart, regionEnd, tile, topRight) {
         console.assert(regionStart instanceof Vec2, "regionStart Not Vec2", regionStart);
         console.assert(regionEnd instanceof Vec2, "regionEnd Not Vec2", regionEnd);
-        console.log(regionStart, regionEnd);
-        let [startX, startY] = regionStart.getXY();
-        let [endX, endY] = regionEnd.getXY();
+        let [startX, startY] = regionStart.sub(topRight).getXY();
+        let [endX, endY] = regionEnd.sub(topRight).getXY();
         //if start is after end swap
         if (startX > endX)
             [startX, endX] = [endX, startX];
         if (startY > endY)
             [startY, endY] = [endY, startY];
 
-        //build replacement string
-        console.log(tile);
-
         for (let j = startY; j <= endY; j++) {
             for (let i = startX; i <= endX; i++) {
                 this.tiles[j][i] = tile.clone().init(new Vec2(i, j), 0);
             }
         }
+        this.empty = false;
     }
 
     /**
@@ -114,8 +115,8 @@ export default class Layer {
      * @param {Vec2} topRight
      */
     draw(canvas, topRight) {
+        if(this.empty) return;
         const height = this.tiles.length, width = this.tiles[0].length;
-        console.log("drawing map", width, height, this.baseTile);
         for (let j = 0; j < height; j++) {
             for (let i = 0; i < width; i++) {
                 //if(!TILE_NAMES[this.tiles[j][i]]) continue;

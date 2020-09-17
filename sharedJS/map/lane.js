@@ -28,18 +28,22 @@ export default class Lane {
         //set spawn region
         this.spawn = new Rectangle(new Vec2(500,100), 1000, 200);
         //set dungeons
+        let center = dimentions.multiplyScalar(.5).add(topRight);
+        this.region = new Rectangle(center, dimentions.x, dimentions.y);
+        console.log(this.region);
 
         /** @type {Array<Region>} */
         this.regions = new Array();
     }
     /**
-     * @param {boolean} [vertical]
+     * @param {boolean} vertical
+     * @param {Vec2} laneTopRight
      */
-    mirror(vertical=true) {
+    mirror(vertical, laneTopRight) {
         //clone the layers
         const mirroredLayers = this.layers.map((layer) => layer.mirror(vertical));
 
-        let mirrored = new Lane(this.dimentions.clone(), this.layers.length, this.topRight.clone(), mirroredLayers);
+        let mirrored = new Lane(this.dimentions.clone(), this.layers.length, laneTopRight, mirroredLayers);
         return mirrored;
     }
     getJSON() {
@@ -57,7 +61,13 @@ export default class Lane {
             layer.draw(canvas, this.topRight);
         }
     }
+    /**
+     * @param {Vec2} regionStart
+     * @param {Vec2} regionEnd
+     * @param {number} layer
+     * @param {import("./tile.js").default} tile
+     */
     update(regionStart, regionEnd, layer, tile) {
-        this.layers[layer].update(regionStart,regionEnd,tile);
+        this.layers[layer].update(regionStart,regionEnd,tile, this.topRight);
     }
 }
