@@ -57,6 +57,7 @@ export default class Layer {
                 }
             }
         }
+        layer.empty = this.empty;
         return layer;
     }
     /**

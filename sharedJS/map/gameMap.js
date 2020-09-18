@@ -27,6 +27,7 @@ export default class GameMap {
             this.dimentions = new Vec2(laneDimentions.x * 2 + voidWidth, laneDimentions.y);
         else
             this.dimentions = new Vec2(laneDimentions.x, laneDimentions.y * 2 + voidWidth);
+        this.verticalLanes = verticalLanes;
     }
     /**
      * @param {Vec2} regionStart
@@ -37,12 +38,17 @@ export default class GameMap {
     update(regionStart, regionEnd, layer, tile) {
         const startPoint = new Point(regionStart);
         const endPoint = new Point(regionEnd);
+        //Right Lane
         if(this.rightLane.region.contains(startPoint) && this.rightLane.region.contains(endPoint)) {
             this.rightLane.update(regionStart, regionEnd, layer, tile);
         }
+        //Left Lane
         else if(this.leftLane.region.contains(startPoint) && this.leftLane.region.contains(endPoint)) {
             this.leftLane.update(regionStart, regionEnd, layer, tile);
-        } else {
+            this.rightLane = this.leftLane.mirror(this.verticalLanes, this.rightLane.topRight);
+        }
+        //Both points weren't in a lane
+        else {
             console.log("Failed to place tiles");
             console.log(startPoint, endPoint, this.leftLane.region, this.rightLane.region);
         }

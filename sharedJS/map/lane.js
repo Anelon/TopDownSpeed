@@ -42,6 +42,7 @@ export default class Lane {
     mirror(vertical, laneTopRight) {
         //clone the layers
         const mirroredLayers = this.layers.map((layer) => layer.mirror(vertical));
+        console.log(mirroredLayers);
 
         let mirrored = new Lane(this.dimentions.clone(), this.layers.length, laneTopRight, mirroredLayers);
         return mirrored;

@@ -43,7 +43,6 @@ for(const tileName of Object.values(TILE_NAMES)) {
     tileSelectList.appendChild(tileSelect);
 }
 tileSelectList.addEventListener("click", function(e) {
-    console.log(e, e.target);
     const tileName = /** @type HTMLElement */(e.target).innerText;
     selectedTileName = tileName;
 });
@@ -51,14 +50,12 @@ tileSelectList.addEventListener("click", function(e) {
 const layerSelectList = document.querySelector("ul.layerSelectList");
 for(let i = 0; i < numLayers; i++) {
     const layerSelect = document.createElement("li");
-    layerSelect.innerText = "Layer: " + i;
+    layerSelect.innerText = "Layer " + i;
     layerSelectList.appendChild(layerSelect);
 }
 layerSelectList.addEventListener("click", function(e) {
-    console.log(e, e.target);
     const layerSelect = /** @type HTMLElement */(e.target).innerText;
     selectedLayer = parseInt(layerSelect.split(" ")[1]);
-    console.log(selectedLayer);
 });
 
 
