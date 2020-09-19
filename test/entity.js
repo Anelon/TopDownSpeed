@@ -38,7 +38,7 @@ describe('Entity', function () {
 
     context('Make functions', function () {
         it('makePoint() makes a Point', function () {
-            let expectedPoint = new Point(location, entity, 8);
+            let expectedPoint = new Point(location, 8, entity);
             let point = entity.makePoint();
             assert.instanceOf(point, Point);
             expect(point).to.eql(expectedPoint);

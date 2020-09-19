@@ -8,17 +8,20 @@ export default class Lane {
     /**
      * @param {Vec2} dimentions In number of tiles wide, tall
      * @param {number} numLayers
+     * @param {Vec2} tileSize
      * @param {Vec2} [topRight] Will fill with empty layers if not set
      * @param {Array<Layer>} [layers] Will fill with empty layers if not set
      */
-    constructor(dimentions, numLayers, topRight=new Vec2(), layers) {
+    constructor(dimentions, numLayers, tileSize, topRight=new Vec2(), layers) {
         this.dimentions = dimentions;
+        this.tileSize = tileSize;
         this.topRight = topRight;
         /** @type {Array<Layer>} */
         this.layers;
         if(layers) {
             this.layers = layers;
         } else {
+            console.log("lenght", numLayers);
             this.layers = new Array(numLayers);
             this.layers[0] = new Layer(dimentions, TILES[TILE_NAMES.g]);
             for (let i = 1; i < numLayers; i++) {
@@ -28,8 +31,8 @@ export default class Lane {
         //set spawn region
         this.spawn = new Rectangle(new Vec2(500,100), 1000, 200);
         //set dungeons
-        let center = dimentions.multiplyScalar(.5).add(topRight);
-        this.region = new Rectangle(center, dimentions.x, dimentions.y);
+        let center = dimentions.multiplyScalar(.5).add(topRight).multiplyVecS(tileSize);
+        this.region = new Region(center, dimentions.clone().multiplyVecS(tileSize), "Lane");
         console.log(this.region);
 
         /** @type {Array<Region>} */
@@ -44,7 +47,7 @@ export default class Lane {
         const mirroredLayers = this.layers.map((layer) => layer.mirror(vertical));
         console.log(mirroredLayers);
 
-        let mirrored = new Lane(this.dimentions.clone(), this.layers.length, laneTopRight, mirroredLayers);
+        let mirrored = new Lane(this.dimentions.clone(), this.layers.length, this.tileSize, laneTopRight, mirroredLayers);
         return mirrored;
     }
     getJSON() {
@@ -61,6 +64,7 @@ export default class Lane {
         for(const layer of this.layers) {
             layer.draw(canvas, this.topRight);
         }
+        this.region.draw(canvas);
     }
     /**
      * @param {Vec2} regionStart

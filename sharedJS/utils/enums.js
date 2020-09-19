@@ -46,4 +46,17 @@ const TILES = {
 //lock the enum
 Object.freeze(TILES);
 
+const REGIONS = {
+    "PVP": null,
+    "PVPObjective": null,
+    "PVE": null,
+    "PVEObjective": null,
+    "Puzzle": null,
+    "PuzzleObjective": null,
+    "VM": null,
+    "Spawn": null,
+}
+//lock the enum
+Object.freeze(REGIONS);
+
 export { TYPES, CATEGORY, TILE_NAMES, TILES };

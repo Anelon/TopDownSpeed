@@ -1,19 +1,19 @@
 import Vec2 from "./vec2.js";
-import Entity from "./entity.js";
-import { Circle } from "./shapes.js";
+import { Rectangle } from "./shapes.js";
+/** @typedef {import("./entity.js").default} Entity */
+/** @typedef {import("./map/region.js").default} Region */
 
-//Might have this extend Circle
-class Point extends Circle {
+export default class Box extends Rectangle {
 	/**
 	 * Point is a circle with an owner.
      * @constructor
 	 * @param {Vec2} center center of the center of the point
-	 * @param {number} [radius=2] Radius of the cirlce
-	 * @param {Entity} [owner] Who owns this point
+	 * @param {Vec2} dimentions center of the center of the point
+	 * @param {Entity|Region} [owner] Who owns this point
 	 * @param {string} [color="#aaaaaa"] Hex color string for drawing to canvas when debugging
 	 */
-	constructor(center, radius = 2, owner = null, color = "#aaaaaa") {
-		super(center, radius);
+	constructor(center, dimentions, owner = null, color = "red") {
+		super(center, dimentions.x, dimentions.y);
 
         //this is what this point is attached to
         this.owner = owner;
@@ -33,13 +33,9 @@ class Point extends Circle {
 	/**
 	 * Draws the Point onto the canvas
 	 * @param {string} color Hex color string
-	 * @param {{ beginPath: () => void; arc: (arg0: number, arg1: number, arg2: number, arg3: number, arg4: number) => void; fillStyle: string; fill: () => void; }} ctx
 	 */
-	draw(ctx, color) {
-		ctx.beginPath();
-		ctx.arc(this.center.x, this.center.y, this.radius, 0, 2 * Math.PI);
-		ctx.fillStyle = color || this.color;
-		ctx.fill();
+	draw(canvas, color) {
+		super.draw(canvas, color);
 	}
 
 	/**
@@ -62,5 +58,3 @@ class Point extends Circle {
 		return this.center.x;
 	}
 }
-
-export default Point;

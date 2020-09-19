@@ -13,7 +13,6 @@ export default class Layer {
     constructor(dimentions, baseTile, tiles) {
         /** @type {Array<Array<Tile>>} */
         this.tiles;
-        console.log(baseTile);
         if(!baseTile) {
             this.empty = true;
         } else this.empty = false;
@@ -34,7 +33,6 @@ export default class Layer {
         }
         this.dimentions = dimentions;
         this.baseTile = baseTile;
-        console.log(this.tiles.length, this.tiles[0].length);
     }
     /**
      * @param {boolean} [vertical]
@@ -117,10 +115,9 @@ export default class Layer {
      */
     draw(canvas, topRight) {
         if(this.empty) return;
-        const height = this.tiles.length, width = this.tiles[0].length;
+        const height = this.dimentions.y, width = this.dimentions.x;
         for (let j = 0; j < height; j++) {
             for (let i = 0; i < width; i++) {
-                //if(!TILE_NAMES[this.tiles[j][i]]) continue;
                 //grab tile name
                 const tileName = this.tiles[j][i].name;
                 //skip if tile name in none

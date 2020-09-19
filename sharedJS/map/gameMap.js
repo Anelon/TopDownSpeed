@@ -6,13 +6,15 @@ export default class GameMap {
     /**
      * @param {number} voidWidth
      * @param {Vec2} laneDimentions
+     * @param {Vec2} tileSize
      * @param {boolean} [verticalLanes]
      * @param {Lane} [lane]
      */
-    constructor(voidWidth, laneDimentions, verticalLanes=true, lane) {
+    constructor(voidWidth, laneDimentions, tileSize, verticalLanes=true, lane) {
         this.voidWidth = voidWidth;
         this.leftLane = lane;
-        if(!lane) this.leftLane = new Lane(laneDimentions, 4)
+        this.tileSize = tileSize;
+        if(!lane) this.leftLane = new Lane(laneDimentions, 4, tileSize)
         //TODO figure out if lane orientation is vertical or horizontal
         const laneTopRight = this.leftLane.topRight.clone();
         if (verticalLanes)
@@ -41,6 +43,7 @@ export default class GameMap {
         //Right Lane
         if(this.rightLane.region.contains(startPoint) && this.rightLane.region.contains(endPoint)) {
             this.rightLane.update(regionStart, regionEnd, layer, tile);
+            this.leftLane = this.rightLane.mirror(this.verticalLanes, this.leftLane.topRight);
         }
         //Left Lane
         else if(this.leftLane.region.contains(startPoint) && this.leftLane.region.contains(endPoint)) {

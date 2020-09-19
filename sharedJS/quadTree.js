@@ -1,6 +1,7 @@
 import Vec2 from "./vec2.js";
 import { Rectangle, Circle } from "./shapes.js";
-import Point from "./point.js";
+/** @typedef {import("./box.js").default} Box */
+/** @typedef {import("./point.js").default} Point */
 
 //Heavily inspired by https://github.com/CodingTrain/QuadTree 
 class QuadTree {
@@ -52,10 +53,6 @@ class QuadTree {
      * @param {Point} point 
      */
     push(point) {
-        //TODO make this work with other things
-        if (!(point instanceof Point))
-            throw TypeError("Point is not a Point");
-
         if (!this.boundary.contains(point)) {
             return false;
         }
@@ -85,8 +82,8 @@ class QuadTree {
     /**
      * Query the quad tree to get if anything is in a range
      * @param {Rectangle|Circle} range Shape that you are looking for points in
-     * @param {Array<Point>} [found=new Array()] Optional, creates empty array if none 
-     * @returns {Array<Point>} Array of objects that overlap range.
+     * @param {Array<Box|Point>} [found=new Array()] Optional, creates empty array if none 
+     * @returns {Array<Box|Point>} Array of objects that overlap range.
      */
     query(range, found) {
         if (!found) {
@@ -104,7 +101,7 @@ class QuadTree {
             this.southeast.query(range, found);
         } else {
             for (let p of this.points) {
-                if (range.contains(p)) {
+                if (range.intersects(p)) {
                     found.push(p);
                 }
             }

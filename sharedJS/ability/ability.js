@@ -1,5 +1,6 @@
 import Projectile from "./projectile.js";
 import { Circle } from "../shapes.js";
+import Vec2 from "../vec2.js";
 
 class Ability {
     /**
@@ -30,16 +31,17 @@ class Ability {
      * Attempts to use the ability
      * @param {number} now Current time
      * @param {import("../../clientJS/playerController.js").default} owner How far from origin to spawn the ability
+     * @param {Vec2} target Where the projectile will be aimed at
      * @returns {Projectile|null} Spawned projectile if it was avaialable
      */
-    use(now, owner) {
+    use(now, owner, target) {
         if(now >= this.nextAvailable) {
             //TODO change to halfwidth
             const offset = owner.hitbox.width + this.projectileHitbox.width;
             //make projectile
-            const location = owner.location.clone().addS(owner.look.getUnit().multiplyScalarS(offset));
+            const location = owner.location.clone().addS(target.getUnit().multiplyScalarS(offset));
             const abilityProjectile = new this.projectileConstructor(
-                location, this.abilityName, this.speed, this.projectileScale, owner.look.clone(), this.range, this.damage, this.projectileHitbox, owner
+                location, this.abilityName, this.speed, this.projectileScale, target.clone(), this.range, this.damage, this.projectileHitbox, owner
             );
             //console.log("Spawned: ", abilityProjectile);
 

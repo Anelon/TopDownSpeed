@@ -51,7 +51,7 @@ class Entity {
      * @returns {Point}
      */
     makePoint() {
-        return new Point(this.location, this, this.hitbox.halfWidth);
+        return new Point(this.location, this.hitbox.halfWidth, this);
     }
 
     /**
