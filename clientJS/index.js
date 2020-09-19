@@ -20,7 +20,7 @@ let socket = io();
 //Globals
 const numLayers = 4;
 const tileSize = new Vec2(32,32);
-const gameMap = new GameMap(numLayers, new Vec2(15, 200), tileSize.clone());
+const gameMap = new GameMap(numLayers, new Vec2(15, 50), tileSize.clone());
 const pixelDims = gameMap.dimentions.multiplyVec(tileSize);
 const collisionEngine = new CollisionEngine(pixelDims.x, pixelDims.y);
 // @ts-ignore

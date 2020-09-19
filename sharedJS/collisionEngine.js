@@ -157,4 +157,12 @@ export default class CollisionEngine {
     removeProjectile(oldProjectile) {
         this.projectiles.delete(oldProjectile.id);
     }
+    /**
+     * @param {import("./box.js").default[]} statics
+     */
+    addStatics(statics) {
+        for(const stat of statics) {
+            this.staticObjects.push(stat);
+        }
+    }
 }

@@ -62,13 +62,13 @@ export default class Layer {
      * @param {Vec2} regionStart
      * @param {Vec2} regionEnd
      * @param {Tile} tile
-     * @param {Vec2} topRight
+     * @param {Vec2} topLeft
      */
-    update(regionStart, regionEnd, tile, topRight) {
+    update(regionStart, regionEnd, tile, topLeft) {
         console.assert(regionStart instanceof Vec2, "regionStart Not Vec2", regionStart);
         console.assert(regionEnd instanceof Vec2, "regionEnd Not Vec2", regionEnd);
-        let [startX, startY] = regionStart.sub(topRight).getXY();
-        let [endX, endY] = regionEnd.sub(topRight).getXY();
+        let [startX, startY] = regionStart.sub(topLeft).getXY();
+        let [endX, endY] = regionEnd.sub(topLeft).getXY();
         //if start is after end swap
         if (startX > endX)
             [startX, endX] = [endX, startX];
@@ -111,9 +111,9 @@ export default class Layer {
     //this should probably get moved to a client class
     /**
      * @param {import("../../clientJS/canvasWrapper.js").default} canvas
-     * @param {Vec2} topRight
+     * @param {Vec2} topLeft
      */
-    draw(canvas, topRight) {
+    draw(canvas, topLeft) {
         if(this.empty) return;
         const height = this.dimentions.y, width = this.dimentions.x;
         for (let j = 0; j < height; j++) {
@@ -128,7 +128,7 @@ export default class Layer {
                 const around = this.getAround(i, j, sprite.connects);
                 const tile = TILES[tileName].clone().init(new Vec2(i, j), around);
                 //sprite.draw(canvas, tile.location, tile.around);
-                tileSprites.get(tile.name).draw(canvas, tile.location.add(topRight), tile.around);
+                tileSprites.get(tile.name).draw(canvas, tile.location.add(topLeft), tile.around);
             }
         }
     }

@@ -50,7 +50,7 @@ class QuadTree {
     }
     /**
      * Adds a point to the QuadTree
-     * @param {Point} point 
+     * @param {Point|Box} point 
      */
     push(point) {
         if (!this.boundary.contains(point)) {

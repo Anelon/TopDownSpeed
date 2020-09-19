@@ -121,7 +121,7 @@ class Rectangle {
 
     /**
      * Check if rectangle contains a point
-     * @param {Point|Vec2} point The point to be checked
+     * @param {Point|Vec2|import("./box.js").default} point The point to be checked
      * @returns {boolean}
      */
     contains(point) {

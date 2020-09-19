@@ -1,6 +1,7 @@
 import Point from "../point.js";
 import Vec2 from "../vec2.js";
 import Lane from "./lane.js";
+import Region from "./region.js";
 
 export default class GameMap {
     /**
@@ -16,7 +17,7 @@ export default class GameMap {
         this.tileSize = tileSize;
         if(!lane) this.leftLane = new Lane(laneDimentions, 4, tileSize)
         //TODO figure out if lane orientation is vertical or horizontal
-        const laneTopRight = this.leftLane.topRight.clone();
+        const laneTopRight = this.leftLane.topLeft.clone();
         if (verticalLanes)
             laneTopRight.x += laneDimentions.x + voidWidth;
         else
@@ -38,24 +39,52 @@ export default class GameMap {
      * @param {import("./tile.js").default} tile
      */
     update(regionStart, regionEnd, layer, tile) {
-        const startPoint = new Point(regionStart);
-        const endPoint = new Point(regionEnd);
-        //Right Lane
-        if(this.rightLane.region.contains(startPoint) && this.rightLane.region.contains(endPoint)) {
-            this.rightLane.update(regionStart, regionEnd, layer, tile);
-            this.leftLane = this.rightLane.mirror(this.verticalLanes, this.leftLane.topRight);
-        }
+        const startPoint = new Point(regionStart.multiplyVec(this.tileSize));
+        const endPoint = new Point(regionEnd.multiplyVec(this.tileSize));
         //Left Lane
-        else if(this.leftLane.region.contains(startPoint) && this.leftLane.region.contains(endPoint)) {
+        if(this.leftLane.region.contains(startPoint) && this.leftLane.region.contains(endPoint)) {
             this.leftLane.update(regionStart, regionEnd, layer, tile);
-            this.rightLane = this.leftLane.mirror(this.verticalLanes, this.rightLane.topRight);
+            this.rightLane = this.leftLane.mirror(this.verticalLanes, this.rightLane.topLeft);
+        }
+        //Right Lane
+        else if(this.rightLane.region.contains(startPoint) && this.rightLane.region.contains(endPoint)) {
+            this.rightLane.update(regionStart, regionEnd, layer, tile);
+            this.leftLane = this.rightLane.mirror(this.verticalLanes, this.leftLane.topLeft);
         }
         //Both points weren't in a lane
         else {
             console.log("Failed to place tiles");
             console.log(startPoint, endPoint, this.leftLane.region, this.rightLane.region);
         }
-
+    }
+    /**
+     * @param {Vec2} regionStart
+     * @param {Vec2} regionEnd
+     * @param {typeof Region} regionEnd
+     */
+    addRegion(regionStart, regionEnd, region) {
+        const startPoint = new Point(regionStart.multiplyVec(this.tileSize));
+        const endPoint = new Point(regionEnd.multiplyVec(this.tileSize));
+        //Left Lane
+        if(this.leftLane.region.contains(startPoint) && this.leftLane.region.contains(endPoint)) {
+            this.leftLane.addRegion(regionStart, regionEnd, region);
+            this.rightLane = this.leftLane.mirror(this.verticalLanes, this.rightLane.topLeft);
+        }
+        //Right Lane
+        else if(this.rightLane.region.contains(startPoint) && this.rightLane.region.contains(endPoint)) {
+            this.rightLane.addRegion(regionStart, regionEnd, region);
+            this.leftLane = this.rightLane.mirror(this.verticalLanes, this.leftLane.topLeft);
+        }
+        //Both points weren't in a lane
+        else {
+            console.log("Failed to place tiles");
+            console.log(startPoint, endPoint, this.leftLane.region, this.rightLane.region);
+        }
+    }
+    generateStatic() {
+        let statics = this.rightLane.generateStatic();
+        statics.push(...this.leftLane.generateStatic());
+        return statics
     }
     /**
      * @param {import("../../clientJS/canvasWrapper.js").default} canvas
@@ -65,5 +94,11 @@ export default class GameMap {
         this.rightLane.draw(canvas);
         this.leftLane.draw(canvas);
         canvas.drawGrid();
+    }
+    getJSON() {
+        return JSON.stringify(this);
+    }
+    static makeFromJSON(json) {
+
     }
 }

@@ -1,3 +1,4 @@
+import Region from "../map/region.js";
 import Tile from "../map/tile.js";
 import Vec2 from "../vec2.js";
 
@@ -47,16 +48,16 @@ const TILES = {
 Object.freeze(TILES);
 
 const REGIONS = {
-    "PVP": null,
-    "PVPObjective": null,
-    "PVE": null,
-    "PVEObjective": null,
-    "Puzzle": null,
-    "PuzzleObjective": null,
-    "VM": null,
-    "Spawn": null,
+    "pvp": Region,
+    "pvpObjective": Region,
+    "pve": Region,
+    "pveObjective": Region,
+    "Puzzle": Region,
+    "PuzzleObjective": Region,
+    "VM": Region,
+    "Spawn": Region,
 }
 //lock the enum
 Object.freeze(REGIONS);
 
-export { TYPES, CATEGORY, TILE_NAMES, TILES };
+export { TYPES, CATEGORY, TILE_NAMES, TILES, REGIONS };

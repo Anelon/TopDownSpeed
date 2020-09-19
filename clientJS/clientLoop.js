@@ -18,6 +18,8 @@ export default class ClientLoop {
         this.playerController = playerController
         this.gameMap = gameMap;
         this.collisionEngine = collisionEngine;
+        this.collisionEngine.addStatics(this.gameMap.generateStatic());
+        this.collisionEngine.addPlayer(this.playerController);
         this.canvas = canvas;
         this.socket = socket;
         this.time = time;
@@ -54,7 +56,6 @@ export default class ClientLoop {
             }
         }
     }
-
 
     render() {
         //clear the collisionEngine

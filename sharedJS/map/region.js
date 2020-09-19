@@ -16,9 +16,10 @@ export default class Region extends Rectangle {
         this.overlapping = false;
     }
 
+    //TODO Figure out begin and end overlap
     //call when player overlaps
     hit(other) {
-        console.log(other, "entered", this.name);
+        //console.log(other, "entered", this.name);
     }
     draw(canvas) {
         super.draw(canvas, this.color);
