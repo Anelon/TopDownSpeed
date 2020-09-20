@@ -2,6 +2,7 @@ import Vec2 from "./vec2.js";
 import { Rectangle } from "./shapes.js";
 /** @typedef {import("./entity.js").default} Entity */
 /** @typedef {import("./map/region.js").default} Region */
+/** @typedef {import("./map/tile.js").default} Tile */
 
 export default class Box extends Rectangle {
 	/**
@@ -9,7 +10,7 @@ export default class Box extends Rectangle {
      * @constructor
 	 * @param {Vec2} center center of the center of the point
 	 * @param {Vec2} dimentions center of the center of the point
-	 * @param {Entity|Region} [owner] Who owns this point
+	 * @param {Entity|Region|Tile} [owner] Who owns this point
 	 * @param {string} [color="#aaaaaa"] Hex color string for drawing to canvas when debugging
 	 */
 	constructor(center, dimentions, owner = null, color = "red") {

@@ -58,9 +58,16 @@ export default class Lane {
 
     }
     generateStatic() {
-        let statics = new Array(this.region.makeHitBox());
-        statics.push(...(this.regions.map((region) => region.makeHitBox())));
+        let statics = new Array();
+        for(const layer of this.layers) {
+            layer.generateStatic(this.tileSize);
+        }
         return statics;
+    }
+    generateRegions() {
+        let regions = new Array(this.region.makeHitBox());
+        regions.push(...(this.regions.map((region) => region.makeHitBox())));
+        return regions;
     }
     /**
      * @param {import("../../clientJS/canvasWrapper.js").default} canvas

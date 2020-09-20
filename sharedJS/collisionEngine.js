@@ -29,6 +29,7 @@ export default class CollisionEngine {
         this.qTreeCapacity = 10;
         this.collisionTree = new QuadTree(this.boundry, this.qTreeCapacity);
         this.staticObjects = new QuadTree(this.boundry, this.qTreeCapacity);
+        this.regions = new QuadTree(this.boundry, this.qTreeCapacity);
     }
 
     /**
@@ -38,6 +39,8 @@ export default class CollisionEngine {
      * @returns {Array<Entity>} Objects that should be deleted
      */
     update(time, step) {
+        //reset regions overlapping
+
         //reset quadTree, might change to updating locations of each item later if we end up with too many static items
         this.collisionTree = new QuadTree(this.boundry, this.qTreeCapacity);
         const deleteList = new Array();

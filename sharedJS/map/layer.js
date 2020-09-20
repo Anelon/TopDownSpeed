@@ -58,6 +58,16 @@ export default class Layer {
         layer.empty = this.empty;
         return layer;
     }
+    generateStatic(tileSize) {
+        const statics = new Array();
+        for(const row of this.tiles) {
+            for(const tile of row) {
+                if(!tile.walkable || !tile.passable) {
+                    statics.push(tile.makeBox(tileSize));
+                }
+            }
+        }
+    }
     /**
      * @param {Vec2} regionStart
      * @param {Vec2} regionEnd

@@ -1,17 +1,19 @@
 import CollisionEngine from "../sharedJS/collisionEngine.js";
 import Vec2 from "../sharedJS/vec2.js";
 import Time from "../sharedJS/utils/time.js";
-import CanvasWrapper from "./canvasWrapper.js";
 import PlayerController from "./playerController.js";
-import CHANNELS from "../sharedJS/utils/channels.js";
 import Projectile from "../sharedJS/ability/projectile.js";
 import { TYPES, CATEGORY } from "../sharedJS/utils/enums.js";
 import GameMap from "../sharedJS/map/gameMap.js";
+import CanvasWrapper from "./canvasWrapper.js";
 
 export default class ClientLoop {
     /**
      * @param {PlayerController} playerController
      * @param {GameMap} gameMap
+     * @param {CanvasWrapper} canvas
+     * @param {Time} time
+     * @param {CollisionEngine} collisionEngine
      * @param {any} [socket]
      */
     constructor(playerController, gameMap, canvas, time, collisionEngine, socket) {

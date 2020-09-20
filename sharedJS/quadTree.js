@@ -17,7 +17,18 @@ class QuadTree {
         this.boundary = boundary;
         this.capacity = capacity;
         this.points = new Array();
-        this.devided = false;
+        this.divided = false;
+    }
+
+    toArray() {
+        const objects = new Array();
+        if(this.divided) {
+            objects.push(...this.northeast.toArray());
+            objects.push(...this.northwest.toArray());
+            objects.push(...this.southeast.toArray());
+            objects.push(...this.southwest.toArray());
+        }
+        return objects;
     }
 
     //for breaking up the quadtree when the capacity gets full to smaller quad trees

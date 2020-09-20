@@ -15,7 +15,8 @@ Object.freeze(TYPES);
 
 const CATEGORY = {
     //terain types
-    wall: "wall",
+    region: "region",
+    tile: "tile",
     void: "void",
     //can be damaged
     damageable: "damageable",

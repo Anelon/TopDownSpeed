@@ -86,6 +86,11 @@ export default class GameMap {
         statics.push(...this.leftLane.generateStatic());
         return statics
     }
+    generateRegions() {
+        let regions = this.rightLane.generateStatic();
+        regions.push(...this.leftLane.generateStatic());
+        return regions
+    }
     /**
      * @param {import("../../clientJS/canvasWrapper.js").default} canvas
      */
