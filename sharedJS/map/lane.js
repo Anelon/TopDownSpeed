@@ -1,5 +1,5 @@
 import { Rectangle } from "../shapes.js";
-import { TILES, TILE_NAMES } from "../utils/enums.js";
+import { REGIONS, TILES, TILE_NAMES } from "../utils/enums.js";
 import Vec2 from "../vec2.js";
 import Layer from "./layer.js";
 import Region from "./region.js";
@@ -11,7 +11,7 @@ export default class Lane {
      * @param {Vec2} tileSize
      * @param {Vec2} [topLeft] Will fill with empty layers if not set
      * @param {Array<Layer>} [layers] Will fill with empty layers if not set
-     * @param {Array<Region>} [regions]
+     * @param {Map<string, Region>} [regions]
      */
     constructor(dimentions, numLayers, tileSize, topLeft=new Vec2(), layers, regions) {
         this.dimentions = dimentions;
@@ -34,22 +34,32 @@ export default class Lane {
         let center = dimentions.multiplyScalar(.5).add(topLeft).multiplyVecS(tileSize);
         this.region = new Region(center, dimentions.clone().multiplyVecS(tileSize), "Lane");
 
-        /** @type {Array<Region>} */
-        this.regions = new Array();
+        /** @type {Map<string, Region>} */
+        this.regions = new Map();
         if(regions) this.regions = regions;
     }
 
     /**
      * @param {boolean} vertical
-     * @param {Vec2} laneTopRight
+     * @param {Vec2} laneTopLeft
      */
-    mirror(vertical, laneTopRight) {
+    mirror(vertical, laneTopLeft) {
         //clone the layers and mirror them
         const mirroredLayers = this.layers.map((layer) => layer.mirror(vertical));
+        let laneCenter = this.dimentions.multiplyScalar(.5).add(laneTopLeft).multiplyVecS(this.tileSize);
+        const mirroredRegions = new Map();
+        for(const region of this.regions.values()) {
+            const centerToRegion = region.center.sub(this.region.center);
+            if(vertical) centerToRegion.x *= -1;
+            else centerToRegion.y *= -1;
+
+            mirroredRegions.set(region.name, new REGIONS[region.name](laneCenter.add(centerToRegion), region.dimentions.clone(), region.name, region.color));
+            //region.mirror(vertical)
+        }
+        console.log(mirroredRegions);
 
         //create new mirrored lane
-        let mirrored = new Lane(this.dimentions.clone(), this.layers.length, this.tileSize, laneTopRight, mirroredLayers);
-        return mirrored;
+        return new Lane(this.dimentions.clone(), this.layers.length, this.tileSize, laneTopLeft, mirroredLayers, mirroredRegions);
     }
     getJSON() {
         return JSON.stringify(this);
@@ -66,7 +76,9 @@ export default class Lane {
     }
     generateRegions() {
         let regions = new Array(this.region.makeHitBox());
-        regions.push(...(this.regions.map((region) => region.makeHitBox())));
+        for(const region of this.regions.values()) {
+            regions.push(region.makeHitBox());
+        }
         return regions;
     }
     /**
@@ -78,6 +90,9 @@ export default class Lane {
             layer.draw(canvas, this.topLeft);
         }
         this.region.draw(canvas);
+        for(const region of this.regions.values()) {
+            region.draw(canvas);
+        }
     }
     /**
      * @param {Vec2} regionStart
@@ -88,8 +103,17 @@ export default class Lane {
     update(regionStart, regionEnd, layer, tile) {
         this.layers[layer].update(regionStart, regionEnd, tile, this.topLeft);
     }
-    addRegion(regionStart, regionEnd, region) {
-        console.log(regionStart,regionEnd);
-        //get tile version
+    /**
+     * @param {Vec2} regionStart
+     * @param {Vec2} regionEnd
+     * @param {typeof Region} region
+     * @param {string} name
+     */
+    addRegion(regionStart, regionEnd, region, name) {
+        const dimentions = regionEnd.sub(regionStart).absS().multiplyVecS(this.tileSize).addS(this.tileSize);
+        const topLeft = new Vec2(Math.min(regionStart.x, regionEnd.x), Math.min(regionStart.y, regionEnd.y))
+        const center = topLeft.multiplyVec(this.tileSize).addS(dimentions.multiplyScalar(0.5));
+        //update or add the region to the map
+        this.regions.set(name, new region(center, dimentions, name));
     }
 }

@@ -62,17 +62,17 @@ export default class GameMap {
      * @param {Vec2} regionEnd
      * @param {typeof Region} regionEnd
      */
-    addRegion(regionStart, regionEnd, region) {
+    addRegion(regionStart, regionEnd, region, name) {
         const startPoint = new Point(regionStart.multiplyVec(this.tileSize));
         const endPoint = new Point(regionEnd.multiplyVec(this.tileSize));
         //Left Lane
         if(this.leftLane.region.contains(startPoint) && this.leftLane.region.contains(endPoint)) {
-            this.leftLane.addRegion(regionStart, regionEnd, region);
+            this.leftLane.addRegion(regionStart, regionEnd, region, name);
             this.rightLane = this.leftLane.mirror(this.verticalLanes, this.rightLane.topLeft);
         }
         //Right Lane
         else if(this.rightLane.region.contains(startPoint) && this.rightLane.region.contains(endPoint)) {
-            this.rightLane.addRegion(regionStart, regionEnd, region);
+            this.rightLane.addRegion(regionStart, regionEnd, region, name);
             this.leftLane = this.rightLane.mirror(this.verticalLanes, this.leftLane.topLeft);
         }
         //Both points weren't in a lane

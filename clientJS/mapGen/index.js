@@ -35,6 +35,7 @@ you.silenced = true;
 canvas.setCenter(you.location);
 you.draw(canvas);
 
+//--- Initialize the client loop ---//
 new ClientLoop(you, gameMap, canvas, time, collisionEngine);
 
 //reagions for selections
@@ -54,7 +55,7 @@ canvas.addEventListener("mouseup", function(e) {
     if(editMode === EDIT_MODES.tile) {
         gameMap.update(regionStart, regionEnd, selectedLayer, TILES[selectedTileName]);
     } else if (editMode === EDIT_MODES.region) {
-        gameMap.addRegion(regionStart, regionEnd, REGIONS[selectedRegion]);
+        gameMap.addRegion(regionStart, regionEnd, REGIONS[selectedRegion], selectedRegion);
     }
 });
 
@@ -68,12 +69,6 @@ for(const tileName of Object.values(TILE_NAMES)) {
     tileSelect.setAttribute("id", tileName);
     tileSelectList.appendChild(tileSelect);
 }
-tileSelectList.addEventListener("click", function(e) {
-    const tileName = /** @type HTMLElement */(e.target).innerText;
-    document.querySelector(`#${selectedTileName}`).classList.remove("active");
-    selectedTileName = tileName;
-    document.querySelector(`#${selectedTileName}`).classList.add("active");
-});
 
 //--- set up layer selection ---//
 const layerSelectList = document.querySelector("#layerSelectList");
@@ -83,12 +78,6 @@ for(let i = 0; i < numLayers; i++) {
     layerSelect.setAttribute("id", "Layer" + i);
     layerSelectList.appendChild(layerSelect);
 }
-layerSelectList.addEventListener("click", function(e) {
-    const layerSelect = /** @type HTMLElement */(e.target).innerText;
-    document.querySelector(`#Layer${selectedLayer}`).classList.remove("active");
-    selectedLayer = parseInt(layerSelect.split(" ")[1]);
-    document.querySelector(`#Layer${selectedLayer}`).classList.add("active");
-});
 
 //--- set up layer selection ---//
 const regionSelectList = document.querySelector("#regionSelectList");
@@ -98,16 +87,45 @@ for(const regionName of Object.keys(REGIONS)) {
     regionSelect.setAttribute("id", regionName);
     regionSelectList.appendChild(regionSelect);
 }
+
+//--- set up event listeners ---//
+tileSelectList.addEventListener("click", function(e) {
+    const tileName = /** @type HTMLElement */(e.target).innerText;
+    document.querySelector(`#${selectedTileName}`).classList.remove("active");
+    selectedTileName = tileName;
+    document.querySelector(`#${selectedTileName}`).classList.add("active");
+    //switch edit mode
+    if(editMode !== EDIT_MODES.tile) {
+        document.querySelector(`#${selectedRegion}`).classList.remove("active");
+        editMode = EDIT_MODES.tile;
+    }
+});
+layerSelectList.addEventListener("click", function(e) {
+    const layerSelect = /** @type HTMLElement */(e.target).innerText;
+    document.querySelector(`#Layer${selectedLayer}`).classList.remove("active");
+    selectedLayer = parseInt(layerSelect.split(" ")[1]);
+    document.querySelector(`#Layer${selectedLayer}`).classList.add("active");
+    //switch edit mode
+    if(editMode !== EDIT_MODES.tile) {
+        document.querySelector(`#${selectedRegion}`).classList.remove("active");
+        editMode = EDIT_MODES.tile;
+    }
+});
 regionSelectList.addEventListener("click", function(e) {
     const regionSelect = /** @type HTMLElement */(e.target).innerText;
     document.querySelector(`#${selectedRegion}`).classList.remove("active");
     selectedRegion = regionSelect;
     document.querySelector(`#${selectedRegion}`).classList.add("active");
+    //switch edit mode
+    if(editMode !== EDIT_MODES.region) {
+        document.querySelector(`#Layer${selectedLayer}`).classList.remove("active");
+        document.querySelector(`#${selectedTileName}`).classList.remove("active");
+        editMode = EDIT_MODES.region;
+    }
 });
 
 document.querySelector(`#Layer${selectedLayer}`).classList.add("active");
 document.querySelector(`#${selectedTileName}`).classList.add("active");
-document.querySelector(`#${selectedRegion}`).classList.add("active");
 
 document.querySelector("#save").addEventListener("click", function(e) {
     console.log("saving");
