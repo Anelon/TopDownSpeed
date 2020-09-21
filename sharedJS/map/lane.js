@@ -46,7 +46,9 @@ export default class Lane {
     mirror(vertical, laneTopLeft) {
         //clone the layers and mirror them
         const mirroredLayers = this.layers.map((layer) => layer.mirror(vertical));
+        //find the new lane center
         let laneCenter = this.dimentions.multiplyScalar(.5).add(laneTopLeft).multiplyVecS(this.tileSize);
+        //mirror the regions
         const mirroredRegions = new Map();
         for(const region of this.regions.values()) {
             const centerToRegion = region.center.sub(this.region.center);
@@ -56,7 +58,6 @@ export default class Lane {
             mirroredRegions.set(region.name, new REGIONS[region.name](laneCenter.add(centerToRegion), region.dimentions.clone(), region.name, region.color));
             //region.mirror(vertical)
         }
-        console.log(mirroredRegions);
 
         //create new mirrored lane
         return new Lane(this.dimentions.clone(), this.layers.length, this.tileSize, laneTopLeft, mirroredLayers, mirroredRegions);
