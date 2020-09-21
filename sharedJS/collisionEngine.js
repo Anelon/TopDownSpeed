@@ -6,6 +6,7 @@ import Projectile from "./ability/projectile.js";
 import Player from "./player.js";
 import Time from "./utils/time.js";
 /** @typedef {import("./entity.js").default} Entity */
+/** @typedef {import("./map/region.js").default} Region */
 //import PlayerController from "../clientJS/playerController.js";
 //import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 
@@ -28,7 +29,7 @@ export default class CollisionEngine {
         this.qTreeCapacity = 10;
         this.collisionTree = new QuadTree(this.boundry, this.qTreeCapacity);
         this.staticObjects = new QuadTree(this.boundry, this.qTreeCapacity);
-        this.regions = new QuadTree(this.boundry, this.qTreeCapacity);
+        this.regions = new Array();
     }
 
     /**
@@ -38,8 +39,6 @@ export default class CollisionEngine {
      * @returns {Array<Entity>} Objects that should be deleted
      */
     update(time, step) {
-        //reset regions overlapping
-
         //reset quadTree, might change to updating locations of each item later if we end up with too many static items
         this.collisionTree = new QuadTree(this.boundry, this.qTreeCapacity);
         const deleteList = new Array();
@@ -95,6 +94,23 @@ export default class CollisionEngine {
                 }
             }
         }
+
+        //reset regions overlapping
+        for(const region of this.regions) {
+            const endOverlap = region.resetOverlaps();
+        }
+        //TODO optimize with some sort of data structure or move to quadtree
+        for(const player of this.players.values()) {
+            for(const region of this.regions) {
+                if(region.contains(player.location)) {
+                    const newOverlap = region.addOverlaps(player);
+                    if (newOverlap) {
+                        console.log(player, "began overlap", region);
+                    }
+                }
+            }
+        }
+
         return deleteList;
     }
 
@@ -166,5 +182,11 @@ export default class CollisionEngine {
         for(const stat of statics) {
             this.staticObjects.push(stat);
         }
+    }
+    /**
+     * @param {Array<Region>} regions
+     */
+    setRegions(regions) {
+        this.regions = regions;
     }
 }

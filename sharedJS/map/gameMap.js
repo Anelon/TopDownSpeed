@@ -60,7 +60,8 @@ export default class GameMap {
     /**
      * @param {Vec2} regionStart
      * @param {Vec2} regionEnd
-     * @param {typeof Region} regionEnd
+     * @param {typeof Region} region
+     * @param {string} name
      */
     addRegion(regionStart, regionEnd, region, name) {
         const startPoint = new Point(regionStart.multiplyVec(this.tileSize));
@@ -79,6 +80,8 @@ export default class GameMap {
         else {
             console.log("Failed to place tiles");
             console.log(startPoint, endPoint, this.leftLane.region, this.rightLane.region);
+            //exit function
+            return;
         }
     }
     generateStatic() {
@@ -87,9 +90,9 @@ export default class GameMap {
         return statics
     }
     generateRegions() {
-        let regions = this.rightLane.generateStatic();
-        regions.push(...this.leftLane.generateStatic());
-        return regions
+        let regions = this.rightLane.generateRegions();
+        regions.push(...this.leftLane.generateRegions());
+        return regions;
     }
     /**
      * @param {import("../../clientJS/canvasWrapper.js").default} canvas

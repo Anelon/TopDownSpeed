@@ -76,9 +76,9 @@ export default class Lane {
         return statics;
     }
     generateRegions() {
-        let regions = new Array(this.region.makeHitBox());
+        let regions = new Array(this.region);
         for(const region of this.regions.values()) {
-            regions.push(region.makeHitBox());
+            regions.push(region);
         }
         return regions;
     }

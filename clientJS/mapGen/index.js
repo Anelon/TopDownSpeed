@@ -13,6 +13,7 @@ const tileSize = new Vec2(32,32);
 const gameMap = new GameMap(numLayers, new Vec2(15, 50), tileSize.clone());
 const pixelDims = gameMap.dimentions.multiplyVec(tileSize);
 const collisionEngine = new CollisionEngine(pixelDims.x, pixelDims.y);
+collisionEngine.setRegions(gameMap.generateRegions());
 // @ts-ignore
 const time = new Time(performance);
 
@@ -56,6 +57,7 @@ canvas.addEventListener("mouseup", function(e) {
         gameMap.update(regionStart, regionEnd, selectedLayer, TILES[selectedTileName]);
     } else if (editMode === EDIT_MODES.region) {
         gameMap.addRegion(regionStart, regionEnd, REGIONS[selectedRegion], selectedRegion);
+        collisionEngine.setRegions(gameMap.generateRegions());
     }
 });
 
