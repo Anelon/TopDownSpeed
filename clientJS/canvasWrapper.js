@@ -1,8 +1,8 @@
 import Vec2 from "../sharedJS/vec2.js";
 import Drawable from "./drawable.js";
-import Entity from "../sharedJS/entity.js";
 import Player from "../sharedJS/player.js";
-import Projectile from "../sharedJS/ability/projectile.js";
+/** @typedef {import("../sharedJS/ability/projectile.js").default} Projectile */
+/** @typedef {import("../sharedJS/entity.js").default} Entity */
 /** @typedef { import("./playerController.js").default } PlayerController; */
 /** @typedef { import("./sprite.js").default } Sprite; */
 

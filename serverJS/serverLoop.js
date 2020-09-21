@@ -3,7 +3,7 @@ import Connections from "./connections.js";
 import { performance } from "perf_hooks";
 import CollisionEngine from "../sharedJS/collisionEngine.js";
 import { TYPES, CATEGORY } from "../sharedJS/utils/enums.js";
-import Projectile from "../sharedJS/ability/projectile.js";
+/** @typedef {import("../sharedJS/ability/projectile.js").default} Projectile */
 import Player from "../sharedJS/player.js";
 //import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 

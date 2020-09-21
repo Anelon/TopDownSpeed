@@ -1,4 +1,3 @@
-import { tileSprites } from "../../clientJS/sprites.js";
 import Box from "../box.js";
 import { Rectangle } from "../shapes.js";
 import { CATEGORY, TYPES } from "../utils/enums.js";

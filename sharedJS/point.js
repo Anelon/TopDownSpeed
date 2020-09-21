@@ -1,6 +1,6 @@
 import Vec2 from "./vec2.js";
-import Entity from "./entity.js";
 import { Circle } from "./shapes.js";
+/** @typedef {import("./entity.js").default} Entity */
 
 //Might have this extend Circle
 class Point extends Circle {

@@ -1,9 +1,9 @@
 import Projectile from "./projectile.js";
 import { TYPES, CATEGORY } from "../utils/enums.js";
 import Player from "../player.js";
-import Entity from "../entity.js";
 import Sprite from "../../clientJS/sprite.js";
 import Vec2 from "../vec2.js";
+/** @typedef {import("../entity.js").default} Entity */
 
 export default class Waterball extends Projectile {
     static get FRAMES() {return 9;} //Number of frames of animation
