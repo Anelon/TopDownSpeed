@@ -28,8 +28,6 @@ export default class Lane {
                 this.layers[i] = new Layer(dimentions);
             }
         }
-        //set spawn region
-        this.spawn = new Rectangle(new Vec2(500,100), 1000, 200);
         //set dungeons
         let center = dimentions.multiplyScalar(.5).add(topLeft).multiplyVecS(tileSize);
         this.region = new Region(center, dimentions.clone().multiplyVecS(tileSize), "Lane");
@@ -47,7 +45,7 @@ export default class Lane {
         //clone the layers and mirror them
         const mirroredLayers = this.layers.map((layer) => layer.mirror(vertical));
         //find the new lane center
-        let laneCenter = this.dimentions.multiplyScalar(.5).add(laneTopLeft).multiplyVecS(this.tileSize);
+        let laneCenter = this.dimentions.multiplyScalar(0.5).add(laneTopLeft).multiplyVecS(this.tileSize);
         //mirror the regions
         const mirroredRegions = new Map();
         for(const region of this.regions.values()) {

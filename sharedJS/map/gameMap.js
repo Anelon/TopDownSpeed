@@ -4,6 +4,7 @@ import Lane from "./lane.js";
 import Region from "./region.js";
 
 export default class GameMap {
+    static numLayers = 4;
     /**
      * @param {number} voidWidth
      * @param {Vec2} laneDimentions
@@ -15,7 +16,7 @@ export default class GameMap {
         this.voidWidth = voidWidth;
         this.leftLane = lane;
         this.tileSize = tileSize;
-        if(!lane) this.leftLane = new Lane(laneDimentions, 4, tileSize)
+        if(!lane) this.leftLane = new Lane(laneDimentions, GameMap.numLayers, tileSize)
         //TODO figure out if lane orientation is vertical or horizontal
         const laneTopRight = this.leftLane.topLeft.clone();
         if (verticalLanes)
@@ -57,6 +58,7 @@ export default class GameMap {
             console.log(startPoint, endPoint, this.leftLane.region, this.rightLane.region);
         }
     }
+
     /**
      * @param {Vec2} regionStart
      * @param {Vec2} regionEnd
@@ -108,5 +110,8 @@ export default class GameMap {
     }
     static makeFromJSON(json) {
 
+    }
+    bakeImage() {
+        //TODO generate image from canvas
     }
 }

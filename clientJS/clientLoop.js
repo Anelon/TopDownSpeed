@@ -60,6 +60,7 @@ export default class ClientLoop {
     }
 
     render() {
+        //TODO look into moveing this to webworker for a different thread
         //clear the collisionEngine
         this.canvas.clear();
 

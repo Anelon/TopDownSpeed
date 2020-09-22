@@ -47,7 +47,13 @@ export default class Region extends Rectangle {
         this.overlaps.clear();
     }
     /**
-     * placeholder for regions that need to do something when player beinins overlap
+     * placeholder for regions that need to do something when first player begins overlap will probably just be used for the PVE dungeon to start AI
+     * @param {Player} player
+     */
+    firstOverlap(player) {
+    }
+    /**
+     * placeholder for regions that need to do something when first player begins overlap will probably just be used for the PVE dungeon to start AI
      * @param {Player} player
      */
     beginOverlap(player) {
@@ -57,7 +63,11 @@ export default class Region extends Rectangle {
      */
     addOverlaps(player) {
         this.overlaps.set(player.id, player);
-        if(this.lastOverlaps.size === 0) this.beginOverlap(player);
-        return !this.lastOverlaps.has(player.id);
+        if(this.lastOverlaps.size === 0) this.firstOverlap(player);
+        if(!this.lastOverlaps.has(player.id)) {
+            this.beginOverlap(player);
+            return true;
+        }
+        return false;
     }
 }

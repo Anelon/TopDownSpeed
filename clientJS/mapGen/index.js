@@ -8,9 +8,9 @@ import CollisionEngine from "../../sharedJS/collisionEngine.js";
 import ClientLoop from "../clientLoop.js";
 
 //Globals
-const numLayers = 4;
+const voidWidth = 5;
 const tileSize = new Vec2(32,32);
-const gameMap = new GameMap(numLayers, new Vec2(15, 50), tileSize.clone());
+const gameMap = new GameMap(voidWidth, new Vec2(15, 50), tileSize.clone());
 const pixelDims = gameMap.dimentions.multiplyVec(tileSize);
 const collisionEngine = new CollisionEngine(pixelDims.x, pixelDims.y);
 collisionEngine.setRegions(gameMap.generateRegions());
@@ -74,7 +74,7 @@ for(const tileName of Object.values(TILE_NAMES)) {
 
 //--- set up layer selection ---//
 const layerSelectList = document.querySelector("#layerSelectList");
-for(let i = 0; i < numLayers; i++) {
+for(let i = 0; i < GameMap.numLayers; i++) {
     const layerSelect = document.createElement("li");
     layerSelect.innerText = "Layer " + i;
     layerSelect.setAttribute("id", "Layer" + i);

@@ -39,6 +39,11 @@ export default class CollisionEngine {
      * @returns {Array<Entity>} Objects that should be deleted
      */
     update(time, step) {
+
+        //reset regions overlapping
+        for(const region of this.regions) {
+            const endOverlap = region.resetOverlaps();
+        }
         //reset quadTree, might change to updating locations of each item later if we end up with too many static items
         this.collisionTree = new QuadTree(this.boundry, this.qTreeCapacity);
         const deleteList = new Array();
@@ -47,6 +52,15 @@ export default class CollisionEngine {
         for (const player of this.players.values()) {
             this.collisionTree.push(player.makePoint());
             player.overlapping = false;
+            //check if the player is in any regions
+            for(const region of this.regions) {
+                if(region.contains(player.location)) {
+                    const newOverlap = region.addOverlaps(player);
+                    if (newOverlap) {
+                        console.log(player, "began overlap", region);
+                    }
+                }
+            }
         }
         for (const projectile of this.projectiles.values()) {
             projectile.update(time, step, this);
@@ -91,22 +105,6 @@ export default class CollisionEngine {
                     if(projectile.hit(other.owner)) deleteList.push(projectile);
                     other.owner.overlapping = true;
                     if(other.owner.hit(projectile)) deleteList.push(other.owner);
-                }
-            }
-        }
-
-        //reset regions overlapping
-        for(const region of this.regions) {
-            const endOverlap = region.resetOverlaps();
-        }
-        //TODO optimize with some sort of data structure or move to quadtree
-        for(const player of this.players.values()) {
-            for(const region of this.regions) {
-                if(region.contains(player.location)) {
-                    const newOverlap = region.addOverlaps(player);
-                    if (newOverlap) {
-                        console.log(player, "began overlap", region);
-                    }
                 }
             }
         }
