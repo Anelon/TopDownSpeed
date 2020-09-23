@@ -18,12 +18,14 @@ class CanvasWrapper {
 	 * @property {Vec2} [canvasSize=null]
 	 * @property {Vec2} [tileSize=new Vec2(16,16)]
 	 * @property {number} [scale=1]
+	 * @property {function} [boundsCallback=null]
 	 */
 	constructor(params = {}) {
 		const id = params.id || "game";
 		const canvasSize = params.canvasSize || null;
 		const tileSize = params.tileSize || new Vec2(16, 16);
 		this.scale = params.scale || 1;
+		this.boundsCallback = params.boundsCallback || null;
 
 		//using querySelector to garantee a canvas
 		/** @type HTMLCanvasElement */
@@ -42,24 +44,31 @@ class CanvasWrapper {
 		this.ctx['webkitImageSmoothingEnabled'] = false; /* Safari */
 		this.ctx['msImageSmoothingEnabled'] = false;     /* IE */
 
+		this.canvasSize = canvasSize;
+		this.resize();
 
-		this.borderSize = 40;
-		this.canvas.width = window.innerWidth - this.borderSize;
-		this.canvas.height = window.innerHeight - this.borderSize;
-		if(canvasSize) {
-			this.mapSize = canvasSize.clone();
-			this.canvas.width = Math.min(canvasSize.x, this.canvas.width);
-			this.canvas.height = Math.min(canvasSize.y, this.canvas.height);
-		} else {
-			this.mapSize = new Vec2(this.canvas.width, this.canvas.height);
-		}
 		this.ctx.font = "18px arial";
 		this.ctx.lineWidth = 1;
 
 		this.tileSize = tileSize;
 		this.drawables = new Map();
 		//center is actually topright
-        this.topRight = new Vec2();
+		this.topRight = new Vec2();
+		window.addEventListener("resize", this.resize.bind(this));
+	}
+	resize() {
+		console.log("resizing");
+		this.borderSize = 40;
+		this.canvas.width = window.innerWidth - this.borderSize;
+		this.canvas.height = window.innerHeight - this.borderSize;
+		if(this.canvasSize) {
+			this.mapSize = this.canvasSize.clone();
+			this.canvas.width = Math.min(this.canvasSize.x, this.canvas.width);
+			this.canvas.height = Math.min(this.canvasSize.y, this.canvas.height);
+		} else {
+			this.mapSize = new Vec2(this.canvas.width, this.canvas.height);
+		}
+		if(this.boundsCallback) this.boundsCallback(this.getBoundingClientRect());
 	}
 	/**
 	 * @returns {number} Canvas width

@@ -36,7 +36,6 @@ class Ability {
      */
     use(now, owner, target) {
         if(now >= this.nextAvailable) {
-            //TODO change to halfwidth
             const offset = owner.hitbox.width + this.projectileHitbox.width;
             //make projectile
             const location = owner.location.clone().addS(target.getUnit().multiplyScalarS(offset));

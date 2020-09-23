@@ -39,7 +39,6 @@ export default class Layer {
      */
     mirror(vertical = true) {
         let layer = new Layer(this.dimentions.clone(), this.baseTile);
-        //TODO mirror all of the tiles
         if (vertical) {
             //mirror vertically
             for(let j = 0; j < layer.dimentions.y; j++) {

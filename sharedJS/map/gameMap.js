@@ -17,7 +17,6 @@ export default class GameMap {
         this.leftLane = lane;
         this.tileSize = tileSize;
         if(!lane) this.leftLane = new Lane(laneDimentions, GameMap.numLayers, tileSize)
-        //TODO figure out if lane orientation is vertical or horizontal
         const laneTopRight = this.leftLane.topLeft.clone();
         if (verticalLanes)
             laneTopRight.x += laneDimentions.x + voidWidth;

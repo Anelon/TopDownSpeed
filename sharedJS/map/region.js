@@ -21,8 +21,6 @@ export default class Region extends Rectangle {
         this.lastOverlaps = new Map();
     }
 
-    //TODO Figure out mirroring regions in lanes
-    //TODO Figure out begin and end overlap
     //call when player overlaps
     hit(other) {
         //don't overlap any other regions

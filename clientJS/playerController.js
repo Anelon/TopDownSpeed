@@ -22,10 +22,9 @@ class PlayerController extends Player {
      * @param {string} imgSrc 
      * @param {number} speed 
      * @param {number} health 
-     * @param {*} bounds 
      * @param {number} scale 
      */
-    constructor(location, name, imgSrc, speed, health, bounds, scale) {
+    constructor(location, name, imgSrc, speed, health, scale, canvas) {
         //create hitbox
         let image = new Image();
         image.src = imgSrc;
@@ -50,10 +49,9 @@ class PlayerController extends Player {
             changed: false,
             changeCount: 0,
         };
-        this.bounds = bounds;
 
         //bind the mouse event to the document to control player aiming
-        document.addEventListener("mousemove", this.mouseEvent.bind(this));
+        canvas.addEventListener("mousemove", this.mouseEvent.bind(this));
 
         //if true the player can not use any abilities
         this.silenced = false;
@@ -189,8 +187,8 @@ class PlayerController extends Player {
     }
     mouseEvent(e) {  // get the mouse coordinates relative to the canvas top left
         //let bounds = collisions.canvas.getBoundingClientRect();
-        this.mouse.x = e.pageX - this.bounds.left;
-        this.mouse.y = e.pageY - this.bounds.top;
+        this.mouse.x = e.offsetX;
+        this.mouse.y = e.offsetY;
         this.mouse.changed = true;
         this.mouse.changeCount += 1;
     }
