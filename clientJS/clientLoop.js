@@ -28,6 +28,9 @@ export default class ClientLoop {
 
         requestAnimationFrame(this.frame.bind(this));
     }
+    setGameMap(gameMap) {
+        this.gameMap = gameMap;
+    }
     //Updates the game state
     /**
      *

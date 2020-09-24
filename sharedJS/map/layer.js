@@ -34,6 +34,38 @@ export default class Layer {
         this.dimentions = dimentions;
         this.baseTile = baseTile;
     }
+    makeObject() {
+        const baseTile = this.baseTile;
+        const tiles = new Array();
+        for(const row of this.tiles) {
+            const newRow = new Array();
+            for(const tile of row) {
+                newRow.push({"name": tile.name, "walkable": tile.walkable, "passable": tile.passable});
+            }
+            tiles.push(newRow);
+        }
+        return {baseTile, tiles};
+    }
+    static makeFromJSON(json, dimentions) {
+        const {
+            baseTile, tiles, empty
+        } = json;
+
+        let tile = null;
+        if(baseTile) tile = new Tile(new Vec2(), baseTile.name, baseTile.walkable, baseTile.passable, 0);
+        const newTiles = new Array();
+        for(let j = 0; j < tiles.length; j++) {
+            const newRow = new Array();
+            for(let i = 0; i < tiles[0].length; i++) {
+                newRow.push(new Tile(new Vec2(i, j),
+                    tiles[j][i].name, tiles[j][i].walkable, tiles[j][i].passable, 0));
+            }
+            newTiles.push(newRow);
+        }
+        const newLayer = new Layer(dimentions, tile, newTiles);
+        newLayer.empty = empty;
+        return newLayer;
+    }
     /**
      * @param {boolean} [vertical]
      */

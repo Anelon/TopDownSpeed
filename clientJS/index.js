@@ -28,16 +28,15 @@ const time = new Time(performance);
 
 //set up canvas
 const canvas = new CanvasWrapper({tileSize, canvasSize: gameMap.dimentions.clone().multiplyVecS(tileSize)});
-let bounds = canvas.getBoundingClientRect();
 
 /** @type {PlayerController} */
-let you;
+let playerController;
 
 //spawn one of each of the abilities to preload the image
 let location = new Vec2(-100, -100);
-let waterBall = new Waterball(location, "test", 0, 1, new Vec2(1, 0), 100, 100, new Circle(location, 0), you);
-let fireBall = new Fireball(location, "test", 0, 1, new Vec2(1, 0), 100, 100, new Circle(location, 0), you);
-let plantSeed = new PlantSeed(location, "test", 0, 1, new Vec2(1, 0), 100, 100, new Circle(location, 0), you);
+let waterBall = new Waterball(location, "test", 0, 1, new Vec2(1, 0), 100, 100, new Circle(location, 0), playerController);
+let fireBall = new Fireball(location, "test", 0, 1, new Vec2(1, 0), 100, 100, new Circle(location, 0), playerController);
+let plantSeed = new PlantSeed(location, "test", 0, 1, new Vec2(1, 0), 100, 100, new Circle(location, 0), playerController);
 canvas.addDrawable(waterBall.makeSprite());
 canvas.addDrawable(fireBall.makeSprite());
 canvas.addDrawable(plantSeed.makeSprite());
@@ -46,7 +45,7 @@ canvas.addDrawable(plantSeed.makeSprite());
 //wait for the server to give the player its location
 socket.on(CHANNELS.newPlayer, function (playerInfo) {
     let playerExists = false;
-    if (you) {
+    if (playerController) {
         playerExists = true;
         console.log("Already a player controller");
     }
@@ -58,17 +57,17 @@ socket.on(CHANNELS.newPlayer, function (playerInfo) {
     } = playerInfoJson;
     const locationVec = new Vec2(location.x, location.y);
     //make new player
-    you = new PlayerController(locationVec, "Player " + name, imgSrc, speed, maxHealth, scale, canvas);
-    you.id = id;
-    //this should be redundant as when you spawn you probably should have full health
-    you.currHealth = currHealth;
+    playerController = new PlayerController(locationVec, "Player " + name, imgSrc, speed, maxHealth, scale, canvas);
+    playerController.id = id;
+    //this should be redundant as when playerController spawn you probably should have full health
+    playerController.currHealth = currHealth;
     if (!playerExists) {
-        collisionEngine.addPlayer(you);
+        collisionEngine.addPlayer(playerController);
     } else {
 
     }
     //start up the client loop
-    new ClientLoop(you, gameMap, canvas, time, collisionEngine, socket);
+    new ClientLoop(playerController, gameMap, canvas, time, collisionEngine, socket);
 });
 
 socket.on(CHANNELS.newProjectile, function (newProjectile) {

@@ -1,3 +1,4 @@
+import { tileSprites } from "../../clientJS/sprites.js";
 import Point from "../point.js";
 import Vec2 from "../vec2.js";
 import Lane from "./lane.js";
@@ -32,6 +33,32 @@ export default class GameMap {
             this.dimentions = new Vec2(laneDimentions.x, laneDimentions.y * 2 + voidWidth);
         this.verticalLanes = verticalLanes;
     }
+    getJSON() {
+        return JSON.stringify(this);
+    }
+    saveMap() {
+        const voidWidth = this.voidWidth;
+        const tileSize = this.tileSize;
+        const leftLane = this.leftLane.makeObject();
+        console.log(leftLane);
+        return JSON.stringify({voidWidth, tileSize, leftLane})
+    }
+    static makeFromJSON(json) {
+        const {
+            leftLane, voidWidth, tileSize, verticalLanes
+        } = json;
+        const tilesize = new Vec2(tileSize.x, tileSize.y);
+        const lane = Lane.makeFromJSON(leftLane, tilesize);
+        return new GameMap(voidWidth, lane.dimentions, tilesize, verticalLanes, lane);
+    }
+    static loadMap(json) {
+        const {
+            leftLane, voidWidth, tileSize, verticalLanes
+        } = json;
+        const tilesize = new Vec2(tileSize.x, tileSize.y);
+        const lane = Lane.makeFromJSON(leftLane, tilesize);
+        return new GameMap(voidWidth, lane.dimentions, tilesize, verticalLanes, lane);
+    }
     /**
      * @param {Vec2} regionStart
      * @param {Vec2} regionEnd
@@ -39,8 +66,9 @@ export default class GameMap {
      * @param {import("./tile.js").default} tile
      */
     update(regionStart, regionEnd, layer, tile) {
-        const startPoint = new Point(regionStart.multiplyVec(this.tileSize));
-        const endPoint = new Point(regionEnd.multiplyVec(this.tileSize));
+        //convert from tile to pixels
+        const startPoint = regionStart.multiplyVec(this.tileSize);
+        const endPoint = regionEnd.multiplyVec(this.tileSize);
         //Left Lane
         if(this.leftLane.region.contains(startPoint) && this.leftLane.region.contains(endPoint)) {
             this.leftLane.update(regionStart, regionEnd, layer, tile);
@@ -53,6 +81,7 @@ export default class GameMap {
         }
         //Both points weren't in a lane
         else {
+            //TODO possibly alert an error message
             console.log("Failed to place tiles");
             console.log(startPoint, endPoint, this.leftLane.region, this.rightLane.region);
         }
@@ -65,8 +94,8 @@ export default class GameMap {
      * @param {string} name
      */
     addRegion(regionStart, regionEnd, region, name) {
-        const startPoint = new Point(regionStart.multiplyVec(this.tileSize));
-        const endPoint = new Point(regionEnd.multiplyVec(this.tileSize));
+        const startPoint = regionStart.multiplyVec(this.tileSize);
+        const endPoint = regionEnd.multiplyVec(this.tileSize);
         //Left Lane
         if(this.leftLane.region.contains(startPoint) && this.leftLane.region.contains(endPoint)) {
             this.leftLane.addRegion(regionStart, regionEnd, region, name);
@@ -103,12 +132,6 @@ export default class GameMap {
         this.rightLane.draw(canvas);
         this.leftLane.draw(canvas);
         canvas.drawGrid();
-    }
-    getJSON() {
-        return JSON.stringify(this);
-    }
-    static makeFromJSON(json) {
-
     }
     bakeImage() {
         //TODO generate image from canvas

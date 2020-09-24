@@ -1,4 +1,3 @@
-import { Rectangle } from "../shapes.js";
 import { REGIONS, TILES, TILE_NAMES } from "../utils/enums.js";
 import Vec2 from "../vec2.js";
 import Layer from "./layer.js";
@@ -36,6 +35,31 @@ export default class Lane {
         this.regions = new Map();
         if(regions) this.regions = regions;
     }
+    makeObject() {
+        const dimentions = {x: this.dimentions.x, y: this.dimentions.y};
+        const region = this.region;
+        const regions = new Array(...(this.regions));
+        const numLayers = this.layers.length;
+        const layers = this.layers.map((layer) => layer.makeObject());
+
+        return {dimentions, numLayers, region, regions, layers}
+    }
+    /**
+     * @param {{ dimentions: any; layers: any; regions: any; }} json
+     * @param {Vec2} tileSize
+     */
+    static makeFromJSON(json, tileSize) {
+        const {
+            dimentions, layers, regions
+        } = json;
+        const dims = new Vec2(dimentions.x, dimentions.y);
+        const tilesize = new Vec2(tileSize.x, tileSize.y);
+        const topleft = new Vec2(); //assume top left is at 0,0 for left lane
+        const newLayers = layers.map((layer) => Layer.makeFromJSON(layer, dims));
+        const newRegions = new Map(regions.map((region) => [region[0], Region.makeFromJSON(region[1])]));
+
+        return new Lane(dims, layers.size, tilesize, topleft, newLayers, newRegions);
+    }
 
     /**
      * @param {boolean} vertical
@@ -62,9 +86,6 @@ export default class Lane {
     }
     getJSON() {
         return JSON.stringify(this);
-    }
-    static makeFromJSON(json) {
-
     }
     generateStatic() {
         let statics = new Array();

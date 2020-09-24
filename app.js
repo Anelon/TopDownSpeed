@@ -2,11 +2,9 @@ import express from "express";
 import ejs from "ejs";
 import ejsLint from "ejs-lint";
 import ServerLoop from "./serverJS/serverLoop.js";
-import io from "socket.io";
 
 //local modules for import
-import Vec2 from "./sharedJS/vec2.js";
-import Player from "./sharedJS/player.js";
+import { loadMap } from "./sharedJS/utils/utils.js";
 
 const app = express();
 app.set("view engine", "ejs");
@@ -29,6 +27,11 @@ app.get("/game", function(req, res) {
 });
 app.get("/mapEditor", function(req, res) {
     res.render("mapEditor");
+});
+app.get("/api/getMap/:mapName", async function(req, res) {
+    const mapJSON = JSON.parse(await loadMap(req.params.mapName));
+    console.log(mapJSON.voidWidth);
+    res.send({"data": mapJSON});
 });
 
 

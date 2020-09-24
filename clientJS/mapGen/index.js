@@ -7,10 +7,28 @@ import Time from "../../sharedJS/utils/time.js";
 import CollisionEngine from "../../sharedJS/collisionEngine.js";
 import ClientLoop from "../clientLoop.js";
 
+let mapName = "map";
+fetch(`./api/getMap/${mapName}`)
+.then(function(res) {
+    if(res.status !== 200) {
+        console.log("Error occured", res.status);
+        return;
+    }
+    res.json().then(function(data) {
+        gameMap = GameMap.makeFromJSON(data.data);
+        console.log(gameMap);
+        console.log(clientLoop);
+        clientLoop.setGameMap(gameMap);
+    });
+})
+.catch(function(err) {
+    console.log("Fetch Error", err);
+});
+
 //Globals
 const voidWidth = 5;
 const tileSize = new Vec2(32,32);
-const gameMap = new GameMap(voidWidth, new Vec2(15, 50), tileSize.clone());
+let gameMap = new GameMap(voidWidth, new Vec2(15, 50), tileSize.clone());
 const pixelDims = gameMap.dimentions.multiplyVec(tileSize);
 const collisionEngine = new CollisionEngine(pixelDims.x, pixelDims.y);
 collisionEngine.setRegions(gameMap.generateRegions());
@@ -36,7 +54,7 @@ canvas.setCenter(you.location);
 you.draw(canvas);
 
 //--- Initialize the client loop ---//
-new ClientLoop(you, gameMap, canvas, time, collisionEngine);
+const clientLoop = new ClientLoop(you, gameMap, canvas, time, collisionEngine);
 
 //reagions for selections
 let regionStart = new Vec2();
@@ -130,5 +148,5 @@ document.querySelector(`#${selectedTileName}`).classList.add("active");
 
 document.querySelector("#save").addEventListener("click", function(e) {
     console.log("saving");
-    console.log(gameMap.getJSON());
+    console.log(gameMap.saveMap());
 });

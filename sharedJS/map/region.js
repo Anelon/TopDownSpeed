@@ -1,7 +1,7 @@
 import Box from "../box.js";
 import { Rectangle } from "../shapes.js";
-import { CATEGORY, TYPES } from "../utils/enums.js";
-/** @typedef {import("../vec2.js").default} Vec2 */
+import { CATEGORY, TYPES } from "../utils/enums.js"
+import Vec2 from "../vec2.js";
 /** @typedef {import("../player.js").default} Player */
 
 export default class Region extends Rectangle {
@@ -19,6 +19,12 @@ export default class Region extends Rectangle {
         this.category = CATEGORY.region;
         this.overlaps = new Map();
         this.lastOverlaps = new Map();
+    }
+    static makeFromJSON(json) {
+        const {
+            center, dimentions, name, color
+        } = json;
+        return new Region(new Vec2(center.x, center.y), new Vec2(dimentions.x, dimentions.y), name, color);
     }
 
     //call when player overlaps
