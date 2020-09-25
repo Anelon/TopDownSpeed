@@ -3,6 +3,7 @@ import Point from "../point.js";
 import Vec2 from "../vec2.js";
 import Lane from "./lane.js";
 import Region from "./region.js";
+import VoidRegion from "./voidRegion.js";
 
 export default class GameMap {
     static numLayers = 4;
@@ -18,20 +19,33 @@ export default class GameMap {
         this.leftLane = lane;
         this.tileSize = tileSize;
         if(!lane) this.leftLane = new Lane(laneDimentions, GameMap.numLayers, tileSize)
-        const laneTopRight = this.leftLane.topLeft.clone();
-        if (verticalLanes)
-            laneTopRight.x += laneDimentions.x + voidWidth;
-        else
-            laneTopRight.y += laneDimentions.y + voidWidth;
-        this.rightLane = this.leftLane.mirror(verticalLanes, laneTopRight);
-        //set top right
+        const laneTopLeft = this.leftLane.topLeft.clone();
+
+        let voidCenter, voidDims;
+        if (verticalLanes) {
+            //set up lane topRight
+            laneTopLeft.x += laneDimentions.x + voidWidth;
+            //set lane dimentions
+            this.dimentions = new Vec2(laneDimentions.x * 2 + voidWidth, laneDimentions.y);
+            //set up void variables
+            voidCenter = new Vec2((laneDimentions.x * 2 + voidWidth) / 2, laneDimentions.y / 2).multiplyVecS(tileSize);
+            voidDims = new Vec2(voidWidth, laneDimentions.y).multiplyVecS(tileSize);
+        } else {
+            //set up lane topRight
+            laneTopLeft.y += laneDimentions.y + voidWidth;
+            //set lane dimentions
+            this.dimentions = new Vec2(laneDimentions.x, laneDimentions.y * 2 + voidWidth);
+            //set up void variables
+            voidCenter = new Vec2((laneDimentions.x * 2 + voidWidth) / 2, laneDimentions.y / 2).multiplyVecS(tileSize);
+            voidDims = new Vec2(voidWidth, laneDimentions.y).multiplyVecS(tileSize);
+        }
+
+        this.rightLane = this.leftLane.mirror(verticalLanes, laneTopLeft);
 
         this.editMode = false;
-        if(verticalLanes)
-            this.dimentions = new Vec2(laneDimentions.x * 2 + voidWidth, laneDimentions.y);
-        else
-            this.dimentions = new Vec2(laneDimentions.x, laneDimentions.y * 2 + voidWidth);
         this.verticalLanes = verticalLanes;
+
+        this.voidRegion = new VoidRegion(voidCenter, voidDims, "Void");
     }
     getJSON() {
         return JSON.stringify(this);
@@ -113,7 +127,9 @@ export default class GameMap {
         return statics
     }
     generateRegions() {
-        let regions = this.rightLane.generateRegions();
+        console.log(this.voidRegion);
+        let regions = new Array(this.voidRegion);
+        regions.push(...this.rightLane.generateRegions());
         regions.push(...this.leftLane.generateRegions());
         return regions;
     }
