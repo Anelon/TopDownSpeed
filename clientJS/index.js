@@ -20,7 +20,7 @@ let socket = io();
 //Globals
 const numLayers = 4;
 const tileSize = new Vec2(32,32);
-const gameMap = new GameMap(numLayers, new Vec2(15, 50), tileSize.clone());
+let gameMap = new GameMap(numLayers, new Vec2(15, 50), tileSize.clone());
 const pixelDims = gameMap.dimentions.multiplyVec(tileSize);
 const collisionEngine = new CollisionEngine(pixelDims.x, pixelDims.y);
 // @ts-ignore
@@ -31,6 +31,8 @@ const canvas = new CanvasWrapper({tileSize, canvasSize: gameMap.dimentions.clone
 
 /** @type {PlayerController} */
 let playerController;
+/** @type {ClientLoop} */
+let clientLoop;
 
 //spawn one of each of the abilities to preload the image
 let location = new Vec2(-100, -100);
@@ -67,7 +69,7 @@ socket.on(CHANNELS.newPlayer, function (playerInfo) {
 
     }
     //start up the client loop
-    new ClientLoop(playerController, gameMap, canvas, time, collisionEngine, socket);
+    clientLoop = new ClientLoop(playerController, gameMap, canvas, time, collisionEngine, socket);
 });
 
 socket.on(CHANNELS.newProjectile, function (newProjectile) {
@@ -98,4 +100,21 @@ socket.on(CHANNELS.deletePlayer, function (playerID) {
     console.log("Deleting", playerID);
     collisionEngine.removePlayer(playerID);
     canvas.removeDrawable(playerID);
+});
+
+let mapName = "map";
+fetch(`./api/getMap/${mapName}`)
+.then(function(res) {
+    if(res.status !== 200) {
+        console.log("Error occured", res.status);
+        return;
+    }
+    res.json().then(function(data) {
+        gameMap = GameMap.makeFromJSON(data.data);
+        //set the new gamemap
+        clientLoop.setGameMap(gameMap);
+    });
+})
+.catch(function(err) {
+    console.log("Fetch Error", err);
 });

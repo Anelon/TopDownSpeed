@@ -14,7 +14,7 @@ class Drawable {
     }
     //function to pass an update to the owner
     /**
-     * @param {import("./time.js").default} time
+     * @param {import("../sharedJS/utils/time.js").default} time
      * @param {number} dt
      */
     update(time, dt) {

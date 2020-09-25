@@ -1,5 +1,6 @@
 import ObjectiveRegion from "../map/objectiveRegion.js";
 import Region from "../map/region.js";
+import SpawnRegion from "../map/spawnRegion.js";
 import Tile from "../map/tile.js";
 import Vec2 from "../vec2.js";
 
@@ -62,7 +63,7 @@ const REGIONS = {
     "puzzle": Region,
     "puzzleObjective": ObjectiveRegion,
     "vm": Region,
-    "spawn": Region,
+    "spawn": SpawnRegion,
 }
 //lock the enum
 Object.freeze(REGIONS);

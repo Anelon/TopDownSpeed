@@ -6,6 +6,7 @@ import PlantSeedAbility from "./plantSeedAbility.js";
 //TODO: Find unneccisary imports and replace with typedefs
 /** @typedef {import("../player").default} Player */
 /** @typedef {import("../entity").default} Entity */
+/** @typedef {import("../map/tile.js").default} Tile */
 
 export default class PlantSeed extends Projectile {
     static get FRAMES() {return 4;} //Number of frames of animation
@@ -35,7 +36,7 @@ export default class PlantSeed extends Projectile {
 
     /**
      * Basic projecile just hits players
-     * @param {Player|Projectile|Entity} other 
+     * @param {Player|Projectile|Entity|Tile} other 
      */
     hit(other) {
         //if hitting a player deal damage
@@ -52,12 +53,9 @@ export default class PlantSeed extends Projectile {
         } else if (other.type === TYPES.fire) {
             //delete me
             return true;
-        } else if (other.category === CATEGORY.void) {
-            //Projectiles go over void
-            return false;
         } else {
             //flag to be deleted
-            return true;
+            return super.hit(other);
         }
     }
 }
