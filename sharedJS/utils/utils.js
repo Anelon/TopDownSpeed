@@ -4,7 +4,6 @@ import { Circle } from "../shapes.js";
 import Fireball from "../ability/fireball.js";
 import Waterball from "../ability/waterball.js";
 import PlantSeed from "../ability/plantSeed.js";
-import fs from "fs";
 
 /**
  * @param {{ json: string; type: string; }} object
@@ -47,10 +46,4 @@ export function makeFromJSON(object) {
  */
 export function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-const mapPath = "./maps/";
-export function loadMap(mapName) {
-    //TODO regex to make sure map name is just a string
-    return fs.promises.readFile(`${mapPath+mapName}.json`, "utf8");
 }

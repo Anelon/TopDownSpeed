@@ -74,13 +74,12 @@ export default class CollisionEngine {
         //check for collisions
         for (const player of this.players.values()) {
             const playerShape = player.makeShape();
-            const doubleShape = player.makeShape(2);
             //make shape with 2 to have it search an area double the size of the player
-            const others = this.collisionTree.query(doubleShape);
-            this.staticObjects.query(doubleShape, others);
+            const others = this.collisionTree.query(playerShape);
+            this.staticObjects.query(playerShape, others);
             for(const other of others) {
                 if(other.owner === player) continue;
-                if(playerShape.intersects(other.owner.makeShape())) {
+                if(playerShape.intersects(other)) {
                     player.overlapping = true;
                     //should probably do something other for the players rather than deleting
                     if(player.hit(other.owner)) deleteList.push(player);
@@ -93,14 +92,13 @@ export default class CollisionEngine {
             //skip projectiles that have already done something
             if (deleteList.includes(projectile)) continue;
             const projectileShape = projectile.makeShape();
-            const doubleShape = projectile.makeShape(2);
             //make shape with 2 to have it search an area double the size of the projectile
-            const others = this.collisionTree.query(doubleShape);
+            const others = this.collisionTree.query(projectileShape);
             //check static objects as well
-            this.staticObjects.query(doubleShape, others);
+            this.staticObjects.query(projectileShape, others);
             for(const other of others) {
                 if(other.owner === projectile) continue;
-                if(projectileShape.intersects(other.owner.makeShape())) {
+                if(projectileShape.intersects(other)) {
                     projectile.overlapping = true;
                     if(projectile.hit(other.owner)) deleteList.push(projectile);
                     other.owner.overlapping = true;
@@ -180,6 +178,16 @@ export default class CollisionEngine {
         for(const stat of statics) {
             this.staticObjects.push(stat);
         }
+    }
+    /**
+     * @param {import("./box.js").default[]} statics
+     */
+    setStatics(statics) {
+        this.staticObjects = new QuadTree(this.boundry, this.qTreeCapacity);
+        for(const stat of statics) {
+            this.staticObjects.push(stat);
+        }
+        console.log(this.staticObjects);
     }
     /**
      * @param {Array<Region>} regions

@@ -64,8 +64,8 @@ class Circle {
 
 
         let r = this.radius;
-        let w = range.width;
-        let h = range.height;
+        let w = range.halfWidth;
+        let h = range.halfHeight;
 
         if (xDist > (r + w) || yDist > (r + h)) return false;
         if (xDist <= w || yDist <= h) return true;
@@ -107,6 +107,9 @@ class Rectangle {
     }
     get halfWidth() {
         return this.width / 2;
+    }
+    get halfHeight() {
+        return this.height / 2;
     }
 
     /**

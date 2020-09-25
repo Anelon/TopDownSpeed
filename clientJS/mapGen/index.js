@@ -1,7 +1,7 @@
 import Vec2 from "../../sharedJS/vec2.js";
 import CanvasWrapper from "../canvasWrapper.js";
 import GameMap from "../../sharedJS/map/gameMap.js"
-import { TILES, TILE_NAMES, REGIONS } from "../../sharedJS/utils/enums.js";
+import { TILES, TILE_NAMES, REGIONS, TILE_OPTIONS } from "../../sharedJS/utils/enums.js";
 import PlayerController from "../playerController.js";
 import Time from "../../sharedJS/utils/time.js";
 import CollisionEngine from "../../sharedJS/collisionEngine.js";
@@ -16,8 +16,7 @@ fetch(`./api/getMap/${mapName}`)
     }
     res.json().then(function(data) {
         gameMap = GameMap.makeFromJSON(data.data);
-        console.log(gameMap);
-        console.log(clientLoop);
+        //set the new gamemap
         clientLoop.setGameMap(gameMap);
     });
 })
@@ -48,31 +47,42 @@ let selectedRegion = Object.keys(REGIONS)[0];
 
 //set up canvas
 const canvas = new CanvasWrapper({tileSize, canvasSize: gameMap.dimentions.clone().multiplyVecS(tileSize)});
-const you = new PlayerController(new Vec2(100, 100), "Player","./img/player.png", 500, 200, 2, canvas);
-you.silenced = true;
-canvas.setCenter(you.location);
-you.draw(canvas);
+const playerController = new PlayerController(new Vec2(100, 100), "Player","./img/player.png", 500, 200, 2, canvas);
+playerController.silenced = true;
+canvas.setCenter(playerController.location);
+playerController.draw(canvas);
+console.log(playerController.hitbox);
 
 //--- Initialize the client loop ---//
-const clientLoop = new ClientLoop(you, gameMap, canvas, time, collisionEngine);
+const clientLoop = new ClientLoop(playerController, gameMap, canvas, time, collisionEngine);
 
 //reagions for selections
 let regionStart = new Vec2();
 let regionEnd = new Vec2();
+
 canvas.addEventListener("mousedown", function(e) {
     //console.log(e);
     const clickLocation = new Vec2(e.offsetX, e.offsetY);
     regionStart = clickLocation.addS(canvas.topRight).multiplyVec(canvas.tileSize.invert()).floorS();
     //console.log(clickLocation.log(), regionStart.log());
 });
+
 canvas.addEventListener("mouseup", function(e) {
     //console.log(e);
     const clickLocation = new Vec2(e.offsetX, e.offsetY);
     regionEnd = clickLocation.addS(canvas.topRight).multiplyVec(canvas.tileSize.invert()).floorS();
     //console.log(clickLocation.log(), regionEnd.log());
     if(editMode === EDIT_MODES.tile) {
-        console.log(TILES[selectedTileName], selectedTileName);
-        gameMap.update(regionStart, regionEnd, selectedLayer, TILES[selectedTileName]);
+        /** @type {NodeListOf<HTMLInputElement>} */
+        const traversal = document.querySelectorAll("input[name='traversal']");
+        const traversalObject = {};
+        for (const elem of traversal) {
+            traversalObject[elem.value] = elem.checked;
+        }
+        console.log(traversalObject);
+        const tile = TILES[selectedTileName].clone().setTraversal(traversalObject);
+        gameMap.update(regionStart, regionEnd, selectedLayer, tile);
+        collisionEngine.setStatics(gameMap.generateStatic());
     } else if (editMode === EDIT_MODES.region) {
         gameMap.addRegion(regionStart, regionEnd, REGIONS[selectedRegion], selectedRegion);
         collisionEngine.setRegions(gameMap.generateRegions());
@@ -98,6 +108,29 @@ for(let i = 0; i < GameMap.numLayers; i++) {
     layerSelect.setAttribute("id", "Layer" + i);
     layerSelectList.appendChild(layerSelect);
 }
+
+//--- set up traversal selection ---//
+const traversalSelectList = document.querySelector("#traversalSelectList");
+for(const option of TILE_OPTIONS) {
+    const traversalSelectDiv = document.createElement("div");
+    //set up checkbox
+    const traversalSelect = document.createElement("input");
+    traversalSelect.setAttribute("type", "checkbox");
+    traversalSelect.setAttribute("id", option);
+    traversalSelect.setAttribute("name", "traversal");
+    traversalSelect.setAttribute("value", option);
+    traversalSelect.setAttribute("checked", "true");
+    //set up label
+    const traversalSelectLabel = document.createElement("label");
+    traversalSelectLabel.setAttribute("for", option);
+    traversalSelectLabel.innerText = option;
+    //append to div and then to list
+    traversalSelectDiv.appendChild(traversalSelect);
+    traversalSelectDiv.appendChild(traversalSelectLabel);
+
+    traversalSelectList.appendChild(traversalSelectDiv);
+}
+
 
 //--- set up layer selection ---//
 const regionSelectList = document.querySelector("#regionSelectList");

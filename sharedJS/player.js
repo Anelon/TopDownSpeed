@@ -7,7 +7,7 @@ import Projectile from "./ability/projectile.js";
 
 //class for holding the other players and as a parent to PlayerController
 class Player extends Entity {
-    static get WIDTH() {return 64;}
+    static get WIDTH() {return 32;}
     /**
      * @param {Vec2} location 
      * @param {string} name 

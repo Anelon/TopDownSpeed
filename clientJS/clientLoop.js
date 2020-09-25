@@ -18,9 +18,9 @@ export default class ClientLoop {
      */
     constructor(playerController, gameMap, canvas, time, collisionEngine, socket) {
         this.playerController = playerController
-        this.gameMap = gameMap;
+        //this.gameMap = gameMap;
         this.collisionEngine = collisionEngine;
-        this.collisionEngine.addStatics(this.gameMap.generateStatic());
+        this.setGameMap(gameMap);
         this.collisionEngine.addPlayer(this.playerController);
         this.canvas = canvas;
         this.socket = socket;
@@ -30,6 +30,9 @@ export default class ClientLoop {
     }
     setGameMap(gameMap) {
         this.gameMap = gameMap;
+        //set new regions and statics
+        this.collisionEngine.setRegions(gameMap.generateRegions());
+        this.collisionEngine.setStatics(gameMap.generateStatic());
     }
     //Updates the game state
     /**

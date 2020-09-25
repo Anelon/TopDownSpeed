@@ -92,7 +92,7 @@ export default class Lane {
     generateStatic() {
         let statics = new Array();
         for(const layer of this.layers) {
-            layer.generateStatic(this.tileSize);
+            statics.push(...(layer.generateStatic(this.tileSize, this.topLeft)));
         }
         return statics;
     }

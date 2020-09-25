@@ -15,7 +15,12 @@ export default class Layer {
         this.tiles;
         if (!baseTile) {
             this.empty = true;
-        } else this.empty = false;
+            this.baseTile = TILES[TILE_NAMES[" "]].clone();
+        } else {
+            this.empty = false;
+            this.baseTile = baseTile;
+        }
+        
         if (tiles) {
             this.tiles = tiles;
         } else {
@@ -24,15 +29,11 @@ export default class Layer {
                 this.tiles[j] = new Array(dimentions.x);
                 for (let i = 0; i < dimentions.x; i++) {
                     //default base layer to grass
-                    if (baseTile)
-                        this.tiles[j][i] = baseTile.clone().init(new Vec2(i, j), 0);
-                    else
-                        this.tiles[j][i] = TILES[TILE_NAMES[" "]].clone().init(new Vec2(i, j), 0);
+                    this.tiles[j][i] = this.baseTile.clone().init(new Vec2(i, j), 0);
                 }
             }
         }
         this.dimentions = dimentions;
-        this.baseTile = baseTile;
     }
     makeObject() {
         const baseTile = this.baseTile;
@@ -94,15 +95,20 @@ export default class Layer {
         layer.empty = this.empty;
         return layer;
     }
-    generateStatic(tileSize) {
+    /**
+     * @param {Vec2} tileSize
+     */
+    generateStatic(tileSize, topLeft) {
+        if(this.empty) return [];
         const statics = new Array();
         for (const row of this.tiles) {
             for (const tile of row) {
-                if (!tile.walkable || !tile.passable) {
-                    statics.push(tile.makeBox(tileSize));
+                if ((this.baseTile.name !== tile.name) && (!tile.walkable || !tile.passable)) {
+                    statics.push(tile.makeBox(tileSize, topLeft));
                 }
             }
         }
+        return statics;
     }
     /**
      * @param {Vec2} regionStart

@@ -2,9 +2,13 @@ import express from "express";
 import ejs from "ejs";
 import ejsLint from "ejs-lint";
 import ServerLoop from "./serverJS/serverLoop.js";
+import fs from "fs";
 
-//local modules for import
-import { loadMap } from "./sharedJS/utils/utils.js";
+const mapPath = "./maps/";
+function loadMap(mapName) {
+    //TODO regex to make sure map name is just a string
+    return fs.promises.readFile(`${mapPath+mapName}.json`, "utf8");
+}
 
 const app = express();
 app.set("view engine", "ejs");

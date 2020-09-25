@@ -31,19 +31,25 @@ export default class Tile {
         this.around = around;
         return this;
     }
+    setTraversal(traversalObject) {
+        this.walkable = traversalObject.walkable;
+        this.passable = traversalObject.passable;
+        return this;
+    }
     clone() {
         return new Tile(new Vec2(this.location.x, this.location.y), this.name, this.walkable, this.passable, this.around);
     }
     /**
      * @param {Vec2} tileSize
      */
-    makeBox(tileSize) {
+    makeBox(tileSize, topLeft) {
         this.tileSize = tileSize;
-        const center = this.location.multiplyVec(tileSize).subS(tileSize.multiplyScalar(0.5));
+        const center = this.location.add(topLeft).multiplyVecS(tileSize).addS(tileSize.multiplyScalar(0.5));
+        console.log(this.location, center.multiplyScalar(1/32));
         return new Box(center, tileSize, this);
     }
     makeShape() {
-        const center = this.location.multiplyVec(this.tileSize).subS(this.tileSize.multiplyScalar(0.5));
+        const center = this.location.multiplyVec(this.tileSize).addS(this.tileSize.multiplyScalar(0.5));
         return new Rectangle(center, this.tileSize.x, this.tileSize.y);
     }
     /**
@@ -52,7 +58,11 @@ export default class Tile {
     hit(other) {
         if(other.category === CATEGORY.player) {
             if(!this.walkable) {
-                //move player back to previous location
+                console.log(other.hitbox);
+                //TODO just block what would colide with (x values if above or below)
+                console.log("Block Movement");
+                //put player back to old location
+                other.location = other.oldLocation;
             }
         }
 

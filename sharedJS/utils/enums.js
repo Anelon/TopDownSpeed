@@ -50,6 +50,10 @@ const TILES = {
 //lock the enum
 Object.freeze(TILES);
 
+const TILE_OPTIONS = new Set(["walkable", "passable"]);
+//lock the enum
+Object.freeze(TILE_OPTIONS);
+
 const REGIONS = {
     "pvp": Region,
     "pvpObjective": ObjectiveRegion,
@@ -71,4 +75,4 @@ const OBJECTIVE_COLORS = {
 //lock the enum
 Object.freeze(OBJECTIVE_COLORS);
 
-export { TYPES, CATEGORY, TILE_NAMES, TILES, REGIONS, OBJECTIVE_COLORS };
+export { TYPES, CATEGORY, TILE_NAMES, TILES, TILE_OPTIONS, REGIONS, OBJECTIVE_COLORS };
