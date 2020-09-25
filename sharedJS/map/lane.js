@@ -40,12 +40,14 @@ export default class Lane {
         const region = this.region;
         const regions = new Array(...(this.regions));
         const numLayers = this.layers.length;
+        //Might add filter back in later
+        //const layers = this.layers.filter((layer) => layer.empty).map((layer) => layer.makeObject());
         const layers = this.layers.map((layer) => layer.makeObject());
 
         return {dimentions, numLayers, region, regions, layers}
     }
     /**
-     * @param {{ dimentions: any; layers: any; regions: any; }} json
+     * @param {{ dimentions: Vec2; layers: Array<Layer>; regions: Array<Array<string|Region>>; }} json
      * @param {Vec2} tileSize
      */
     static makeFromJSON(json, tileSize) {
@@ -56,9 +58,9 @@ export default class Lane {
         const tilesize = new Vec2(tileSize.x, tileSize.y);
         const topleft = new Vec2(); //assume top left is at 0,0 for left lane
         const newLayers = layers.map((layer) => Layer.makeFromJSON(layer, dims));
-        const newRegions = new Map(regions.map((region) => [region[0], Region.makeFromJSON(region[1])]));
+        const newRegions = new Map(regions.map((region) => [/** @type {string} */ (region[0]), Region.makeFromJSON(region[1])]));
 
-        return new Lane(dims, layers.size, tilesize, topleft, newLayers, newRegions);
+        return new Lane(dims, layers.length, tilesize, topleft, newLayers, newRegions);
     }
 
     /**

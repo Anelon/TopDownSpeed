@@ -71,6 +71,7 @@ canvas.addEventListener("mouseup", function(e) {
     regionEnd = clickLocation.addS(canvas.topRight).multiplyVec(canvas.tileSize.invert()).floorS();
     //console.log(clickLocation.log(), regionEnd.log());
     if(editMode === EDIT_MODES.tile) {
+        console.log(TILES[selectedTileName], selectedTileName);
         gameMap.update(regionStart, regionEnd, selectedLayer, TILES[selectedTileName]);
     } else if (editMode === EDIT_MODES.region) {
         gameMap.addRegion(regionStart, regionEnd, REGIONS[selectedRegion], selectedRegion);
@@ -82,7 +83,7 @@ canvas.addEventListener("mouseup", function(e) {
 const tileSelectList = document.querySelector("#tileSelectList");
 for(const tileName of Object.values(TILE_NAMES)) {
     console.log(tileName);
-    if(!TILES[tileName]) continue;
+    if(!TILES[tileName] && tileName !== TILE_NAMES[" "]) continue;
     const tileSelect = document.createElement("li");
     tileSelect.innerText = tileName;
     tileSelect.setAttribute("id", tileName);

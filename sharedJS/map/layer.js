@@ -13,7 +13,7 @@ export default class Layer {
     constructor(dimentions, baseTile, tiles) {
         /** @type {Array<Array<Tile>>} */
         this.tiles;
-        if(!baseTile) {
+        if (!baseTile) {
             this.empty = true;
         } else this.empty = false;
         if (tiles) {
@@ -27,7 +27,7 @@ export default class Layer {
                     if (baseTile)
                         this.tiles[j][i] = baseTile.clone().init(new Vec2(i, j), 0);
                     else
-                        this.tiles[j][i] = new Tile(new Vec2(i, j), TILE_NAMES[" "], false, true, 0);
+                        this.tiles[j][i] = TILES[TILE_NAMES[" "]].clone().init(new Vec2(i, j), 0);
                 }
             }
         }
@@ -37,28 +37,33 @@ export default class Layer {
     makeObject() {
         const baseTile = this.baseTile;
         const tiles = new Array();
-        for(const row of this.tiles) {
+        const empty = this.empty;
+        for (const row of this.tiles) {
             const newRow = new Array();
-            for(const tile of row) {
-                newRow.push({"name": tile.name, "walkable": tile.walkable, "passable": tile.passable});
+            for (const tile of row) {
+                newRow.push({ "name": tile.name, "walkable": tile.walkable, "passable": tile.passable });
             }
             tiles.push(newRow);
         }
-        return {baseTile, tiles};
+        return { baseTile, tiles, empty };
     }
     static makeFromJSON(json, dimentions) {
         const {
-            baseTile, tiles, empty
+            baseTile, tiles
         } = json;
 
         let tile = null;
-        if(baseTile) tile = new Tile(new Vec2(), baseTile.name, baseTile.walkable, baseTile.passable, 0);
+        if (baseTile) tile = new Tile(new Vec2(), baseTile.name, baseTile.walkable, baseTile.passable, 0);
+        let empty = true;
         const newTiles = new Array();
-        for(let j = 0; j < tiles.length; j++) {
+        for (let j = 0; j < tiles.length; j++) {
             const newRow = new Array();
-            for(let i = 0; i < tiles[0].length; i++) {
+            for (let i = 0; i < tiles[0].length; i++) {
                 newRow.push(new Tile(new Vec2(i, j),
                     tiles[j][i].name, tiles[j][i].walkable, tiles[j][i].passable, 0));
+                if (tiles[j][i].name !== TILE_NAMES[" "]) {
+                    empty = false;
+                }
             }
             newTiles.push(newRow);
         }
@@ -73,14 +78,14 @@ export default class Layer {
         let layer = new Layer(this.dimentions.clone(), this.baseTile);
         if (vertical) {
             //mirror vertically
-            for(let j = 0; j < layer.dimentions.y; j++) {
+            for (let j = 0; j < layer.dimentions.y; j++) {
                 for (let i = 0; i < layer.dimentions.x; i++) {
                     layer.tiles[j][i] = this.tiles[j][this.dimentions.x - (i + 1)].clone().init(new Vec2(i, j), 0);
                 }
             }
         } else {
             //mirror horizontally
-            for(let j = 0; j < layer.dimentions.y; j++) {
+            for (let j = 0; j < layer.dimentions.y; j++) {
                 for (let i = 0; i < layer.dimentions.x; i++) {
                     layer.tiles[j][i] = this.tiles[this.dimentions.y - (j + 1)][i].clone().init(new Vec2(i, j), 0);
                 }
@@ -91,9 +96,9 @@ export default class Layer {
     }
     generateStatic(tileSize) {
         const statics = new Array();
-        for(const row of this.tiles) {
-            for(const tile of row) {
-                if(!tile.walkable || !tile.passable) {
+        for (const row of this.tiles) {
+            for (const tile of row) {
+                if (!tile.walkable || !tile.passable) {
                     statics.push(tile.makeBox(tileSize));
                 }
             }
@@ -155,14 +160,14 @@ export default class Layer {
      * @param {Vec2} topLeft
      */
     draw(canvas, topLeft) {
-        if(this.empty) return;
+        if (this.empty) return;
         const height = this.dimentions.y, width = this.dimentions.x;
         for (let j = 0; j < height; j++) {
             for (let i = 0; i < width; i++) {
                 //grab tile name
                 const tileName = this.tiles[j][i].name;
                 //skip if tile name in none
-                if(!tileSprites.has(tileName)) continue;
+                if (!tileSprites.has(tileName)) continue;
                 //get the sprite
                 const sprite = tileSprites.get(tileName);
                 //get the around value

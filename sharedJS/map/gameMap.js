@@ -51,14 +51,6 @@ export default class GameMap {
         const lane = Lane.makeFromJSON(leftLane, tilesize);
         return new GameMap(voidWidth, lane.dimentions, tilesize, verticalLanes, lane);
     }
-    static loadMap(json) {
-        const {
-            leftLane, voidWidth, tileSize, verticalLanes
-        } = json;
-        const tilesize = new Vec2(tileSize.x, tileSize.y);
-        const lane = Lane.makeFromJSON(leftLane, tilesize);
-        return new GameMap(voidWidth, lane.dimentions, tilesize, verticalLanes, lane);
-    }
     /**
      * @param {Vec2} regionStart
      * @param {Vec2} regionEnd

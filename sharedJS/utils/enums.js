@@ -45,6 +45,7 @@ const TILES = {
     [TILE_NAMES.s]: new Tile(new Vec2(), TILE_NAMES.s, true, true, 0),
     [TILE_NAMES.d]: new Tile(new Vec2(), TILE_NAMES.d, true, true, 0),
     [TILE_NAMES.w]: new Tile(new Vec2(), TILE_NAMES.w, false, true, 0),
+    [TILE_NAMES[" "]]: new Tile(new Vec2(), TILE_NAMES[" "], true, true, 0),
 }
 //lock the enum
 Object.freeze(TILES);
