@@ -5,7 +5,7 @@ import Time from "./utils/time.js";
 import { TYPES, CATEGORY } from "./utils/enums.js";
 
 let idGen = 0;
-class Entity {
+export default class Entity {
     /**
      * Makes a new Entity
      * @constructor
@@ -108,6 +108,9 @@ class Entity {
         if(infoJSON.location) {
             this.location = new Vec2(infoJSON.location.x, infoJSON.location.y);
         }
+        if(infoJSON.oldLocation) {
+            this.oldLocation = new Vec2(infoJSON.oldLocation.x, infoJSON.oldLocation.y);
+        }
         if(infoJSON.lookDirection) {
             this.lookDirection = new Vec2(infoJSON.lookDirection.x, infoJSON.lookDirection.y);
         }
@@ -127,5 +130,3 @@ class Entity {
     think(map) {
     }
 }
-
-export default Entity;

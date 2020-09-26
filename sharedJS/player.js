@@ -23,6 +23,7 @@ class Player extends Entity {
         this.name = name;
         this.maxHealth = health;
         this.currHealth = health;
+        this.spawnLocation = location;
         
         this.type = TYPES.basic;
         this.category = CATEGORY.player;
@@ -51,6 +52,9 @@ class Player extends Entity {
             if(other.damage - this.currHealth <= 0)
                 return true;
         return false;
+    }
+    setSpawn(spawnLocation) {
+        this.spawnLocation = spawnLocation;
     }
 }
 

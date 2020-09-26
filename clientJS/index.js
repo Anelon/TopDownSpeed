@@ -7,7 +7,7 @@ import CHANNELS from "../sharedJS/utils/channels.js";
 import Player from "../sharedJS/player.js";
 import Waterball from "../sharedJS/ability/waterball.js";
 import { Circle } from "../sharedJS/shapes.js";
-import { makeFromJSON } from "../sharedJS/utils/utils.js";
+import { projectileFromJSON } from "../sharedJS/utils/utils.js";
 import Fireball from "../sharedJS/ability/fireball.js";
 import PlantSeed from "../sharedJS/ability/plantSeed.js";
 import GameMap from "../sharedJS/map/gameMap.js";
@@ -75,7 +75,7 @@ socket.on(CHANNELS.newPlayer, function (playerInfo) {
 socket.on(CHANNELS.newProjectile, function (newProjectile) {
     const updated = JSON.parse(newProjectile.json);
     console.log("From Server", updated);
-    const projectile = makeFromJSON(newProjectile);
+    const projectile = projectileFromJSON(newProjectile);
     collisionEngine.addProjectile(projectile);
     //TODO make Sprite (make canvaswrapper compattable with sprites)
     console.log(projectile);

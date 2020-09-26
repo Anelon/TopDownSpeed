@@ -50,7 +50,11 @@ export default class CollisionEngine {
 
         //move everything and place in collision quad tree
         for (const player of this.players.values()) {
-            this.collisionTree.push(player.makePoint());
+            if(!this.collisionTree.push(player.makePoint())) {
+                //prevent player from leaving the map
+                player.location = player.oldLocation;
+                this.collisionTree.push(player.makePoint());
+            }
             player.overlapping = false;
             //check if the player is in any regions
             for(const region of this.regions) {
@@ -145,11 +149,12 @@ export default class CollisionEngine {
         } else {
             //handle if the server reloads but the client doesn't (could just reset the client but this seems better for development)
             const {
-                location, name, imgSrc, speed, maxHealth, hitbox, scale
+                location, oldLocation, name, imgSrc, speed, maxHealth, hitbox, scale
             } = playerJSON;
             console.log(maxHealth);
             const loc = new Vec2(location.x, location.y);
             let newPlayer = new Player(loc, name, imgSrc, speed, maxHealth, new Circle(loc, hitbox.radius), scale);
+            newPlayer.oldLocation = oldLocation;
             newPlayer.id = playerJSON.id;
             this.addPlayer(newPlayer);
             return newPlayer;

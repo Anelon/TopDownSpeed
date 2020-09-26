@@ -6,7 +6,7 @@ import Player from "../player.js";
 import Drawable from "../../clientJS/drawable.js";
 /** @typedef {import("../map/tile.js").default} Tile */
 
-class Projectile extends Entity {
+export default class Projectile extends Entity {
     static get IMAGE() { return "./img/arrow.png"; }
     /**
      * Constructs a new Projectile
@@ -81,5 +81,3 @@ class Projectile extends Entity {
         return new Drawable(this.owner, this.owner.scale);
     }
 }
-
-export default Projectile;

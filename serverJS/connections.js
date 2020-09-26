@@ -4,7 +4,7 @@ import Player from "../sharedJS/player.js";
 import CHANNELS from "../sharedJS/utils/channels.js";
 import CollisionEngine from "../sharedJS/collisionEngine.js";
 import { Circle } from "../sharedJS/shapes.js";
-import { makeFromJSON } from "../sharedJS/utils/utils.js";
+import { projectileFromJSON } from "../sharedJS/utils/utils.js";
 
 class Connections {
     /**
@@ -56,7 +56,7 @@ class Connections {
             client.on(CHANNELS.newProjectile, (newProjectile) => {
                 const updated = JSON.parse(newProjectile.json);
                 //console.log(updated);
-                this.collisionEngine.addProjectile(makeFromJSON(newProjectile));
+                this.collisionEngine.addProjectile(projectileFromJSON(newProjectile));
                 //console.log(this.collisionEngine);
                 //TODO: add validation of move here
                 //broadcast the message (add client to prevent echoing)

@@ -8,7 +8,7 @@ import PlantSeed from "../ability/plantSeed.js";
 /**
  * @param {{ json: string; type: string; }} object
  */
-export function makeFromJSON(object) {
+export function projectileFromJSON(object) {
     const data = JSON.parse(object.json);
     console.log(object.type);
     if(object.type === "Projectile") {

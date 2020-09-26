@@ -72,6 +72,7 @@ const OBJECTIVE_COLORS = {
     "pvpObjective": "red",
     "pveObjective": "blue",
     "puzzleObjective": "yellow",
+    "spawn": "green",
 }
 //lock the enum
 Object.freeze(OBJECTIVE_COLORS);
