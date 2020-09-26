@@ -105,11 +105,12 @@ export default class Lane {
     }
     /**
      * @param {import("../../clientJS/canvasWrapper.js").default} canvas
+     * @param {import("../../clientJS/sprites.js").tileSprites} tileSprites
      */
-    draw(canvas) {
+    draw(canvas, tileSprites) {
         //pass the draw command to the layers
         for(const layer of this.layers) {
-            layer.draw(canvas, this.topLeft);
+            layer.draw(canvas, this.topLeft, tileSprites);
         }
         this.region.draw(canvas);
         for(const region of this.regions.values()) {

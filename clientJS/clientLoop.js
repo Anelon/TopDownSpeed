@@ -6,6 +6,7 @@ import Projectile from "../sharedJS/ability/projectile.js";
 import { TYPES, CATEGORY } from "../sharedJS/utils/enums.js";
 import GameMap from "../sharedJS/map/gameMap.js";
 import CanvasWrapper from "./canvasWrapper.js";
+import { tileSprites } from "./sprites.js";
 /** @typedef {import("../sharedJS/player.js").default} Player */
 
 export default class ClientLoop {
@@ -35,19 +36,16 @@ export default class ClientLoop {
         this.collisionEngine.setRegions(gameMap.generateRegions());
         this.collisionEngine.setStatics(gameMap.generateStatic());
     }
-    //Updates the game state
     /**
-     *
-     * @param {Time} time 
-     * @param {number} step Tick rate of server
+     * Updates the game state
      */
-    update(time, step) {
+    update() {
         //update the PlayerController
-        this.playerController.update(time, step, this.collisionEngine, this.canvas, this.socket);
+        this.playerController.update(this.time, this.time.tickRate, this.collisionEngine, this.canvas, this.socket);
         this.canvas.setCenter(this.playerController.location.clone());
 
         //run the collision engine and catch anything flagged for deleting
-        const deleteArray = this.collisionEngine.update(time, step);
+        const deleteArray = this.collisionEngine.update(this.time, this.time.tickRate);
         for (const item of deleteArray) {
             if (item.category === CATEGORY.player) {
                 //TODO respawn player (or have server respawn player)
@@ -72,7 +70,7 @@ export default class ClientLoop {
         //clear the collisionEngine
         this.canvas.clear();
 
-        this.gameMap.draw(this.canvas);
+        this.gameMap.draw(this.canvas, tileSprites);
         this.canvas.render(this.playerController);
         this.playerController.draw(this.canvas);
 
@@ -83,11 +81,10 @@ export default class ClientLoop {
     //https://codeincomplete.com/articles/javascript-game-foundations-the-game-loop/
     frame() {
         this.time.update();
-        //console.log(time.dt);
         //run frames while they need to run fixed timestep gameloop
         while (this.time.dt > this.time.tickRate) {
             this.time.dt -= this.time.tickRate;
-            this.update(this.time, this.time.tickRate);
+            this.update();
         }
         this.render();
         this.time.last = this.time.now;

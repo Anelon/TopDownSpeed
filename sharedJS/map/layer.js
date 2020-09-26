@@ -1,4 +1,3 @@
-import { tileSprites } from "../../clientJS/sprites.js";
 import { DIRS } from "../utils/dirsMap.js";
 import { TILES, TILE_NAMES } from "../utils/enums.js";
 import Vec2 from "../vec2.js";
@@ -164,8 +163,9 @@ export default class Layer {
     /**
      * @param {import("../../clientJS/canvasWrapper.js").default} canvas
      * @param {Vec2} topLeft
+     * @param {import("../../clientJS/sprites.js").tileSprites} tileSprites
      */
-    draw(canvas, topLeft) {
+    draw(canvas, topLeft, tileSprites) {
         if (this.empty) return;
         const height = this.dimentions.y, width = this.dimentions.x;
         for (let j = 0; j < height; j++) {

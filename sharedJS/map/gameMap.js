@@ -1,5 +1,3 @@
-import { tileSprites } from "../../clientJS/sprites.js";
-import Point from "../point.js";
 import Vec2 from "../vec2.js";
 import Lane from "./lane.js";
 import Region from "./region.js";
@@ -135,11 +133,12 @@ export default class GameMap {
     }
     /**
      * @param {import("../../clientJS/canvasWrapper.js").default} canvas
+     * @param {import("../../clientJS/sprites.js").tileSprites} tileSprites
      */
-    draw(canvas) {
+    draw(canvas, tileSprites) {
         canvas.clear();
-        this.rightLane.draw(canvas);
-        this.leftLane.draw(canvas);
+        this.rightLane.draw(canvas, tileSprites);
+        this.leftLane.draw(canvas, tileSprites);
         canvas.drawGrid();
     }
     bakeImage() {

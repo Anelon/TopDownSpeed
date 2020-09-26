@@ -6,7 +6,7 @@ import CollisionEngine from "../sharedJS/collisionEngine.js";
 import { Circle } from "../sharedJS/shapes.js";
 import { projectileFromJSON } from "../sharedJS/utils/utils.js";
 
-class Connections {
+export default class Connections {
     /**
      * @param {import("http").Server | import("https").Server} server
      * @param {CollisionEngine} collisionEngine
@@ -61,9 +61,9 @@ class Connections {
                 //TODO: add validation of move here
                 //broadcast the message (add client to prevent echoing)
                 this.broadcast(CHANNELS.newProjectile, newProjectile, client);
-
             });
         });
+        return this;
     }
 
     /**
@@ -88,5 +88,3 @@ class Connections {
 
     }
 }
-
-export default Connections;
