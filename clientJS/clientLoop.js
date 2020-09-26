@@ -6,6 +6,7 @@ import Projectile from "../sharedJS/ability/projectile.js";
 import { TYPES, CATEGORY } from "../sharedJS/utils/enums.js";
 import GameMap from "../sharedJS/map/gameMap.js";
 import CanvasWrapper from "./canvasWrapper.js";
+/** @typedef {import("../sharedJS/player.js").default} Player */
 
 export default class ClientLoop {
     /**
@@ -50,6 +51,7 @@ export default class ClientLoop {
         for (const item of deleteArray) {
             if (item.category === CATEGORY.player) {
                 //TODO respawn player (or have server respawn player)
+                /** @type {Player} */ (item).kill();
             } else {
                 console.log("Deleting", item)
                 this.collisionEngine.removeProjectile(/** @type {Projectile} */(item));

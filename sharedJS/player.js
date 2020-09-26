@@ -24,6 +24,8 @@ class Player extends Entity {
         this.maxHealth = health;
         this.currHealth = health;
         this.spawnLocation = location;
+
+        this.objectives = new Array();
         
         this.type = TYPES.basic;
         this.category = CATEGORY.player;
@@ -43,14 +45,25 @@ class Player extends Entity {
         return this;
     }
 
+    kill() {
+        //clear the objectives
+        this.objectives = new Array();
+        //move back to spawn
+        this.location = this.spawnLocation;
+        //reset health
+        this.currHealth = this.maxHealth;
+    }
+
     /**
      * 
      * @param {Player|Projectile|Entity} other 
      */
     hit(other) {
         if(other.category === CATEGORY.projectile)
-            if(other.damage - this.currHealth <= 0)
+            if(this.currHealth - other.damage <= 0) {
+                console.log(other.damage, this.currHealth);
                 return true;
+            }
         return false;
     }
     setSpawn(spawnLocation) {
