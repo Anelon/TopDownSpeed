@@ -45,13 +45,6 @@ export default class ClientLoop {
         this.playerController.update(time, step, this.collisionEngine, this.canvas, this.socket);
         this.canvas.setCenter(this.playerController.location.clone());
 
-        if (this.socket) {
-            if (this.playerController.moved || this.playerController.mouse.changed) {
-                // if player moved send update to server
-                this.socket.emit("playerMove", this.playerController.makeObject());
-            }
-        }
-
         //run the collision engine and catch anything flagged for deleting
         const deleteArray = this.collisionEngine.update(time, step);
         for (const item of deleteArray) {
@@ -61,6 +54,13 @@ export default class ClientLoop {
                 console.log("Deleting", item)
                 this.collisionEngine.removeProjectile(/** @type {Projectile} */(item));
                 this.canvas.removeDrawable(item);
+            }
+        }
+
+        if (this.socket) {
+            if (this.playerController.moved || this.playerController.mouse.changed) {
+                // if player moved send update to server
+                this.socket.emit("playerMove", this.playerController.makeObject());
             }
         }
     }
