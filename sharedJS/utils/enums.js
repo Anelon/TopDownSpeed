@@ -2,6 +2,7 @@ import ObjectiveRegion from "../map/objectiveRegion.js";
 import Region from "../map/region.js";
 import SpawnRegion from "../map/spawnRegion.js";
 import Tile from "../map/tile.js";
+import VictoryMonument from "../map/victoryMonument.js";
 import Vec2 from "../vec2.js";
 
 //Enum of the type strings for consistency
@@ -62,7 +63,7 @@ const REGIONS = {
     "pveObjective": ObjectiveRegion,
     "puzzle": Region,
     "puzzleObjective": ObjectiveRegion,
-    "vm": Region,
+    "vm": VictoryMonument,
     "spawn": SpawnRegion,
 }
 //lock the enum

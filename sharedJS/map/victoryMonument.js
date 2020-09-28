@@ -1,22 +1,31 @@
-import { OBJECTIVE_COLORS } from "../utils/enums.js";
 import Region from "./region.js";
 /** @typedef {import("../player.js").default} Player */
 
-export default class SpawnRegion extends Region {
+export default class VictoryMonument extends Region {
     /**
      * @param {import("../vec2").default} center
      * @param {import("../vec2").default} dimentions
      * @param {string} name
      */
     constructor(center, dimentions, name) {
-        super(center, dimentions, name, OBJECTIVE_COLORS[name]);
+        super(center, dimentions, name, "white");
+        this.objectives = new Set();
     }
     /**
      * placeholder for regions that need to do something when first player begins overlap will probably just be used for the PVE dungeon to start AI
      * @param {Player} player
      */
     beginOverlap(player) {
-        player.spawnLocation = this.center.clone();
-        console.log("Set Spawn");
+        if(player.objectives.size) {
+            for(const objective of player.objectives) {
+                console.log(objective);
+                this.objectives.add(objective);
+            }
+            if(this.objectives.size === 3) {
+                console.log("A winner is you");
+            }
+            player.objectives.clear();
+
+        }
     }
 }

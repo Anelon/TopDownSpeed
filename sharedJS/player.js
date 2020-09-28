@@ -23,9 +23,9 @@ class Player extends Entity {
         this.name = name;
         this.maxHealth = health;
         this.currHealth = health;
-        this.spawnLocation = location;
+        this.spawnLocation = location.clone();
 
-        this.objectives = new Array();
+        this.objectives = new Set();
         
         this.type = TYPES.basic;
         this.category = CATEGORY.player;
@@ -47,7 +47,7 @@ class Player extends Entity {
 
     kill() {
         //clear the objectives
-        this.objectives = new Array();
+        this.objectives.clear();
         //move back to spawn
         this.location = this.spawnLocation;
         //reset health

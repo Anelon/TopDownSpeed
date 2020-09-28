@@ -1,6 +1,6 @@
 import Box from "../box.js";
 import { Rectangle } from "../shapes.js";
-import { CATEGORY, TYPES } from "../utils/enums.js"
+import { CATEGORY, REGIONS, TYPES } from "../utils/enums.js"
 import Vec2 from "../vec2.js";
 /** @typedef {import("../player.js").default} Player */
 
@@ -24,7 +24,7 @@ export default class Region extends Rectangle {
         const {
             center, dimentions, name, color
         } = json;
-        return new Region(new Vec2(center.x, center.y), new Vec2(dimentions.x, dimentions.y), name, color);
+        return new REGIONS[name](new Vec2(center.x, center.y), new Vec2(dimentions.x, dimentions.y), name, color);
     }
 
     //call when player overlaps

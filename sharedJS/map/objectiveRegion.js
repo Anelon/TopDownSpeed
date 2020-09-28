@@ -17,5 +17,6 @@ export default class ObjectiveRegion extends Region {
      */
     beginOverlap(player) {
         console.log("Player picked up objective");
+        player.objectives.add(this.color);
     }
 }
