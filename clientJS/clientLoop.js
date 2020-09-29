@@ -48,10 +48,8 @@ export default class ClientLoop {
         const deleteArray = this.collisionEngine.update(this.time, this.time.tickRate);
         for (const item of deleteArray) {
             if (item.category === CATEGORY.player) {
-                //TODO respawn player (or have server respawn player)
                 /** @type {Player} */ (item).kill();
             } else {
-                console.log("Deleting", item)
                 this.collisionEngine.removeProjectile(/** @type {Projectile} */(item));
                 this.canvas.removeDrawable(item);
             }

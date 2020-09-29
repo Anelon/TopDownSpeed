@@ -45,7 +45,6 @@ export default class Tile {
     makeBox(tileSize, topLeft) {
         this.tileSize = tileSize;
         const center = this.location.add(topLeft).multiplyVecS(tileSize).addS(tileSize.multiplyScalar(0.5));
-        console.log(this.location, center.multiplyScalar(1/32));
         return new Box(center, tileSize, this);
     }
     makeShape() {

@@ -149,21 +149,22 @@ class CanvasWrapper {
 	 * @param {CanvasImageSource} img Image to be drawn
 	 * @param {Vec2} origin Center of image
 	 * @param {Vec2} look Direction the image is looking at
-	 * @param {boolean} [withOutline] If an outline should be drawn
 	 * @param {number} [scale] Image scale
 	 * @param {number} [sx]
 	 * @param {number} [sy]
 	 * @param {number} [width]
 	 * @param {number} [height]
+	 * @param {string[]} [outlineColors] If an outline should be drawn
 	 */
-	drawImageLookat(img, origin, look, withOutline = false, scale = 1, sx=null, sy, width, height) {
+	drawImageLookat(img, origin, look, scale = 1, sx=null, sy, width, height, outlineColors = []) {
 		//save context 
 		this.ctx.save();
 
 		this.ctx.transform(1, 0, 0, 1, origin.x, origin.y);
 		this.ctx.rotate(Math.atan2(look.y, look.x)); // Adjust image 90 degree anti clockwise (PI/2) because the image  is pointing in the wrong direction.
-		if (withOutline) {
-			this.drawOutline(img, scale);
+
+		if(outlineColors) {
+			this.drawObjectiveCircles(width/2, outlineColors);
 		}
 		if (sx !== null) {
 			this.drawImage(img, (-width * scale) / 2, (-height * scale) / 2, scale, sx, sy, width, height);
@@ -195,30 +196,45 @@ class CanvasWrapper {
 	}
 	/**
 	 * Draws an image with a vec2 origin, vec2 look direction, bool if you want to have an outline around the image
+	 * @param {number} radius Image to be outlined
+	 * @param {string[]} outlineColors outline
+	 */
+	drawObjectiveCircles(radius, outlineColors) {
+		const center = new Vec2(0,0);
+		for (let i = 0; i < outlineColors.length; i++) {
+			const color = outlineColors[i];
+			this.drawCircle(center, radius, color);
+		}
+	}
+	/**
+	 * Draws an image with a vec2 origin, vec2 look direction, bool if you want to have an outline around the image
 	 * @param {CanvasImageSource} img Image to be outlined
 	 * @param {number} scale Scale of image
-	 * @param {string} color color of outline
+	 * @param {string[]} outlineColors outline
 	 */
-	drawOutline(img, scale, color = "red") {
-		const dArr = [-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1], // offset array
-			s = 2 + scale,  // thickness scale
-			bx = -img.width * scale / 2,  // image position
-			by = -img.height * scale / 2;
+	drawOutlineImage(img, scale, outlineColors) {
+		for (let i = 0; i < outlineColors.length; i++) {
+			const color = outlineColors[i];
+			const dArr = [-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1], // offset array
+				s = 2 + scale,  // thickness scale
+				bx = -img.width * scale / 2,  // image position
+				by = -img.height * scale / 2;
 
-		// draw images at offsets from the array scaled by s
-		//TODO fix for drawing sprite sheets as well
-		for (let i = 0; i < dArr.length; i += 2)
-			this.drawImage(img, bx + dArr[i] * s, by + dArr[i + 1] * s, scale);
+			// draw images at offsets from the array scaled by s
+			//TODO fix for drawing sprite sheets as well
+			for (let i = 0; i < dArr.length; i += 2)
+				this.drawImage(img, bx + dArr[i] * s, by + dArr[i + 1] * s, scale);
 
-		// fill with color
-		//this.ctx.globalCompositeOperation = "source-in";
-		this.ctx.globalCompositeOperation = "source-atop";
-		this.ctx.fillStyle = color;
-		// @ts-ignore image.width and height will be a number
-		this.ctx.fillRect(-img.width * scale / 2 - s, -img.height * scale / 2 - s, img.width * scale + 2 * s, img.height * scale + 2 * s);
+			// fill with color
+			//this.ctx.globalCompositeOperation = "source-in";
+			this.ctx.globalCompositeOperation = "source-atop";
+			this.ctx.fillStyle = color;
+			// @ts-ignore image.width and height will be a number
+			this.ctx.fillRect(-img.width * scale / 2 - s, -img.height * scale / 2 - s, img.width * scale + 2 * s, img.height * scale + 2 * s);
 
-		// draw original image in normal mode
-		this.ctx.globalCompositeOperation = "source-over";
+			// draw original image in normal mode
+			this.ctx.globalCompositeOperation = "source-over";
+		}
 	}
 
 	/**
@@ -267,6 +283,19 @@ class CanvasWrapper {
 		this.ctx.strokeStyle = color;
 		this.ctx.lineWidth = strokeWeight;
 		this.ctx.strokeRect(topLeft.x, topLeft.y, dimentions.x, dimentions.y);
+		this.ctx.restore();
+	}
+	/**
+	 * @param {Vec2} center
+	 * @param {number} radius
+	 * @param {string} [color]
+	 * @param {number} [strokeWeight]
+	 */
+	drawCircle(center, radius, color = "red", strokeWeight = 2) {
+		this.ctx.save();
+		this.ctx.strokeStyle = color;
+		this.ctx.lineWidth = strokeWeight;
+		this.ctx.arc(center.x, center.y, radius, 0, 2 * Math.PI);
 		this.ctx.restore();
 	}
 

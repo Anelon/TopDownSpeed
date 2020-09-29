@@ -61,7 +61,7 @@ export default class CollisionEngine {
                 if(region.contains(player.location)) {
                     const newOverlap = region.addOverlaps(player);
                     if (newOverlap) {
-                        console.log(player, "began overlap", region);
+                        //possibly do something although handled on the region class
                     }
                 }
             }
@@ -192,7 +192,6 @@ export default class CollisionEngine {
         for(const stat of statics) {
             this.staticObjects.push(stat);
         }
-        console.log(this.staticObjects);
     }
     /**
      * @param {Array<Region>} regions

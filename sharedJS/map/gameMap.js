@@ -121,7 +121,6 @@ export default class GameMap {
     generateStatic() {
         let statics = this.rightLane.generateStatic();
         statics.push(...this.leftLane.generateStatic());
-        console.log("GameMap statics", statics);
         return statics
     }
     generateRegions() {
