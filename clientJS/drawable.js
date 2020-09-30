@@ -1,5 +1,6 @@
 import CanvasWrapper from "./canvasWrapper.js";
 import Vec2 from "../sharedJS/vec2.js";
+import { CATEGORY, TYPES } from "../sharedJS/utils/enums.js";
 
 class Drawable {
     /**
@@ -24,7 +25,12 @@ class Drawable {
      * @param {CanvasWrapper} canvas
      */
     draw(canvas) {
-        canvas.drawImageLookat(this.image, this.owner.location, this.owner.lookDirection, this.owner.overlapping, this.scale);
+        if (this.owner.category === CATEGORY.player) {
+            // @ts-ignore
+            canvas.drawImageLookat(this.image, this.owner.location, this.owner.lookDirection, this.scale, null, null, null, null, this.owner.objectives);
+        } else {
+            canvas.drawImageLookat(this.image, this.owner.location, this.owner.lookDirection, this.scale);
+        }
         //if object has health draw health bar, might change this to be just player or monsters later
         if(this.owner.maxHealth) {
             this.drawHealthBar(canvas);

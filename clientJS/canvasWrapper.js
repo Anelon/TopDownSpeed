@@ -154,18 +154,25 @@ class CanvasWrapper {
 	 * @param {number} [sy]
 	 * @param {number} [width]
 	 * @param {number} [height]
-	 * @param {string[]} [outlineColors] If an outline should be drawn
+	 * @param {Set<string>} [outlineColors] If an outline should be drawn
 	 */
-	drawImageLookat(img, origin, look, scale = 1, sx=null, sy, width, height, outlineColors = []) {
+	drawImageLookat(img, origin, look, scale = 1, sx=null, sy, width, height, outlineColors = new Set()) {
 		//save context 
 		this.ctx.save();
 
 		this.ctx.transform(1, 0, 0, 1, origin.x, origin.y);
 		this.ctx.rotate(Math.atan2(look.y, look.x)); // Adjust image 90 degree anti clockwise (PI/2) because the image  is pointing in the wrong direction.
 
-		if(outlineColors) {
-			this.drawObjectiveCircles(width/2, outlineColors);
+		if(outlineColors.size) {
+			//console.log("Drawing objectibes");
+			if (sx !== null) {
+				this.drawObjectiveCircles(width / 2, outlineColors);
+			} else {
+				// @ts-ignore
+				this.drawObjectiveCircles(img.width, outlineColors);
+			}
 		}
+
 		if (sx !== null) {
 			this.drawImage(img, (-width * scale) / 2, (-height * scale) / 2, scale, sx, sy, width, height);
 		} else {
@@ -197,13 +204,15 @@ class CanvasWrapper {
 	/**
 	 * Draws an image with a vec2 origin, vec2 look direction, bool if you want to have an outline around the image
 	 * @param {number} radius Image to be outlined
-	 * @param {string[]} outlineColors outline
+	 * @param {Set<string>} outlineColors outline
 	 */
 	drawObjectiveCircles(radius, outlineColors) {
+		//TODO figure out why not drawing
 		const center = new Vec2(0,0);
-		for (let i = 0; i < outlineColors.length; i++) {
-			const color = outlineColors[i];
-			this.drawCircle(center, radius, color);
+		const colors = outlineColors.keys();
+		for (let i = 0; i < outlineColors.size; i++) {
+			const color = colors.next().value;
+			this.drawCircle(center, (radius - 3) + (outlineColors.size - i) * 3, color);
 		}
 	}
 	/**
@@ -293,9 +302,11 @@ class CanvasWrapper {
 	 */
 	drawCircle(center, radius, color = "red", strokeWeight = 2) {
 		this.ctx.save();
-		this.ctx.strokeStyle = color;
+		this.ctx.beginPath();
+		this.ctx.fillStyle = color;
 		this.ctx.lineWidth = strokeWeight;
 		this.ctx.arc(center.x, center.y, radius, 0, 2 * Math.PI);
+		this.ctx.fill();
 		this.ctx.restore();
 	}
 

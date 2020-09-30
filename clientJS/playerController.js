@@ -14,7 +14,7 @@ import PlantSeedAbility from "../sharedJS/ability/plantSeedAbility.js";
 import Waterball from "../sharedJS/ability/waterball.js";
 
 //class for handling the current player
-class PlayerController extends Player {
+export default class PlayerController extends Player {
     /**
      * 
      * @param {Vec2} location 
@@ -173,7 +173,8 @@ class PlayerController extends Player {
         this.mouse.changed = false; // flag that the mouse coords have been rendered
         // get mouse canvas coordinate correcting for page scroll
         let target = new Vec2(this.mouse.x, this.mouse.y).addS(canvas.topRight);
-        canvas.drawImageLookat(this.image, this.location, target.sub(this.location), this.overlapping, this.scale);
+        //canvas.drawImageLookat(this.image, this.location, target.sub(this.location), this.scale);
+        canvas.drawImageLookat(this.image, this.location, this.lookDirection, this.scale, null, null, null, null, this.objectives);
         // Draw mouse at its canvas position
         canvas.drawCrossHair(target, "black");
         // draw line from you center to mouse to check alignment is perfect
@@ -193,5 +194,3 @@ class PlayerController extends Player {
         this.mouse.changeCount += 1;
     }
 }
-
-export default PlayerController;
