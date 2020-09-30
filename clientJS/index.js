@@ -77,13 +77,9 @@ socket.on(CHANNELS.newProjectile, function (newProjectile) {
     console.log("From Server", updated);
     const projectile = projectileFromJSON(newProjectile);
     collisionEngine.addProjectile(projectile);
-    //TODO make Sprite (make canvaswrapper compattable with sprites)
-    console.log(projectile);
     if (newProjectile.type === "Projectile") {
-        console.log("projectile");
         canvas.addDrawable(projectile);
     } else {
-        console.log("Ability", projectile);
         // @ts-ignore
         canvas.addDrawable(projectile.makeSprite());
     }

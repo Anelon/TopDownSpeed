@@ -6,7 +6,6 @@ import Player from "../sharedJS/player.js";
 /** @typedef { import("./playerController.js").default } PlayerController; */
 /** @typedef { import("./sprite.js").default } Sprite; */
 
-//TODO figure out resizing
 //https://stackoverflow.com/questions/1664785/resize-html5-canvas-to-fit-window
 
 //this handles all canvas drawing and holding the canvas
@@ -207,7 +206,6 @@ class CanvasWrapper {
 	 * @param {Set<string>} outlineColors outline
 	 */
 	drawObjectiveCircles(radius, outlineColors) {
-		//TODO figure out why not drawing
 		const center = new Vec2(0,0);
 		const colors = outlineColors.keys();
 		for (let i = 0; i < outlineColors.size; i++) {
