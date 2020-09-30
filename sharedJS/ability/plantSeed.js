@@ -42,7 +42,6 @@ export default class PlantSeed extends Projectile {
         //if hitting a player deal damage
         if(other.category === CATEGORY.damageable || other.category === CATEGORY.player) {
             /** @type {Player} */(other).currHealth -= this.damage;
-            //console.log(/** @type {Player} */(other).currHealth, this.damage);
             return true;
         } else if (other.type === this.type) {
             //Same type do nothing

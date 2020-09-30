@@ -52,7 +52,6 @@ class Circle {
      * @returns {boolean}
      */
     intersects(range) {
-        //console.log(range);
         if (range instanceof Circle) {
             //A^2 + B^2 <= C^2
             return (

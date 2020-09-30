@@ -11,7 +11,7 @@ let mapName = "map";
 fetch(`./api/getMap/${mapName}`)
 .then(function(res) {
     if(res.status !== 200) {
-        console.log("Error occured", res.status);
+        console.error("Error occured", res.status);
         return;
     }
     res.json().then(function(data) {
@@ -21,7 +21,7 @@ fetch(`./api/getMap/${mapName}`)
     });
 })
 .catch(function(err) {
-    console.log("Fetch Error", err);
+    console.error("Fetch Error", err);
 });
 
 //Globals
@@ -51,7 +51,6 @@ const playerController = new PlayerController(new Vec2(100, 100), "Player","./im
 playerController.silenced = true;
 canvas.setCenter(playerController.location);
 playerController.draw(canvas);
-console.log(playerController.hitbox);
 
 //--- Initialize the client loop ---//
 const clientLoop = new ClientLoop(playerController, gameMap, canvas, time, collisionEngine);
@@ -61,17 +60,13 @@ let regionStart = new Vec2();
 let regionEnd = new Vec2();
 
 canvas.addEventListener("mousedown", function(e) {
-    //console.log(e);
     const clickLocation = new Vec2(e.offsetX, e.offsetY);
     regionStart = clickLocation.addS(canvas.topRight).multiplyVec(canvas.tileSize.invert()).floorS();
-    //console.log(clickLocation.log(), regionStart.log());
 });
 
 canvas.addEventListener("mouseup", function(e) {
-    //console.log(e);
     const clickLocation = new Vec2(e.offsetX, e.offsetY);
     regionEnd = clickLocation.addS(canvas.topRight).multiplyVec(canvas.tileSize.invert()).floorS();
-    //console.log(clickLocation.log(), regionEnd.log());
     if(editMode === EDIT_MODES.tile) {
         /** @type {NodeListOf<HTMLInputElement>} */
         const traversal = document.querySelectorAll("input[name='traversal']");
@@ -79,7 +74,6 @@ canvas.addEventListener("mouseup", function(e) {
         for (const elem of traversal) {
             traversalObject[elem.value] = elem.checked;
         }
-        console.log(traversalObject);
         const tile = TILES[selectedTileName].clone().setTraversal(traversalObject);
         gameMap.update(regionStart, regionEnd, selectedLayer, tile);
         collisionEngine.setStatics(gameMap.generateStatic());
@@ -92,7 +86,6 @@ canvas.addEventListener("mouseup", function(e) {
 //--- set up tile selection ---//
 const tileSelectList = document.querySelector("#tileSelectList");
 for(const tileName of Object.values(TILE_NAMES)) {
-    console.log(tileName);
     if(!TILES[tileName] && tileName !== TILE_NAMES[" "]) continue;
     const tileSelect = document.createElement("li");
     tileSelect.innerText = tileName;

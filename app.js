@@ -2,18 +2,8 @@ import express from "express";
 import ejs from "ejs";
 import ejsLint from "ejs-lint";
 import ServerLoop from "./serverJS/serverLoop.js";
-import fs from "fs";
 import GameMap from "./sharedJS/map/gameMap.js";
-
-const mapPath = "./maps/";
-function loadMap(mapName) {
-    //TODO regex to make sure map name is just a string
-    return fs.promises.readFile(`${mapPath+mapName}.json`, "utf8");
-}
-function loadMapSync(mapName) {
-    //TODO regex to make sure map name is just a string
-    return fs.readFileSync(`${mapPath+mapName}.json`, "utf8");
-}
+import { loadMap, loadMapSync } from "./serverJS/serverUtils.js";
 
 const app = express();
 app.set("view engine", "ejs");
@@ -39,7 +29,6 @@ app.get("/mapEditor", function(req, res) {
 });
 app.get("/api/getMap/:mapName", async function(req, res) {
     const mapJSON = JSON.parse(await loadMap(req.params.mapName));
-    console.log(mapJSON.voidWidth);
     res.send({"data": mapJSON});
 });
 
@@ -49,6 +38,4 @@ const gameMap = GameMap.makeFromJSON(mapJSON);
 let server = app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at http://${app.get('ip')}:${app.get('port')}`);});
 
 //create a new server
-let serverLoop = new ServerLoop(server, gameMap);
-//run the server
-serverLoop.start();
+let serverLoop = new ServerLoop(server);

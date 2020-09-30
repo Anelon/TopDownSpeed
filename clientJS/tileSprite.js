@@ -50,8 +50,6 @@ export default class TileSprite {
  * @returns {number}
  */
 static aroundToIndex(around) {
-    //console.log(around.toString(2), ((~around >>> 0)).toString(2));
-    //console.log(~around === (~around >>> 0)); //stupid!!!
     //need unsigned bitwise not of around
     let nAround = (~around >>> 0);
     if(around === DIRBITS.allRound) return 0;
@@ -141,11 +139,10 @@ static aroundToIndex(around) {
                 sx = Math.floor(index % this.tilesWide) * TileSprite.width;
                 sy = Math.floor(index / this.tilesWide) * TileSprite.height;
             } else {
-                console.log(location.log(), "tile not found ", around.toString(2));
+                console.error(location.log(), "tile not found ", around.toString(2));
                 let aroundStr = TileSprite.aroundToString(around);
-                console.log(aroundStr);
+                console.error(aroundStr);
             }
-            //console.log("sx: ", sx, " sy: ", sy);
             canvas.drawImage(this.image, x, y, 2, sx, sy, TileSprite.width, TileSprite.height);
             //ctx.drawImage(this.image, x, y);
         } else {

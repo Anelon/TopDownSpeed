@@ -52,7 +52,6 @@ export default class GameMap {
         const voidWidth = this.voidWidth;
         const tileSize = this.tileSize;
         const leftLane = this.leftLane.makeObject();
-        console.log(leftLane);
         return JSON.stringify({voidWidth, tileSize, leftLane})
     }
     static makeFromJSON(json) {
@@ -86,8 +85,8 @@ export default class GameMap {
         //Both points weren't in a lane
         else {
             //TODO possibly alert an error message
-            console.log("Failed to place tiles");
-            console.log(startPoint, endPoint, this.leftLane.region, this.rightLane.region);
+            console.error("Failed to place tiles");
+            console.error(startPoint, endPoint, this.leftLane.region, this.rightLane.region);
         }
     }
 
@@ -112,8 +111,8 @@ export default class GameMap {
         }
         //Both points weren't in a lane
         else {
-            console.log("Failed to place tiles");
-            console.log(startPoint, endPoint, this.leftLane.region, this.rightLane.region);
+            console.error("Failed to place tiles");
+            console.error(startPoint, endPoint, this.leftLane.region, this.rightLane.region);
             //exit function
             return;
         }
@@ -124,7 +123,6 @@ export default class GameMap {
         return statics
     }
     generateRegions() {
-        console.log(this.voidRegion);
         let regions = new Array(this.voidRegion);
         regions.push(...this.rightLane.generateRegions());
         regions.push(...this.leftLane.generateRegions());

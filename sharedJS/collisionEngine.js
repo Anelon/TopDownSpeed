@@ -149,12 +149,14 @@ export default class CollisionEngine {
         } else {
             //handle if the server reloads but the client doesn't (could just reset the client but this seems better for development)
             const {
-                location, oldLocation, name, imgSrc, speed, maxHealth, hitbox, scale
+                location, oldLocation, spawnLocation, name, imgSrc, speed, maxHealth, hitbox, scale
             } = playerJSON;
-            console.log(maxHealth);
             const loc = new Vec2(location.x, location.y);
+            const oldLoc = new Vec2(oldLocation.x, oldLocation.y);
+            const spawnLoc = new Vec2(spawnLocation.x, spawnLocation.y);
             let newPlayer = new Player(loc, name, imgSrc, speed, maxHealth, new Circle(loc, hitbox.radius), scale);
-            newPlayer.oldLocation = oldLocation;
+            newPlayer.oldLocation = oldLoc;
+            newPlayer.spawnLocation = spawnLoc;
             newPlayer.id = playerJSON.id;
             this.addPlayer(newPlayer);
             return newPlayer;

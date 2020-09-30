@@ -141,10 +141,8 @@ export default class Layer {
      * @param {Array} curr Array of tiles that can connect to
      */
     getAround(i, j, curr) {
-        //console.log("getting Around");
         let around = 0;
         for (const dir of DIRS) {
-            //console.log(dirs[dir]);
             let newI = dir.x + i;
             let newJ = dir.y + j;
             //if out of bounds skip the check

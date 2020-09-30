@@ -6,19 +6,21 @@ import { TYPES, CATEGORY } from "../sharedJS/utils/enums.js";
 /** @typedef {import("../sharedJS/ability/projectile.js").default} Projectile */
 import Player from "../sharedJS/player.js";
 import CHANNELS from "../sharedJS/utils/channels.js";
+import GameMap from "../sharedJS/map/gameMap.js";
+import { loadMapSync } from "./serverUtils.js";
 //import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 
 class ServerLoop {
     /**
      * @param {import("http").Server | import("https").Server} server
-     * @param {import("../sharedJS/map/gameMap.js").default} gameMap
      */
-    constructor(server, gameMap) {
+    constructor(server) {
         //basic time object to pass to funcitons
         this.time = new Time(performance);
-        this.collisionEngine = new CollisionEngine(2000, 5000);
-        this.connections = new Connections(server, this.collisionEngine).start();
-        this.gameMap = gameMap;
+        this.gameMap = null;
+        this.collisionEngine = null;
+        this.connections = null;
+        this.setup(server);
     }
 
     update() {
@@ -32,12 +34,11 @@ class ServerLoop {
                     this.connections.broadcast(CHANNELS.playerMove, item.makeObject());
                 }
             } else {
+                console.log("Deleting Projectile", item);
                 this.collisionEngine.removeProjectile(/** @type {Projectile} */(item));
             }
         }
-
         //check if anyone is ready to think
-
     }
 
     tick() {
@@ -46,12 +47,23 @@ class ServerLoop {
             this.time.dt -= this.time.tickRate;
             this.update();
         }
+        this.time.last = this.time.now;
         //sendToClients(this.time);
         setImmediate(this.tick.bind(this));
     }
 
     start() {
         setImmediate(this.tick.bind(this));
+    }
+
+    setup(server) {
+        const mapJSON = JSON.parse(loadMapSync("map"));
+        const gameMap = GameMap.makeFromJSON(mapJSON);
+        const pixelDims = gameMap.dimentions.multiplyVec(gameMap.tileSize);
+        this.collisionEngine = new CollisionEngine(pixelDims.x, pixelDims.y);
+        this.connections = new Connections(server, this.collisionEngine, this.gameMap).start();
+
+        this.start();
     }
 }
 export default ServerLoop;

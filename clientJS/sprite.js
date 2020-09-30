@@ -28,7 +28,6 @@ export default class Sprite extends Drawable {
         }
         const sx = Math.floor(index % this.tilesWide) * this.spriteDims.x;
         const sy = Math.floor(index / this.tilesWide) * this.spriteDims.x;
-        //console.log(sx, sy);
         canvas.drawImageLookat(this.image, this.owner.location, this.owner.lookDirection, this.scale, sx, sy, this.spriteDims.x, this.spriteDims.y);
         //if object has health draw health bar, might change this to be just player or monsters later
         if(this.owner.maxHealth) {

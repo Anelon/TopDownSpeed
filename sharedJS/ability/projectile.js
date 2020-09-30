@@ -47,7 +47,6 @@ export default class Projectile extends Entity {
         const {
             location, name, imgSrc, speed, scale, lookDirection, range, hitbox, damage, owner, type, category
         } = json;
-        //console.log("look", lookDirection);
         //construct projectile
         const loc = new Vec2(location.x, location.y);
         return new Projectile(
@@ -62,7 +61,6 @@ export default class Projectile extends Entity {
         //if hitting a player deal damage
         if(other.category === CATEGORY.damageable || other.category === CATEGORY.player) {
             /** @type {Player} */(other).currHealth -= this.damage;
-            //console.log(/** @type {Player} */(other).currHealth, this.damage);
             return true;
         } else if (other.category === CATEGORY.tile) {
             //Projectiles go over passable tiles

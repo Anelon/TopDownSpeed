@@ -71,8 +71,6 @@ export default class ClientLoop {
         this.gameMap.draw(this.canvas, tileSprites);
         this.canvas.render(this.playerController);
         this.playerController.draw(this.canvas);
-
-        requestAnimationFrame(this.frame.bind(this));
     }
 
     //based off of this site
@@ -86,5 +84,6 @@ export default class ClientLoop {
         }
         this.render();
         this.time.last = this.time.now;
+        requestAnimationFrame(this.frame.bind(this));
     }
 }

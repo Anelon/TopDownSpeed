@@ -163,7 +163,6 @@ class CanvasWrapper {
 		this.ctx.rotate(Math.atan2(look.y, look.x)); // Adjust image 90 degree anti clockwise (PI/2) because the image  is pointing in the wrong direction.
 
 		if(outlineColors.size) {
-			//console.log("Drawing objectibes");
 			if (sx !== null) {
 				this.drawObjectiveCircles(width / 2, outlineColors);
 			} else {

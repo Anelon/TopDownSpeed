@@ -42,6 +42,9 @@ class Player extends Entity {
             this.maxHealth = json.maxHealth;
         //call entity's updateFromJSON
         super.updateInfo(json);
+        if(json.spawnLocation) {
+            this.spawnLocation = new Vec2(json.spawnLocation.x, json.spawnLocation.y);
+        }
         return this;
     }
 
@@ -61,7 +64,6 @@ class Player extends Entity {
     hit(other) {
         if(other.category === CATEGORY.projectile)
             if(this.currHealth - other.damage <= 0) {
-                console.log(other.damage, this.currHealth);
                 return true;
             }
         return false;

@@ -18,9 +18,9 @@ import ClientLoop from "./clientLoop.js";
 let socket = io();
 
 //Globals
-const numLayers = 4;
+const voidWidth = 5;
 const tileSize = new Vec2(32,32);
-let gameMap = new GameMap(numLayers, new Vec2(15, 50), tileSize.clone());
+let gameMap = new GameMap(voidWidth, new Vec2(15, 50), tileSize.clone());
 const pixelDims = gameMap.dimentions.multiplyVec(tileSize);
 const collisionEngine = new CollisionEngine(pixelDims.x, pixelDims.y);
 // @ts-ignore
@@ -35,10 +35,10 @@ let playerController;
 let clientLoop;
 
 //spawn one of each of the abilities to preload the image
-let location = new Vec2(-100, -100);
-let waterBall = new Waterball(location, "test", 0, 1, new Vec2(1, 0), 100, 100, new Circle(location, 0), playerController);
-let fireBall = new Fireball(location, "test", 0, 1, new Vec2(1, 0), 100, 100, new Circle(location, 0), playerController);
-let plantSeed = new PlantSeed(location, "test", 0, 1, new Vec2(1, 0), 100, 100, new Circle(location, 0), playerController);
+const location = new Vec2(-100, -100);
+const waterBall = new Waterball(location, "test", 0, 1, new Vec2(1, 0), 100, 100, new Circle(location, 0), playerController);
+const fireBall = new Fireball(location, "test", 0, 1, new Vec2(1, 0), 100, 100, new Circle(location, 0), playerController);
+const plantSeed = new PlantSeed(location, "test", 0, 1, new Vec2(1, 0), 100, 100, new Circle(location, 0), playerController);
 canvas.addDrawable(waterBall.makeSprite());
 canvas.addDrawable(fireBall.makeSprite());
 canvas.addDrawable(plantSeed.makeSprite());
@@ -49,32 +49,48 @@ socket.on(CHANNELS.newPlayer, function (playerInfo) {
     let playerExists = false;
     if (playerController) {
         playerExists = true;
-        console.log("Already a player controller");
     }
     let playerInfoJson = JSON.parse(playerInfo.json);
 
     //pull the information from json
     const {
-        location, name, imgSrc, speed, currHealth, maxHealth, id, scale
+        location, spawnLocation, name, imgSrc, speed, currHealth, maxHealth, id, scale
     } = playerInfoJson;
     const locationVec = new Vec2(location.x, location.y);
+    const spawnVec = new Vec2(spawnLocation.x, spawnLocation.y);
     //make new player
     playerController = new PlayerController(locationVec, "Player " + name, imgSrc, speed, maxHealth, scale, canvas);
     playerController.id = id;
+    playerController.spawnLocation = spawnVec;
     //this should be redundant as when playerController spawn you probably should have full health
     playerController.currHealth = currHealth;
     if (!playerExists) {
         collisionEngine.addPlayer(playerController);
-    } else {
-
     }
     //start up the client loop
     clientLoop = new ClientLoop(playerController, gameMap, canvas, time, collisionEngine, socket);
+
+    //fetch the map
+    let mapName = "map";
+    fetch(`./api/getMap/${mapName}`)
+        .then(function (res) {
+            if (res.status !== 200) {
+                console.error("Error occured", res.status);
+                return;
+            }
+            res.json().then(function (data) {
+                gameMap = GameMap.makeFromJSON(data.data);
+                //set the new gamemap
+                clientLoop.setGameMap(gameMap);
+            });
+        })
+        .catch(function (err) {
+            console.error("Fetch Error", err);
+        });
 });
 
 socket.on(CHANNELS.newProjectile, function (newProjectile) {
     const updated = JSON.parse(newProjectile.json);
-    console.log("From Server", updated);
     const projectile = projectileFromJSON(newProjectile);
     collisionEngine.addProjectile(projectile);
     if (newProjectile.type === "Projectile") {
@@ -87,30 +103,11 @@ socket.on(CHANNELS.newProjectile, function (newProjectile) {
 
 socket.on(CHANNELS.playerMove, function (playerInfo) {
     const updated = JSON.parse(playerInfo.json);
-    //console.log(updated);
     const newPlayer = collisionEngine.updatePlayer(updated);
     if (newPlayer) canvas.addDrawable(/** @type {Player} */(newPlayer));
 });
 
 socket.on(CHANNELS.deletePlayer, function (playerID) {
-    console.log("Deleting", playerID);
     collisionEngine.removePlayer(playerID);
     canvas.removeDrawable(playerID);
-});
-
-let mapName = "map";
-fetch(`./api/getMap/${mapName}`)
-.then(function(res) {
-    if(res.status !== 200) {
-        console.log("Error occured", res.status);
-        return;
-    }
-    res.json().then(function(data) {
-        gameMap = GameMap.makeFromJSON(data.data);
-        //set the new gamemap
-        clientLoop.setGameMap(gameMap);
-    });
-})
-.catch(function(err) {
-    console.log("Fetch Error", err);
 });

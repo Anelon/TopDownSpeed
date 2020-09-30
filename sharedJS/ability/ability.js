@@ -42,7 +42,6 @@ class Ability {
             const abilityProjectile = new this.projectileConstructor(
                 location, this.abilityName, this.speed, this.projectileScale, target.clone(), this.range, this.damage, this.projectileHitbox, owner
             );
-            //console.log("Spawned: ", abilityProjectile);
 
             //set the cooldown
             this.nextAvailable = now + this.cooldownTime;
