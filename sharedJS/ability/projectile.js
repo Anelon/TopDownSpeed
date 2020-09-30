@@ -4,8 +4,9 @@ import { Circle } from "../shapes.js";
 import { TYPES, CATEGORY } from "../utils/enums.js";
 import Player from "../player.js";
 import Drawable from "../../clientJS/drawable.js";
+/** @typedef {import("../map/tile.js").default} Tile */
 
-class Projectile extends Entity {
+export default class Projectile extends Entity {
     static get IMAGE() { return "./img/arrow.png"; }
     /**
      * Constructs a new Projectile
@@ -55,7 +56,7 @@ class Projectile extends Entity {
     }
     /**
      * Basic projecile just hits players
-     * @param {Player|Projectile|Entity} other 
+     * @param {Player|Projectile|Entity|Tile} other 
      */
     hit(other) {
         //if hitting a player deal damage
@@ -63,11 +64,12 @@ class Projectile extends Entity {
             /** @type {Player} */(other).currHealth -= this.damage;
             //console.log(/** @type {Player} */(other).currHealth, this.damage);
             return true;
+        } else if (other.category === CATEGORY.tile) {
+            //Projectiles go over passable tiles
+            if(/** @type {Tile} */(other).passable) return false;
+            return true;
         } else if (other.type === this.type) {
             //Same type do nothing
-            return false;
-        } else if (other.category === CATEGORY.void) {
-            //Projectiles go over void
             return false;
         } else {
             //flag to be deleted
@@ -79,5 +81,3 @@ class Projectile extends Entity {
         return new Drawable(this.owner, this.owner.scale);
     }
 }
-
-export default Projectile;

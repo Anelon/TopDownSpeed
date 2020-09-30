@@ -1,5 +1,5 @@
 import Vec2 from "./vec2.js";
-import Point from "./point.js";
+/** @typedef {import("./point.js").default} Point */
 
 //Heavily inspired by https://github.com/CodingTrain/QuadTree 
 class Circle {
@@ -40,8 +40,6 @@ class Circle {
      * @returns {boolean}
      */
     contains(point) {
-        if (!(point instanceof Point))
-            throw TypeError("Contains point not a Point");
         //A^2 + B^2 <= C^2
         return (
             Math.pow((point.x - this.center.x), 2) + Math.pow((point.y - this.center.y), 2) <= this.radius * this.radius
@@ -54,6 +52,7 @@ class Circle {
      * @returns {boolean}
      */
     intersects(range) {
+        //console.log(range);
         if (range instanceof Circle) {
             //A^2 + B^2 <= C^2
             return (
@@ -65,8 +64,8 @@ class Circle {
 
 
         let r = this.radius;
-        let w = range.width;
-        let h = range.height;
+        let w = range.halfWidth;
+        let h = range.halfHeight;
 
         if (xDist > (r + w) || yDist > (r + h)) return false;
         if (xDist <= w || yDist <= h) return true;
@@ -89,9 +88,10 @@ class Rectangle {
         this.center = center;
         this.width = width;
         this.height = height;
+        this.dimentions = new Vec2(width,height);
     }
     clone() {
-        return new Rectangle(this.center, this.width, this.height);
+        return new Rectangle(this.center.clone(), this.width, this.height);
     }
     get left() {
         return this.center.x - (this.width / 2);
@@ -108,6 +108,9 @@ class Rectangle {
     get halfWidth() {
         return this.width / 2;
     }
+    get halfHeight() {
+        return this.height / 2;
+    }
 
     /**
      * Check if value of this is equal to other
@@ -121,7 +124,7 @@ class Rectangle {
 
     /**
      * Check if rectangle contains a point
-     * @param {Point|Vec2} point The point to be checked
+     * @param {Point|Vec2|import("./box.js").default} point The point to be checked
      * @returns {boolean}
      */
     contains(point) {
@@ -149,6 +152,13 @@ class Rectangle {
             range.top > this.bottom ||
             range.bottom < this.top
         );
+    }
+    /**
+     * @param {import("../clientJS/canvasWrapper.js").default} canvas
+     * @param {string} color
+     */
+    draw(canvas, color) {
+        canvas.drawRect(new Vec2(this.left, this.top), this.dimentions, color, 5);
     }
 }
 

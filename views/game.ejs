@@ -1,9 +1,11 @@
-<% include('partials/header.ejs') %>
+<%- include('partials/header.ejs') %>
 <link href="./css/game.css" rel="stylesheet">
 
-<canvas id="game"></canvas>
+<main>
+    <canvas class="game"></canvas>
+</main>
 
 <script src="js/clientJS/socket.io/socket.io.js"></script>
-<script async type="module" src="js/clientJS/clientLoop.js"></script>
+<script async type="module" src="js/clientJS/index.js"></script>
 
-<% include('partials/footer.ejs') %>
+<%- include('partials/footer.ejs') %>

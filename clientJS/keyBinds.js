@@ -50,8 +50,3 @@ function mouseUp(e) {
     mousePress(e.button, false);
 }
 document.addEventListener("mouseup",mouseUp);
-
-//disable context menu on page
-document.getElementById("game").addEventListener('contextmenu', function (e) {
-    e.preventDefault();
-}, false);

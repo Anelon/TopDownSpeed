@@ -4,10 +4,10 @@ import QuadTree from "./quadTree.js";
 import { Rectangle, Circle } from "./shapes.js";
 import Projectile from "./ability/projectile.js";
 import Player from "./player.js";
-import CanvasWrapper from "../clientJS/canvasWrapper.js";
-import Time from "../clientJS/time.js";
+import Time from "./utils/time.js";
+/** @typedef {import("./entity.js").default} Entity */
+/** @typedef {import("./map/region.js").default} Region */
 //import PlayerController from "../clientJS/playerController.js";
-import Entity from "./entity.js";
 //import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 
 
@@ -29,24 +29,42 @@ export default class CollisionEngine {
         this.qTreeCapacity = 10;
         this.collisionTree = new QuadTree(this.boundry, this.qTreeCapacity);
         this.staticObjects = new QuadTree(this.boundry, this.qTreeCapacity);
+        this.regions = new Array();
     }
 
     /**
      * Updates all player's and projectiles based on the changed time and checks for colisions
      * @param {Time} time 
      * @param {number} step The tick time
-     * @param {CanvasWrapper} [canvas=null] Will be passed on clientside code
      * @returns {Array<Entity>} Objects that should be deleted
      */
-    update(time, step, canvas = null) {
+    update(time, step) {
+
+        //reset regions overlapping
+        for(const region of this.regions) {
+            const endOverlap = region.resetOverlaps();
+        }
         //reset quadTree, might change to updating locations of each item later if we end up with too many static items
         this.collisionTree = new QuadTree(this.boundry, this.qTreeCapacity);
         const deleteList = new Array();
 
         //move everything and place in collision quad tree
         for (const player of this.players.values()) {
-            this.collisionTree.push(player.makePoint());
+            if(!this.collisionTree.push(player.makePoint())) {
+                //prevent player from leaving the map
+                player.location = player.oldLocation;
+                this.collisionTree.push(player.makePoint());
+            }
             player.overlapping = false;
+            //check if the player is in any regions
+            for(const region of this.regions) {
+                if(region.contains(player.location)) {
+                    const newOverlap = region.addOverlaps(player);
+                    if (newOverlap) {
+                        //possibly do something although handled on the region class
+                    }
+                }
+            }
         }
         for (const projectile of this.projectiles.values()) {
             projectile.update(time, step, this);
@@ -60,13 +78,12 @@ export default class CollisionEngine {
         //check for collisions
         for (const player of this.players.values()) {
             const playerShape = player.makeShape();
-            const doubleShape = player.makeShape(2);
             //make shape with 2 to have it search an area double the size of the player
-            const others = this.collisionTree.query(doubleShape);
-            this.staticObjects.query(doubleShape, others);
+            const others = this.collisionTree.query(playerShape);
+            this.staticObjects.query(playerShape, others);
             for(const other of others) {
                 if(other.owner === player) continue;
-                if(playerShape.intersects(other.owner.makeShape())) {
+                if(playerShape.intersects(other)) {
                     player.overlapping = true;
                     //should probably do something other for the players rather than deleting
                     if(player.hit(other.owner)) deleteList.push(player);
@@ -79,14 +96,13 @@ export default class CollisionEngine {
             //skip projectiles that have already done something
             if (deleteList.includes(projectile)) continue;
             const projectileShape = projectile.makeShape();
-            const doubleShape = projectile.makeShape(2);
             //make shape with 2 to have it search an area double the size of the projectile
-            const others = this.collisionTree.query(doubleShape);
+            const others = this.collisionTree.query(projectileShape);
             //check static objects as well
-            this.staticObjects.query(doubleShape, others);
+            this.staticObjects.query(projectileShape, others);
             for(const other of others) {
                 if(other.owner === projectile) continue;
-                if(projectileShape.intersects(other.owner.makeShape())) {
+                if(projectileShape.intersects(other)) {
                     projectile.overlapping = true;
                     if(projectile.hit(other.owner)) deleteList.push(projectile);
                     other.owner.overlapping = true;
@@ -94,6 +110,7 @@ export default class CollisionEngine {
                 }
             }
         }
+
         return deleteList;
     }
 
@@ -132,11 +149,12 @@ export default class CollisionEngine {
         } else {
             //handle if the server reloads but the client doesn't (could just reset the client but this seems better for development)
             const {
-                location, name, imgSrc, speed, maxHealth, hitbox, scale
+                location, oldLocation, name, imgSrc, speed, maxHealth, hitbox, scale
             } = playerJSON;
             console.log(maxHealth);
             const loc = new Vec2(location.x, location.y);
             let newPlayer = new Player(loc, name, imgSrc, speed, maxHealth, new Circle(loc, hitbox.radius), scale);
+            newPlayer.oldLocation = oldLocation;
             newPlayer.id = playerJSON.id;
             this.addPlayer(newPlayer);
             return newPlayer;
@@ -157,5 +175,28 @@ export default class CollisionEngine {
      */
     removeProjectile(oldProjectile) {
         this.projectiles.delete(oldProjectile.id);
+    }
+    /**
+     * @param {import("./box.js").default[]} statics
+     */
+    addStatics(statics) {
+        for(const stat of statics) {
+            this.staticObjects.push(stat);
+        }
+    }
+    /**
+     * @param {import("./box.js").default[]} statics
+     */
+    setStatics(statics) {
+        this.staticObjects = new QuadTree(this.boundry, this.qTreeCapacity);
+        for(const stat of statics) {
+            this.staticObjects.push(stat);
+        }
+    }
+    /**
+     * @param {Array<Region>} regions
+     */
+    setRegions(regions) {
+        this.regions = regions;
     }
 }

@@ -38,7 +38,7 @@ describe('Player', function () {
 
     context('Make functions', function () {
         it('makePoint() makes a Point', function () {
-            let expectedPoint = new Point(location, player, 16);
+            let expectedPoint = new Point(location, 16, player);
             let point = player.makePoint();
             assert.instanceOf(point, Point);
             expect(point).to.eql(expectedPoint);

@@ -1,4 +1,4 @@
-.tileSelect {
+.menu {
     position: absolute;
     left: 99%;
     top: 1%;
@@ -6,11 +6,42 @@
     z-index: 10;
     border: solid black 2px;
     background-color: gray;
+    text-align: center;
 }
-.selectList {
+ul {
     text-align: center;
     list-style: none;
     margin: 0px;
-    padding: 5px;
-    font-size: 1.5rem;
+    padding: 0px;
+}
+li {
+    list-style: none;
+    margin: 0px;
+    padding-bottom: 4px;
+}
+
+li:hover{
+    transition: .2s;
+    color: red;
+    text-shadow: 1rem;
+}
+.active {
+    color: darkslategray;
+}
+
+/* put back in to have hover dropdown
+.selectList {
+    overflow: hidden;
+    max-height: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: 1s ease;
+}
+
+.select:hover 
+*/
+.selectList {
+    transform: scaleY(1);
+    /*Adjust me if one of the lists gets too long*/
+    max-height: 500px;
 }

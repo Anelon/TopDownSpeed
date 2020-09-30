@@ -1,6 +1,7 @@
 import Vec2 from "./vec2.js";
 import { Rectangle, Circle } from "./shapes.js";
-import Point from "./point.js";
+/** @typedef {import("./box.js").default} Box */
+/** @typedef {import("./point.js").default} Point */
 
 //Heavily inspired by https://github.com/CodingTrain/QuadTree 
 class QuadTree {
@@ -16,7 +17,18 @@ class QuadTree {
         this.boundary = boundary;
         this.capacity = capacity;
         this.points = new Array();
-        this.devided = false;
+        this.divided = false;
+    }
+
+    toArray() {
+        const objects = new Array();
+        if(this.divided) {
+            objects.push(...this.northeast.toArray());
+            objects.push(...this.northwest.toArray());
+            objects.push(...this.southeast.toArray());
+            objects.push(...this.southwest.toArray());
+        }
+        return objects;
     }
 
     //for breaking up the quadtree when the capacity gets full to smaller quad trees
@@ -49,13 +61,9 @@ class QuadTree {
     }
     /**
      * Adds a point to the QuadTree
-     * @param {Point} point 
+     * @param {Point|Box} point 
      */
     push(point) {
-        //TODO make this work with other things
-        if (!(point instanceof Point))
-            throw TypeError("Point is not a Point");
-
         if (!this.boundary.contains(point)) {
             return false;
         }
@@ -85,8 +93,8 @@ class QuadTree {
     /**
      * Query the quad tree to get if anything is in a range
      * @param {Rectangle|Circle} range Shape that you are looking for points in
-     * @param {Array<Point>} [found=new Array()] Optional, creates empty array if none 
-     * @returns {Array<Point>} Array of objects that overlap range.
+     * @param {Array<Box|Point>} [found=new Array()] Optional, creates empty array if none 
+     * @returns {Array<Box|Point>} Array of objects that overlap range.
      */
     query(range, found) {
         if (!found) {
@@ -104,7 +112,7 @@ class QuadTree {
             this.southeast.query(range, found);
         } else {
             for (let p of this.points) {
-                if (range.contains(p)) {
+                if (range.intersects(p)) {
                     found.push(p);
                 }
             }

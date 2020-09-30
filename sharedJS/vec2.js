@@ -126,8 +126,8 @@ class Vec2 {
      * @returns {Vec2}
      */
     multiplyVecS(other) {
-        this.x * other.x;
-        this.y * other.y;
+        this.x *= other.x;
+        this.y *= other.y;
         return this;
     }
     makeUnit() {
@@ -171,6 +171,20 @@ class Vec2 {
      */
     invert() {
         return new Vec2(1/this.x, 1/this.y);
+    }
+    /**
+     * Gives Abs of x and y
+     */
+    absS() {
+        this.x = Math.abs(this.x);
+        this.y = Math.abs(this.y);
+        return this;
+    }
+    /**
+     * Gives Abs of x and y
+     */
+    abs() {
+        return new Vec2(Math.abs(this.x), Math.abs(this.y));
     }
 }
 

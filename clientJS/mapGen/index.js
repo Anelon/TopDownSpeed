@@ -1,175 +1,186 @@
 import Vec2 from "../../sharedJS/vec2.js";
 import CanvasWrapper from "../canvasWrapper.js";
-import TileSprite from "../tileSprite.js";
-import { DIRS, DIRBITS } from "../dirsMap.js";
-import { tileSprites } from "../sprites.js";
+import GameMap from "../../sharedJS/map/gameMap.js"
+import { TILES, TILE_NAMES, REGIONS, TILE_OPTIONS } from "../../sharedJS/utils/enums.js";
+import PlayerController from "../playerController.js";
+import Time from "../../sharedJS/utils/time.js";
+import CollisionEngine from "../../sharedJS/collisionEngine.js";
+import ClientLoop from "../clientLoop.js";
+
+let mapName = "map";
+fetch(`./api/getMap/${mapName}`)
+.then(function(res) {
+    if(res.status !== 200) {
+        console.log("Error occured", res.status);
+        return;
+    }
+    res.json().then(function(data) {
+        gameMap = GameMap.makeFromJSON(data.data);
+        //set the new gamemap
+        clientLoop.setGameMap(gameMap);
+    });
+})
+.catch(function(err) {
+    console.log("Fetch Error", err);
+});
 
 //Globals
-let width = 0;
-let height = 0;
-//set up canvas
-const canvas = new CanvasWrapper({tileSize: new Vec2(32,32)});
-let bounds = canvas.getBoundingClientRect();
+const voidWidth = 5;
+const tileSize = new Vec2(32,32);
+let gameMap = new GameMap(voidWidth, new Vec2(15, 50), tileSize.clone());
+const pixelDims = gameMap.dimentions.multiplyVec(tileSize);
+const collisionEngine = new CollisionEngine(pixelDims.x, pixelDims.y);
+collisionEngine.setRegions(gameMap.generateRegions());
+// @ts-ignore
+const time = new Time(performance);
 
+const EDIT_MODES = {
+    tile: "tile",
+    region: "region",
+}
+
+//Selections
+let editMode = EDIT_MODES.tile;
+let selectedLayer = 1;
+let selectedTileName = TILE_NAMES.g;
+let selectedRegion = Object.keys(REGIONS)[0];
+
+//set up canvas
+const canvas = new CanvasWrapper({tileSize, canvasSize: gameMap.dimentions.clone().multiplyVecS(tileSize)});
+const playerController = new PlayerController(new Vec2(100, 100), "Player","./img/player.png", 500, 200, 2, canvas);
+playerController.silenced = true;
+canvas.setCenter(playerController.location);
+playerController.draw(canvas);
+console.log(playerController.hitbox);
+
+//--- Initialize the client loop ---//
+const clientLoop = new ClientLoop(playerController, gameMap, canvas, time, collisionEngine);
+
+//reagions for selections
 let regionStart = new Vec2();
 let regionEnd = new Vec2();
+
 canvas.addEventListener("mousedown", function(e) {
     //console.log(e);
     const clickLocation = new Vec2(e.offsetX, e.offsetY);
-    regionStart = clickLocation.multiplyVec(canvas.tileSize.invert()).floorS();
+    regionStart = clickLocation.addS(canvas.topRight).multiplyVec(canvas.tileSize.invert()).floorS();
     //console.log(clickLocation.log(), regionStart.log());
 });
+
 canvas.addEventListener("mouseup", function(e) {
     //console.log(e);
     const clickLocation = new Vec2(e.offsetX, e.offsetY);
-    console.log(canvas.tileSize.invert());
-    regionEnd = clickLocation.multiplyVec(canvas.tileSize.invert()).floorS();
+    regionEnd = clickLocation.addS(canvas.topRight).multiplyVec(canvas.tileSize.invert()).floorS();
     //console.log(clickLocation.log(), regionEnd.log());
-    updateRoom(regionStart, regionEnd, tileSprites.get("grassTile"));
+    if(editMode === EDIT_MODES.tile) {
+        /** @type {NodeListOf<HTMLInputElement>} */
+        const traversal = document.querySelectorAll("input[name='traversal']");
+        const traversalObject = {};
+        for (const elem of traversal) {
+            traversalObject[elem.value] = elem.checked;
+        }
+        console.log(traversalObject);
+        const tile = TILES[selectedTileName].clone().setTraversal(traversalObject);
+        gameMap.update(regionStart, regionEnd, selectedLayer, tile);
+        collisionEngine.setStatics(gameMap.generateStatic());
+    } else if (editMode === EDIT_MODES.region) {
+        gameMap.addRegion(regionStart, regionEnd, REGIONS[selectedRegion], selectedRegion);
+        collisionEngine.setRegions(gameMap.generateRegions());
+    }
 });
 
-let room = new Array();
-let mobs = new Map();
+//--- set up tile selection ---//
+const tileSelectList = document.querySelector("#tileSelectList");
+for(const tileName of Object.values(TILE_NAMES)) {
+    console.log(tileName);
+    if(!TILES[tileName] && tileName !== TILE_NAMES[" "]) continue;
+    const tileSelect = document.createElement("li");
+    tileSelect.innerText = tileName;
+    tileSelect.setAttribute("id", tileName);
+    tileSelectList.appendChild(tileSelect);
+}
+
+//--- set up layer selection ---//
+const layerSelectList = document.querySelector("#layerSelectList");
+for(let i = 0; i < GameMap.numLayers; i++) {
+    const layerSelect = document.createElement("li");
+    layerSelect.innerText = "Layer " + i;
+    layerSelect.setAttribute("id", "Layer" + i);
+    layerSelectList.appendChild(layerSelect);
+}
+
+//--- set up traversal selection ---//
+const traversalSelectList = document.querySelector("#traversalSelectList");
+for(const option of TILE_OPTIONS) {
+    const traversalSelectDiv = document.createElement("div");
+    //set up checkbox
+    const traversalSelect = document.createElement("input");
+    traversalSelect.setAttribute("type", "checkbox");
+    traversalSelect.setAttribute("id", option);
+    traversalSelect.setAttribute("name", "traversal");
+    traversalSelect.setAttribute("value", option);
+    traversalSelect.setAttribute("checked", "true");
+    //set up label
+    const traversalSelectLabel = document.createElement("label");
+    traversalSelectLabel.setAttribute("for", option);
+    traversalSelectLabel.innerText = option;
+    //append to div and then to list
+    traversalSelectDiv.appendChild(traversalSelect);
+    traversalSelectDiv.appendChild(traversalSelectLabel);
+
+    traversalSelectList.appendChild(traversalSelectDiv);
+}
 
 
+//--- set up layer selection ---//
+const regionSelectList = document.querySelector("#regionSelectList");
+for(const regionName of Object.keys(REGIONS)) {
+    const regionSelect = document.createElement("li");
+    regionSelect.innerText = regionName;
+    regionSelect.setAttribute("id", regionName);
+    regionSelectList.appendChild(regionSelect);
+}
 
-class Tile {
-    /**
-     * Constructor
-     * @param {Vec2} location 
-     * @param {TileSprite} tileSprite 
-     * @param {boolean} isWalkable 
-     * @param {number} around 
-     */
-    constructor(location, tileSprite, isWalkable, around) {
-        console.assert((location instanceof Vec2), "Location not a Vec2", location);
-        console.assert((tileSprite instanceof TileSprite), "tileSprite not a TileSprite", tileSprite);
-        console.assert((typeof (isWalkable) === 'boolean'), "tileSprite not a TileImage", tileSprite);
-
-        //location
-        this.location = location;
-        //image
-        this.tileSprite = tileSprite;
-        //walkable
-        this.isWalkable = isWalkable;
-        this.around = around;
+//--- set up event listeners ---//
+tileSelectList.addEventListener("click", function(e) {
+    const tileName = /** @type HTMLElement */(e.target).innerText;
+    document.querySelector(`#${selectedTileName}`).classList.remove("active");
+    selectedTileName = tileName;
+    document.querySelector(`#${selectedTileName}`).classList.add("active");
+    //switch edit mode
+    if(editMode !== EDIT_MODES.tile) {
+        document.querySelector(`#${selectedRegion}`).classList.remove("active");
+        editMode = EDIT_MODES.tile;
     }
-    /**
-     * @param {CanvasWrapper} canvas 
-     */
-    draw(canvas) {
-        this.tileSprite.draw(canvas, this.location, this.around);
+});
+layerSelectList.addEventListener("click", function(e) {
+    const layerSelect = /** @type HTMLElement */(e.target).innerText;
+    document.querySelector(`#Layer${selectedLayer}`).classList.remove("active");
+    selectedLayer = parseInt(layerSelect.split(" ")[1]);
+    document.querySelector(`#Layer${selectedLayer}`).classList.add("active");
+    //switch edit mode
+    if(editMode !== EDIT_MODES.tile) {
+        document.querySelector(`#${selectedRegion}`).classList.remove("active");
+        editMode = EDIT_MODES.tile;
     }
-}
-
-/**
- * Gets where each tile is around the current tile
- * @param {number} i X location of Tile
- * @param {number} j Y location of Tile
- * @param {Array} curr Array of tiles that can connect to
- */
-function getAround(i, j, curr) {
-    //console.log("getting Around");
-    let around = 0;
-    for (const dir of DIRS) {
-        //console.log(dirs[dir]);
-        let newI = dir.x + i;
-        let newJ = dir.y + j;
-        //if out of bounds count that as the tile
-        if (newI < 0 || newJ < 0 || newI >= width || newJ >= height) {
-            around = around | dir.dir;
-            continue;
-        }
-        if (curr.includes(room[newJ][newI])) {
-            around = around | dir.dir;
-        }
+});
+regionSelectList.addEventListener("click", function(e) {
+    const regionSelect = /** @type HTMLElement */(e.target).innerText;
+    document.querySelector(`#${selectedRegion}`).classList.remove("active");
+    selectedRegion = regionSelect;
+    document.querySelector(`#${selectedRegion}`).classList.add("active");
+    //switch edit mode
+    if(editMode !== EDIT_MODES.region) {
+        document.querySelector(`#Layer${selectedLayer}`).classList.remove("active");
+        document.querySelector(`#${selectedTileName}`).classList.remove("active");
+        editMode = EDIT_MODES.region;
     }
-    return around;
-}
+});
 
-function setTile(tileCoord, tileSprite) {
-    room[tileCoord.y][tileCoord.x] = "g";
-}
+document.querySelector(`#Layer${selectedLayer}`).classList.add("active");
+document.querySelector(`#${selectedTileName}`).classList.add("active");
 
-/**
- * Waits given miliseconds
- * @param {number} ms 
- */
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function drawMap() {
-    canvas.clear();
-    height = room.length, width = room[0].length;
-    for (let j = 0; j < height; j++) {
-        for (let i = 0; i < width; i++) {
-            const curr = room[j][i];
-            for(const tileSprite of tileSprites.values()) {
-                if (curr === tileSprite.char) {
-                    const around = getAround(i, j, tileSprite.connects);
-                    const tile = new Tile(new Vec2(i, j), tileSprite, false, around);
-                    tile.draw(canvas);
-                }
-            }
-            //await sleep(.01);
-        }
-    }
-    canvas.drawGrid();
-}
-
-//TODO move to GameMap class
-function mapInit() {
-    //clear the room
-    room = new Array();
-    room.push("ggggddddddddddddgggg");
-    room.push("ggggdgggggddddddgggg");
-    room.push("gwwwwwwwwwgddggwwwwg");
-    room.push("ggwwwwwwwwwgdgwwwwwg");
-    room.push("ggggwggwwwwgggwwwwwg");
-    room.push("ggggwgggwwwwgwwwwwwg");
-    room.push("ggggggwwwwsssswwwwwg");
-    room.push("gwwwwwwwwwsssswwwwwg");
-    room.push("gwwwwwgggggwwwggwwwg");
-    room.push("gwwwwwgggggwwwggwwwg");
-    room.push("gwwwwwgwwggggggwwwwg");
-    room.push("gwwwwwwwgggggwwwwwwg");
-    room.push("gwwwwwwwggwwwwwwwwwg");
-    room.push("gwwwwwwwwwwwwwwwwwwg");
-    room.push("gwwwgwwwwwwwwwwwwwwg");
-    room.push("gwwgggwwwwwwwwwwwwwg");
-    room.push("gwwgggwwwwwwwwwwwwwg");
-    room.push("gwgggggwwwwwwwwwwwwg");
-    room.push("gggggggggggggggggggg");
-}
-mapInit();
-
-/**
- * Updates the room from start to end with TileImage
- * @param {Vec2} regionStart 
- * @param {Vec2} regionEnd 
- * @param {TileSprite} tileSprite 
- */
-function updateRoom(regionStart, regionEnd, tileSprite) {
-    console.assert(regionStart instanceof Vec2, "regionStart Not Vec2", regionStart);
-    console.assert(regionEnd instanceof Vec2, "regionEnd Not Vec2", regionEnd);
-    console.log(regionStart, regionEnd);
-    let [startX, startY] = regionStart.getXY();
-    let [endX, endY] = regionEnd.getXY();
-    //if start is after end swap
-    if(startX > endX)
-        [startX, endX] = [endX, startX];
-    if(startY > endY)
-        [startY, endY] = [endY, startY];
-
-    //build replacement string
-    let newStr = "";
-    for (let i = startX; i <= endX; i++) {
-        newStr += tileSprite.char;
-    }
-    //for each y replace section
-    for(let j = startY; j <= endY; j++) {
-        room[j] = room[j].slice(0, startX) + newStr + room[j].slice(endX+1);
-    }
-    drawMap();
-}
+document.querySelector("#save").addEventListener("click", function(e) {
+    console.log("saving");
+    console.log(gameMap.saveMap());
+});

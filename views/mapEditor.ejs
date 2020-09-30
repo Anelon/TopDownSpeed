@@ -1,19 +1,31 @@
-<% include('partials/header.ejs') %>
+<%- include('partials/header.ejs') %>
 <link href="https://fonts.googleapis.com/css?family=Exo+2%7CLobster&display=swap" rel="stylesheet">
 <link href="./css/game.css" rel="stylesheet">
 <link href="./css/mapEditor.css" rel="stylesheet">
 
-<canvas id="game" style="cursor: default;"></canvas>
+<main>
+    <canvas class="game" style="cursor: default;"></canvas>
 
-<div class="tileSelect" id="tileSelect">
-    <h2>Select a Tile</h2>
-    <ul class="selectList">
-        <li><a href="#">Grass</a></li>
-        <li><a href="#">Path</a></li>
-        <li><a href="#">Snow</a></li>
-    </ul>
-</div>
+    <div class="menu" id="menu">
+        <div class="select">
+            <h2>Select a Tile</h2>
+            <ul class="selectList" id="tileSelectList"> </ul>
+        </div>
+        <div class="select">
+            <h2>Select a Layer</h2>
+            <ul class="selectList" id="layerSelectList"> </ul>
+        </div>
+        <div class="select" id="traversalSelectList">
+            <h2>Tile Traversal</h2>
+        </div>
+        <div class="select">
+            <h2>Select a Region</h2>
+            <ul class="selectList" id="regionSelectList"> </ul>
+        </div>
+        <button id="save">Save</button>
+    </div>
+</main>
 
 <script asyc type="module" src="js/clientJS/mapGen/index.js"></script>
 
-<% include('partials/footer.ejs') %>
+<%- include('partials/footer.ejs') %>

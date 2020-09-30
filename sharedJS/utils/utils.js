@@ -8,7 +8,7 @@ import PlantSeed from "../ability/plantSeed.js";
 /**
  * @param {{ json: string; type: string; }} object
  */
-export function makeFromJSON(object) {
+export function projectileFromJSON(object) {
     const data = JSON.parse(object.json);
     console.log(object.type);
     if(object.type === "Projectile") {
@@ -38,4 +38,12 @@ export function makeFromJSON(object) {
         );
     }
     return Projectile.makeFromJSON(data);
+}
+
+/**
+ * Waits given miliseconds
+ * @param {number} ms 
+ */
+export function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }

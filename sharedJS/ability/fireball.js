@@ -1,9 +1,10 @@
 import Projectile from "./projectile.js";
 import { TYPES, CATEGORY } from "../utils/enums.js";
 import Player from "../player.js";
-import Entity from "../entity.js";
 import Sprite from "../../clientJS/sprite.js";
 import Vec2 from "../vec2.js";
+/** @typedef {import("../entity.js").default} Entity */
+/** @typedef {import("../map/tile.js").default} Tile */
 
 export default class Fireball extends Projectile {
     static get FRAMES() {return 6;} //Number of frames of animation
@@ -11,10 +12,10 @@ export default class Fireball extends Projectile {
     static get SPRITEDIMS() {return new Vec2(32,32);} //Dimentions of each Sprite
     static get IMAGE() { return "./img/abilities/fireball/fireball.png"; }
     /**
-     * @param {import("../vec2").default} origin
+     * @param {Vec2} origin
      * @param {string} name
      * @param {number} speed
-     * @param {import("../vec2").default} look
+     * @param {Vec2} look
      * @param {number} range
      * @param {number} damage
      * @param {import("../player").default} owner
@@ -33,7 +34,7 @@ export default class Fireball extends Projectile {
 
     /**
      * Basic projecile just hits players
-     * @param {Player|Projectile|Entity} other 
+     * @param {Player|Projectile|Entity|Tile} other 
      */
     hit(other) {
         //if hitting a player deal damage
@@ -49,12 +50,9 @@ export default class Fireball extends Projectile {
             this.damage *= 2;
             //TODO make a damage cap
             return false;
-        } else if (other.category === CATEGORY.void) {
-            //Projectiles go over void
-            return false;
         } else {
-            //flag to be deleted
-            return true;
+            //fall back on projectile defaults
+            return super.hit(other);
         }
     }
 }
