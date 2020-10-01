@@ -28,6 +28,7 @@ export default class ClientLoop {
         this.canvas = canvas;
         this.socket = socket;
         this.time = time;
+        this.running = true;
 
         requestAnimationFrame(this.frame.bind(this));
     }
@@ -56,6 +57,7 @@ export default class ClientLoop {
             }
         }
 
+        //if connected to a server send the player movement updates
         if (this.socket) {
             if (this.playerController.moved || this.playerController.mouse.changed) {
                 // if player moved send update to server
@@ -66,7 +68,6 @@ export default class ClientLoop {
 
     render() {
         //TODO look into moveing this to webworker for a different thread
-        //clear the collisionEngine
         this.canvas.clear();
 
         this.gameMap.draw(this.canvas, tileSprites);
@@ -85,6 +86,7 @@ export default class ClientLoop {
         }
         this.render();
         this.time.last = this.time.now;
-        requestAnimationFrame(this.frame.bind(this));
+        if (this.running)
+            requestAnimationFrame(this.frame.bind(this));
     }
 }

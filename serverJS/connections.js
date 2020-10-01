@@ -76,7 +76,7 @@ export default class Connections {
             });
 
             client.on(CHANNELS.deletePlayer, (playerInfo) => {
-                console.log("a user has disconnected");
+                console.log("an extra user has been disconnected");
                 //send the deleted player to other clients
                 this.broadcast(CHANNELS.deletePlayer, playerInfo.id, client);
                 this.collisionEngine.removePlayer(playerInfo.id);
