@@ -34,7 +34,6 @@ class ServerLoop {
                     this.connections.broadcast(CHANNELS.playerMove, item.makeObject());
                 }
             } else {
-                console.log("Deleting Projectile", item);
                 this.collisionEngine.removeProjectile(/** @type {Projectile} */(item));
             }
         }
@@ -56,6 +55,9 @@ class ServerLoop {
         setImmediate(this.tick.bind(this));
     }
 
+    /**
+     * @param {import("http").Server | import("https").Server} server
+     */
     setup(server) {
         const mapJSON = JSON.parse(loadMapSync("map"));
         const gameMap = GameMap.makeFromJSON(mapJSON);

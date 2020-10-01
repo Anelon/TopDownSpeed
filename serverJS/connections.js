@@ -11,7 +11,7 @@ export default class Connections {
      * @param {import("http").Server | import("https").Server} server
      * @param {CollisionEngine} collisionEngine
      */
-    constructor(server, collisionEngine, gameMap, connections = {}) {
+    constructor(server, collisionEngine, gameMap, connections = new Map()) {
         if(!(collisionEngine instanceof CollisionEngine)) throw TypeError("collisionEngine is not a collisionEngine object;");
         this.sockets = io(server);
         this.gameMap = gameMap;
@@ -23,7 +23,7 @@ export default class Connections {
         this.sockets.on("connection", (client) => {
             console.log("a user has connected");
             //add client to the list of connections
-            this.connections[client.id] = client; 
+            this.connections.set(client.id, client);
             const spawn = new Vec2(50,50);//TODO set spawn based on map infoation
             let player = new Player(spawn, "Player", "./img/player.png", 200, 200, new Circle(spawn, 32), 2);
             //set player id to client id for easier lookup
@@ -31,7 +31,12 @@ export default class Connections {
             //send the client their player
             client.emit(CHANNELS.newPlayer, player.makeObject());
             //send client all existing players
+            console.log(this.collisionEngine.players.size);
             for (const players of this.collisionEngine.players.values()) {
+                if(!this.connections.has(players.id)) {
+                    console.log(players);
+                    continue;
+                }
                 client.emit(CHANNELS.playerMove, players.makeObject());
             }
             //send client all existing projectiles
@@ -55,6 +60,7 @@ export default class Connections {
 
             client.on(CHANNELS.playerMove, (playerInfo) => {
                 let updated = JSON.parse(playerInfo.json);
+                //if player moving isn't connected ignore it
                 this.collisionEngine.updatePlayer(updated);
                 //TODO: add validation of move here
                 //broadcast the message (add client to prevent echoing)
@@ -67,6 +73,13 @@ export default class Connections {
                 //TODO: add validation of move here
                 //broadcast the message (add client to prevent echoing)
                 this.broadcast(CHANNELS.newProjectile, newProjectile, client);
+            });
+
+            client.on(CHANNELS.deletePlayer, (playerInfo) => {
+                console.log("a user has disconnected");
+                //send the deleted player to other clients
+                this.broadcast(CHANNELS.deletePlayer, playerInfo.id, client);
+                this.collisionEngine.removePlayer(playerInfo.id);
             });
         });
         return this;

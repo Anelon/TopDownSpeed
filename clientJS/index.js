@@ -21,13 +21,13 @@ let socket = io();
 const voidWidth = 5;
 const tileSize = new Vec2(32,32);
 let gameMap = new GameMap(voidWidth, new Vec2(15, 50), tileSize.clone());
-const pixelDims = gameMap.dimentions.multiplyVec(tileSize);
-const collisionEngine = new CollisionEngine(pixelDims.x, pixelDims.y);
+let pixelDims = gameMap.dimentions.multiplyVec(tileSize);
+let collisionEngine = new CollisionEngine(pixelDims.x, pixelDims.y);
 // @ts-ignore
-const time = new Time(performance);
+let time = new Time(performance);
 
 //set up canvas
-const canvas = new CanvasWrapper({tileSize, canvasSize: gameMap.dimentions.clone().multiplyVecS(tileSize)});
+let canvas = new CanvasWrapper({tileSize, canvasSize: gameMap.dimentions.clone().multiplyVecS(tileSize)});
 
 /** @type {PlayerController} */
 let playerController;
@@ -49,7 +49,18 @@ socket.on(CHANNELS.newPlayer, function (playerInfo) {
     let playerExists = false;
     if (playerController) {
         playerExists = true;
+        //reset everything
+        gameMap = new GameMap(voidWidth, new Vec2(15, 50), tileSize.clone());
+        pixelDims = gameMap.dimentions.multiplyVec(tileSize);
+        collisionEngine = new CollisionEngine(pixelDims.x, pixelDims.y);
+        // @ts-ignore
+        time = new Time(performance);
+
+        //set up canvas
+        canvas = new CanvasWrapper({ tileSize, canvasSize: gameMap.dimentions.clone().multiplyVecS(tileSize) });
     }
+
+    //parse the player's info
     let playerInfoJson = JSON.parse(playerInfo.json);
 
     //pull the information from json
@@ -66,6 +77,8 @@ socket.on(CHANNELS.newPlayer, function (playerInfo) {
     playerController.currHealth = currHealth;
     if (!playerExists) {
         collisionEngine.addPlayer(playerController);
+    } else {
+        console.log("Already player controller");
     }
     //start up the client loop
     clientLoop = new ClientLoop(playerController, gameMap, canvas, time, collisionEngine, socket);

@@ -7,6 +7,7 @@ import { TYPES, CATEGORY } from "../sharedJS/utils/enums.js";
 import GameMap from "../sharedJS/map/gameMap.js";
 import CanvasWrapper from "./canvasWrapper.js";
 import { tileSprites } from "./sprites.js";
+import CHANNELS from "../sharedJS/utils/channels.js";
 /** @typedef {import("../sharedJS/player.js").default} Player */
 
 export default class ClientLoop {
@@ -58,7 +59,7 @@ export default class ClientLoop {
         if (this.socket) {
             if (this.playerController.moved || this.playerController.mouse.changed) {
                 // if player moved send update to server
-                this.socket.emit("playerMove", this.playerController.makeObject());
+                this.socket.emit(CHANNELS.playerMove, this.playerController.makeObject());
             }
         }
     }
