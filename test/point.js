@@ -15,12 +15,12 @@ describe('Point', function () {
 
         //test constructor
         it('Point constructor', function () {
-            let test = new Point(center, owner, 3);
-            assert.equal(test.location.x, 1);
-            assert.equal(test.location.y, 2);
-            assert.equal(test.x, 1);
-            assert.equal(test.y, 2);
-            assert.equal(test.radius, 3);
+            let test = new Point(center, 3, owner);
+            assert.strictEqual(test.center.x, 1);
+            assert.strictEqual(test.center.y, 2);
+            assert.strictEqual(test.x, 1);
+            assert.strictEqual(test.y, 2);
+            assert.strictEqual(test.radius, 3);
         });
     });
 });

@@ -42,7 +42,7 @@ describe('Player', function () {
             let point = player.makePoint();
             assert.instanceOf(point, Point);
             expect(point).to.eql(expectedPoint);
-            //assert(point.equals(expectedPoint), "Point not correctly generating a point correctly");
+            //assert(point.strictEquals(expectedPoint), "Point not correctly generating a point correctly");
         });
 
         it('makeShape() makes a Circle', function () {

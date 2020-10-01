@@ -9,18 +9,18 @@ describe('Vec2', function () {
     describe('Default Constructor', function () {
         it('Should make a Vec2 {0,0}', function () {
             let vec = new Vec2();
-            assert.equal(vec.x, 0, "Default Constructor x = 0");
-            assert.equal(vec.y, 0, "Default Constructor y = 0");
-            assert.equal(vec.equals(new Vec2(0,0)), true, "Checks against normal Constructor");
-            expect(vec.log()).to.equal("{0,0}");
+            assert.strictEqual(vec.x, 0, "Default Constructor x = 0");
+            assert.strictEqual(vec.y, 0, "Default Constructor y = 0");
+            assert.strictEqual(vec.equals(new Vec2(0,0)), true, "Checks against normal Constructor");
+            expect(vec.log()).to.eql("{0,0}");
         });
     });
 
     describe('Constructor', function () {
         it('Should make a Vec2 {2,3}', function () {
             let vec = new Vec2(2,3);
-            assert.equal(vec.x, 2);
-            assert.equal(vec.y, 3);
+            assert.strictEqual(vec.x, 2);
+            assert.strictEqual(vec.y, 3);
             expect(vec.getXY()).to.eql([2,3]);
         });
     });
@@ -28,8 +28,8 @@ describe('Vec2', function () {
     describe('Length', function () {
         it('Length of a Vec2 {3,4} should be 5', function () {
             let vec = new Vec2(3,4);
-            assert.equal(vec.length(), 5);
-            assert.equal(vec.lengthSq(), 25);
+            assert.strictEqual(vec.length(), 5);
+            assert.strictEqual(vec.lengthSq(), 25);
         });
     });
 
@@ -43,34 +43,34 @@ describe('Vec2', function () {
         it('Add 2 Vec2', function () {
             //test default
             let add = vec1.add(vec2);
-            assert.equal(add.x, 3);
-            assert.equal(add.y, 4);
+            assert.strictEqual(add.x, 3);
+            assert.strictEqual(add.y, 4);
             //test set version
             add.addS(vec2);
-            assert.equal(add.x, 5);
-            assert.equal(add.y, 5);
+            assert.strictEqual(add.x, 5);
+            assert.strictEqual(add.y, 5);
         });
 
         it('Subtract 2 Vec2', function () {
             //test default 
             let sub = vec1.sub(vec2);
-            assert.equal(sub.x, -1);
-            assert.equal(sub.y, 2);
+            assert.strictEqual(sub.x, -1);
+            assert.strictEqual(sub.y, 2);
             //test set version
             sub.subS(vec2);
-            assert.equal(sub.x, -3);
-            assert.equal(sub.y, 1);
+            assert.strictEqual(sub.x, -3);
+            assert.strictEqual(sub.y, 1);
         });
 
         it('Multiply Scalar Vec2', function () {
             //test default
             let muls = vec1.multiplyScalar(2);
-            assert.equal(muls.x, 2);
-            assert.equal(muls.y, 6);
+            assert.strictEqual(muls.x, 2);
+            assert.strictEqual(muls.y, 6);
             //test set version
             muls.multiplyScalarS(5);
-            assert.equal(muls.x, 10);
-            assert.equal(muls.y, 30);
+            assert.strictEqual(muls.x, 10);
+            assert.strictEqual(muls.y, 30);
         });
 
         it('Unit Vec2', function () {
@@ -86,7 +86,7 @@ describe('Vec2', function () {
         });
 
         it('dot product', function () {
-            assert.equal(vec1.dot(vec2), 5);
+            assert.strictEqual(vec1.dot(vec2), 5);
         });
 
         it('floor', function () {

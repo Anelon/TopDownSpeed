@@ -14,78 +14,78 @@ describe('Shapes', function () {
         //test constructor
         it('Circle constructor', function () {
             let test = new Circle(center, 3);
-            assert.equal(test.center.x, 1);
-            assert.equal(test.center.y, 2);
-            assert.equal(test.radius, 3);
+            assert.strictEqual(test.center.x, 1);
+            assert.strictEqual(test.center.y, 2);
+            assert.strictEqual(test.radius, 3);
         });
 
         //Check width of circle
         it('width', function () {
-            assert.equal(circle.width, 10);
-            assert.equal(circle.halfWidth, 5);
+            assert.strictEqual(circle.width, 10);
+            assert.strictEqual(circle.halfWidth, 5);
         });
 
         //Contains tests
         it('contains centered', function () {
             let point = new Point(new Vec2(1,2));
-            assert.equal(circle.contains(point), true);
+            assert.strictEqual(circle.contains(point), true);
         });
 
         it('contains inside', function () {
             let point = new Point(new Vec2(2,2));
-            assert.equal(circle.contains(point), true);
+            assert.strictEqual(circle.contains(point), true);
         });
 
         it('contains edge', function () {
             let point = new Point(new Vec2(1,7));
-            assert.equal(circle.contains(point), true);
+            assert.strictEqual(circle.contains(point), true);
         });
 
         it('contains outside', function () {
             let point = new Point(new Vec2(1,10));
-            assert.equal(circle.contains(point), false);
+            assert.strictEqual(circle.contains(point), false);
         });
 
         //Intersects circle tests
         it('intersects circle centered', function () {
             let circleRange = new Circle(new Vec2(1,2), 2);
-            assert.equal(circle.intersects(circleRange), true);
+            assert.strictEqual(circle.intersects(circleRange), true);
         });
 
         it('intersects circle inside', function () {
             let circleRange = new Circle(new Vec2(2,2), 2);
-            assert.equal(circle.intersects(circleRange), true);
+            assert.strictEqual(circle.intersects(circleRange), true);
         });
 
         it('intersects circle edge', function () {
             let circleRange = new Circle(new Vec2(1,9), 2);
-            assert.equal(circle.intersects(circleRange), true);
+            assert.strictEqual(circle.intersects(circleRange), true);
         });
 
         it('intersects circle outside', function () {
             let circleRange = new Circle(new Vec2(1,10), 2);
-            assert.equal(circle.intersects(circleRange), false);
+            assert.strictEqual(circle.intersects(circleRange), false);
         });
 
         //Intersects rectangle tests
         it('intersects rectangle centered', function () {
             let rectangleRange = new Rectangle(new Vec2(1,2), 5, 2);
-            assert.equal(circle.intersects(rectangleRange), true);
+            assert.strictEqual(circle.intersects(rectangleRange), true);
         });
 
         it('intersects rectangle inside', function () {
             let rectangleRange = new Rectangle(new Vec2(2,2), 5, 2);
-            assert.equal(circle.intersects(rectangleRange), true);
+            assert.strictEqual(circle.intersects(rectangleRange), true);
         });
 
         it('intersects rectangle edge', function () {
-            let rectangleRange = new Rectangle(new Vec2(1,9), 5, 2);
-            assert.equal(circle.intersects(rectangleRange), true);
+            let rectangleRange = new Rectangle(new Vec2(7,2), 2, 2);
+            assert.strictEqual(circle.intersects(rectangleRange), true);
         });
 
         it('intersects rectangle outside', function () {
             let rectangleRange = new Rectangle(new Vec2(1,10), 5, 2);
-            assert.equal(circle.intersects(rectangleRange), false);
+            assert.strictEqual(circle.intersects(rectangleRange), false);
         });
     });
 
@@ -96,86 +96,86 @@ describe('Shapes', function () {
         //test constructor
         it('Rectangle constructor', function () {
             let test = new Rectangle(center, 3, 4);
-            assert.equal(test.center.x, 1);
-            assert.equal(test.center.y, 2);
-            assert.equal(test.width, 3);
-            assert.equal(test.height, 4);
+            assert.strictEqual(test.center.x, 1);
+            assert.strictEqual(test.center.y, 2);
+            assert.strictEqual(test.width, 3);
+            assert.strictEqual(test.height, 4);
         });
 
         //Check boundries of Rectangle
         it('boundries', function () {
-            assert.equal(rectangle.width, 4);
-            assert.equal(rectangle.halfWidth, 2);
-            assert.equal(rectangle.left, -1);
-            assert.equal(rectangle.right, 3);
-            assert.equal(rectangle.top, 0);
-            assert.equal(rectangle.bottom, 4);
+            assert.strictEqual(rectangle.width, 4);
+            assert.strictEqual(rectangle.halfWidth, 2);
+            assert.strictEqual(rectangle.left, -1);
+            assert.strictEqual(rectangle.right, 3);
+            assert.strictEqual(rectangle.top, 0);
+            assert.strictEqual(rectangle.bottom, 4);
         });
 
         //Contains tests
         it('contains centered', function () {
             let point = new Point(new Vec2(1,2));
-            assert.equal(rectangle.contains(point), true);
+            assert.strictEqual(rectangle.contains(point), true);
         });
 
         it('contains inside', function () {
             let point = new Point(new Vec2(2,2));
-            assert.equal(rectangle.contains(point), true);
+            assert.strictEqual(rectangle.contains(point), true);
         });
 
         it('contains edge', function () {
             let point = new Point(new Vec2(1,4));
-            assert.equal(rectangle.contains(point), true);
+            assert.strictEqual(rectangle.contains(point), true);
         });
 
         it('contains outside', function () {
             let point = new Point(new Vec2(1,10));
-            assert.equal(rectangle.contains(point), false);
+            assert.strictEqual(rectangle.contains(point), false);
         });
 
         //Intersects circle tests
         it('intersects circle centered', function () {
             let circleRange = new Circle(new Vec2(1,2), 2);
-            assert.equal(rectangle.intersects(circleRange), true);
+            assert.strictEqual(rectangle.intersects(circleRange), true);
         });
 
         it('intersects circle inside', function () {
             let circleRange = new Circle(new Vec2(2,2), 2);
-            assert.equal(rectangle.intersects(circleRange), true);
+            assert.strictEqual(rectangle.intersects(circleRange), true);
         });
 
         it('intersects circle edge', function () {
             let circleRange = new Circle(new Vec2(1,6), 2);
-            assert.equal(rectangle.intersects(circleRange), true);
+            assert.strictEqual(rectangle.intersects(circleRange), true);
         });
 
         it('intersects circle outside', function () {
             let circleRange = new Circle(new Vec2(1,10), 2);
-            assert.equal(rectangle.intersects(circleRange), false);
+            assert.strictEqual(rectangle.intersects(circleRange), false);
         });
 
         //Intersects rectangle tests
         it('intersects rectangle centered', function () {
             let rectangleRange = new Rectangle(new Vec2(1,2), 5, 2);
-            assert.equal(rectangle.intersects(rectangleRange), true);
+            assert.strictEqual(rectangle.intersects(rectangleRange), true);
 
             rectangleRange = new Rectangle(new Vec2(1,2), 2, 5);
-            assert.equal(rectangle.intersects(rectangleRange), true);
+            assert.strictEqual(rectangle.intersects(rectangleRange), true);
         });
 
         it('intersects rectangle inside', function () {
             let rectangleRange = new Rectangle(new Vec2(2,2), 5, 2);
-            assert.equal(rectangle.intersects(rectangleRange), true);
+            assert.strictEqual(rectangle.intersects(rectangleRange), true);
         });
 
         it('intersects rectangle edge', function () {
             let rectangleRange = new Rectangle(new Vec2(1,5), 5, 2);
-            assert.equal(rectangle.intersects(rectangleRange), true);
+            assert.strictEqual(rectangle.intersects(rectangleRange), true);
         });
 
         it('intersects rectangle outside', function () {
             let rectangleRange = new Rectangle(new Vec2(1,10), 5, 2);
-            assert.equal(rectangle.intersects(rectangleRange), false);
+            assert.strictEqual(rectangle.intersects(rectangleRange), false);
         });
     });
 });
