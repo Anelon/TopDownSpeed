@@ -102,6 +102,11 @@ async function main(playerInfoJson) {
     });
 
     socket.on(CHANNELS.startGame, function (startText) {
+        if(startText === "start") {
+            //reset player controller
+            playerController.kill();
+        }
+        //hide the intro message ready screen
         introMessageDiv.hidden = true;
         clientLoop.start();
     });

@@ -3,7 +3,6 @@ import CanvasWrapper from "./canvasWrapper.js";
 import Vec2 from "../sharedJS/vec2.js";
 
 export default class TileSprite {
-    //strange JS way of doing const static
     static width = 16;
     static height = 16;
     static imagesToLoad = 0;
@@ -45,84 +44,84 @@ export default class TileSprite {
         if (retStr.length > 0) retStr.slice(0, -2);
         return retStr;
     }
-/**
- * @param {number} around 
- * @returns {number}
- */
-static aroundToIndex(around) {
-    //need unsigned bitwise not of around
-    let nAround = (~around >>> 0);
-    if(around === DIRBITS.allRound) return 0;
-    if(around === (DIRBITS.allRound ^ DIRBITS.downAndRight)) return 1;
-    if(around === (DIRBITS.allRound ^ DIRBITS.downAndLeft)) return 2;
-    if(around === (DIRBITS.allRound ^ DIRBITS.upAndRight)) return 3;
-    if(around === (DIRBITS.allRound ^ DIRBITS.upAndLeft)) return 4;
-    if(around === (DIRBITS.allRound ^ (DIRBITS.downAndLeft | DIRBITS.downAndRight))) return 5;
-    if(around === (DIRBITS.allRound ^ (DIRBITS.upAndLeft | DIRBITS.downAndRight))) return 6;
-    if(around === (DIRBITS.allRound ^ (DIRBITS.upAndRight | DIRBITS.downAndRight))) return 7;
-    if(around === (DIRBITS.allRound ^ (DIRBITS.downAndLeft | DIRBITS.upAndLeft))) return 8;
-    if(around === (DIRBITS.allRound ^ (DIRBITS.downAndLeft | DIRBITS.upAndRight))) return 9;
-    if(around === (DIRBITS.allRound ^ (DIRBITS.upAndLeft | DIRBITS.upAndRight))) return 10;
-    if(around === (DIRBITS.allRound ^ (DIRBITS.downAndLeft | DIRBITS.upAndRight | DIRBITS.downAndRight))) return 11;
-    if(around === (DIRBITS.allRound ^ (DIRBITS.downAndLeft | DIRBITS.upAndLeft | DIRBITS.downAndRight))) return 12;
-    if(around === (DIRBITS.allRound ^ (DIRBITS.downAndLeft | DIRBITS.upAndLeft | DIRBITS.upAndRight))) return 13;
-    if(around === (DIRBITS.allRound ^ (DIRBITS.downAndRight | DIRBITS.upAndLeft | DIRBITS.upAndRight))) return 14;
-    if(around === (DIRBITS.allRound ^ (DIRBITS.downAndLeft | DIRBITS.downAndRight | DIRBITS.upAndLeft | DIRBITS.upAndRight))) return 15;
-    //edges
-    if(nAround & DIRBITS.up) {
-        if (nAround & DIRBITS.down) {
-            if (nAround & DIRBITS.left) {
-                if (nAround & DIRBITS.right) return 46;
-                return 44;
+    /**
+     * @param {number} around 
+     * @returns {number}
+     */
+    static aroundToIndex(around) {
+        //need unsigned bitwise not of around
+        let nAround = (~around >>> 0);
+        if (around === DIRBITS.allRound) return 0;
+        if (around === (DIRBITS.allRound ^ DIRBITS.downAndRight)) return 1;
+        if (around === (DIRBITS.allRound ^ DIRBITS.downAndLeft)) return 2;
+        if (around === (DIRBITS.allRound ^ DIRBITS.upAndRight)) return 3;
+        if (around === (DIRBITS.allRound ^ DIRBITS.upAndLeft)) return 4;
+        if (around === (DIRBITS.allRound ^ (DIRBITS.downAndLeft | DIRBITS.downAndRight))) return 5;
+        if (around === (DIRBITS.allRound ^ (DIRBITS.upAndLeft | DIRBITS.downAndRight))) return 6;
+        if (around === (DIRBITS.allRound ^ (DIRBITS.upAndRight | DIRBITS.downAndRight))) return 7;
+        if (around === (DIRBITS.allRound ^ (DIRBITS.downAndLeft | DIRBITS.upAndLeft))) return 8;
+        if (around === (DIRBITS.allRound ^ (DIRBITS.downAndLeft | DIRBITS.upAndRight))) return 9;
+        if (around === (DIRBITS.allRound ^ (DIRBITS.upAndLeft | DIRBITS.upAndRight))) return 10;
+        if (around === (DIRBITS.allRound ^ (DIRBITS.downAndLeft | DIRBITS.upAndRight | DIRBITS.downAndRight))) return 11;
+        if (around === (DIRBITS.allRound ^ (DIRBITS.downAndLeft | DIRBITS.upAndLeft | DIRBITS.downAndRight))) return 12;
+        if (around === (DIRBITS.allRound ^ (DIRBITS.downAndLeft | DIRBITS.upAndLeft | DIRBITS.upAndRight))) return 13;
+        if (around === (DIRBITS.allRound ^ (DIRBITS.downAndRight | DIRBITS.upAndLeft | DIRBITS.upAndRight))) return 14;
+        if (around === (DIRBITS.allRound ^ (DIRBITS.downAndLeft | DIRBITS.downAndRight | DIRBITS.upAndLeft | DIRBITS.upAndRight))) return 15;
+        //edges
+        if (nAround & DIRBITS.up) {
+            if (nAround & DIRBITS.down) {
+                if (nAround & DIRBITS.left) {
+                    if (nAround & DIRBITS.right) return 46;
+                    return 44;
+                }
+                if (nAround & DIRBITS.right) return 42;
+                return 33;
             }
-            if(nAround & DIRBITS.right) return 42;
-            return 33;
+            if (nAround & DIRBITS.right) {
+                if (nAround & DIRBITS.left) return 45;
+                if (nAround & DIRBITS.downAndLeft) return 41;
+                return 37;
+            }
+            if (nAround & DIRBITS.left) {
+                if (nAround & DIRBITS.downAndRight) return 40;
+                return 36;
+            }
+            if (nAround & DIRBITS.downAndRight && nAround & DIRBITS.downAndLeft) return 31;
+            if (nAround & DIRBITS.downAndRight) return 30;
+            if (nAround & DIRBITS.downAndLeft) return 29;
+            return 19;
         }
-        if(nAround & DIRBITS.right) {
-            if(nAround & DIRBITS.left) return 45;
-            if(nAround & DIRBITS.downAndLeft) return 41;
-            return 37;
+        if (nAround & DIRBITS.down) {
+            if (nAround & DIRBITS.right) {
+                if (nAround & DIRBITS.left) return 43;
+                if (nAround & DIRBITS.upAndLeft) return 38;
+                return 34;
+            }
+            if (nAround & DIRBITS.left) {
+                if (nAround & DIRBITS.upAndRight) return 39;
+                return 35;
+            }
+            if (nAround & DIRBITS.upAndRight && nAround & DIRBITS.upAndLeft) return 25;
+            if (nAround & DIRBITS.upAndRight) return 24;
+            if (nAround & DIRBITS.upAndLeft) return 23;
+            return 17;
         }
-        if(nAround & DIRBITS.left) {
-            if(nAround & DIRBITS.downAndRight) return 40;
-            return 36;
+        if (nAround & DIRBITS.left) {
+            if (nAround & DIRBITS.right) return 32;
+            if (nAround & DIRBITS.upAndRight && nAround & DIRBITS.downAndRight) return 28;
+            if (nAround & DIRBITS.downAndRight) return 26;
+            if (nAround & DIRBITS.upAndRight) return 27;
+            return 18;
         }
-        if(nAround & DIRBITS.downAndRight && nAround & DIRBITS.downAndLeft) return 31;
-        if(nAround & DIRBITS.downAndRight) return 30;
-        if(nAround & DIRBITS.downAndLeft) return 29;
-        return 19;
+        if (nAround & DIRBITS.right) {
+            if (nAround & DIRBITS.downAndLeft && nAround & DIRBITS.upAndLeft) return 22;
+            if (nAround & DIRBITS.downAndLeft) return 20;
+            if (nAround & DIRBITS.upAndLeft) return 21;
+            return 16;
+        }
+        //default case if something doesn't get found (should never get here)
+        return -1;
     }
-    if(nAround & DIRBITS.down) {
-        if(nAround & DIRBITS.right) {
-            if(nAround & DIRBITS.left) return 43;
-            if(nAround & DIRBITS.upAndLeft) return 38;
-            return 34;
-        }
-        if(nAround & DIRBITS.left) {
-            if(nAround & DIRBITS.upAndRight) return 39;
-            return 35;
-        }
-        if(nAround & DIRBITS.upAndRight && nAround & DIRBITS.upAndLeft) return 25;
-        if(nAround & DIRBITS.upAndRight) return 24;
-        if(nAround & DIRBITS.upAndLeft) return 23;
-        return 17;
-    }
-    if(nAround & DIRBITS.left) {
-        if (nAround & DIRBITS.right) return 32;
-        if(nAround & DIRBITS.upAndRight && nAround & DIRBITS.downAndRight) return 28;
-        if(nAround & DIRBITS.downAndRight) return 26;
-        if(nAround & DIRBITS.upAndRight) return 27;
-        return 18;
-    }
-    if(nAround & DIRBITS.right) {
-        if(nAround & DIRBITS.downAndLeft && nAround & DIRBITS.upAndLeft) return 22;
-        if(nAround & DIRBITS.downAndLeft) return 20;
-        if(nAround & DIRBITS.upAndLeft) return 21;
-        return 16;
-    }
-    //default case if something doesn't get found (should never get here)
-	return -1;
-}
     /**
      * @param {CanvasWrapper} canvas 
      * @param {Vec2} location Tile x and y location

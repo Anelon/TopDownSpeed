@@ -36,6 +36,7 @@ const time = new Time(performance);
 
 const EDIT_MODES = {
     tile: "tile",
+    decoration: "decoration",
     region: "region",
 }
 
@@ -54,6 +55,7 @@ playerController.draw(canvas);
 
 //--- Initialize the client loop ---//
 const clientLoop = new ClientLoop(playerController, gameMap, canvas, time, collisionEngine);
+clientLoop.start();
 
 //reagions for selections
 let regionStart = new Vec2();
@@ -126,7 +128,7 @@ for(const option of TILE_OPTIONS) {
 }
 
 
-//--- set up layer selection ---//
+//--- set up regions selection ---//
 const regionSelectList = document.querySelector("#regionSelectList");
 for(const regionName of Object.keys(REGIONS)) {
     const regionSelect = document.createElement("li");
@@ -147,6 +149,8 @@ tileSelectList.addEventListener("click", function(e) {
         editMode = EDIT_MODES.tile;
     }
 });
+
+//--- set up layer selection ---//
 layerSelectList.addEventListener("click", function(e) {
     const layerSelect = /** @type HTMLElement */(e.target).innerText;
     document.querySelector(`#Layer${selectedLayer}`).classList.remove("active");
@@ -158,6 +162,7 @@ layerSelectList.addEventListener("click", function(e) {
         editMode = EDIT_MODES.tile;
     }
 });
+
 regionSelectList.addEventListener("click", function(e) {
     const regionSelect = /** @type HTMLElement */(e.target).innerText;
     document.querySelector(`#${selectedRegion}`).classList.remove("active");

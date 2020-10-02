@@ -103,21 +103,27 @@ export default class Connections {
                 //if there is a display name set it
                 if(data.displayName) {
                     player.name = data.displayName;
-                } else {
+                } else { 
+                    //else just use the client id I guess
                     player.name = client.id;
                 }
+                this.connections.get(client.id).ready = data.ready;
+                //if ready add to count and check if there is enough ready
                 if(data.ready) {
                     this.readyCount++;
                     console.log(this.readyCount, this.collisionEngine.players.size);
                     if(this.readyCount === this.collisionEngine.players.size) {
-                        this.broadcast(CHANNELS.startGame, "Start");
+                        this.broadcast(CHANNELS.startGame, "start");
                         console.log("starting game");
                         this.serverLoop.start();
+                    } else if (this.readyCount > this.collisionEngine.players.size) {
+                        //just tell the client that just readied to start
+                        client.emit(CHANNELS.startGame, "quientStart")
                     }
                 } else {
+                    //unready the player
                     this.readyCount--;
                 }
-
             })
         });
         return this;
