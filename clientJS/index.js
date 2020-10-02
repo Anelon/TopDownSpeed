@@ -17,6 +17,29 @@ import ClientLoop from "./clientLoop.js";
 // @ts-ignore
 let socket = io();
 
+let ready = false;
+/** @type {HTMLButtonElement} */
+const readyButton = document.querySelector("button#ready");
+/** @type {HTMLInputElement} */
+const displayNameInput = document.querySelector("input#name");
+/** @type {HTMLDivElement} */
+const introMessageDiv = document.querySelector("div#introMessage");
+
+let displayName = "Player";
+readyButton.disabled = true;
+readyButton.addEventListener("click", (e) => {
+    ready = !ready;
+    if(ready) {
+        readyButton.innerText = "Unready";
+        displayName = displayNameInput.value;
+        displayNameInput.disabled = true;
+        socket.emit(CHANNELS.ready, {displayName, ready})
+    } else {
+        readyButton.innerText = "Ready";
+        displayNameInput.disabled = false;
+    }
+});
+
 /**
  * @param {string} mapName
  */
@@ -78,6 +101,11 @@ async function main(playerInfoJson) {
         canvas.removeDrawable(playerID);
     });
 
+    socket.on(CHANNELS.startGame, function (startText) {
+        introMessageDiv.hidden = true;
+        clientLoop.start();
+    });
+
     //pull the information from json
     const {
         location, spawnLocation, name, imgSrc, speed, currHealth, maxHealth, id, scale
@@ -90,8 +118,14 @@ async function main(playerInfoJson) {
     playerController.spawnLocation = spawnVec;
     //this should be redundant as when playerController spawn you probably should have full health
     playerController.currHealth = currHealth;
+    //stun the player so they can not move until game starts
+    playerController.stunned = true;
     collisionEngine.addPlayer(playerController);
 
+    //send request to server saying ready to receive game data
+    socket.emit(CHANNELS.gameData, "game");
+    //reactivate the ready button
+    readyButton.disabled = false;
 
     //start up the client loop
     clientLoop = new ClientLoop(playerController, gameMap, canvas, time, collisionEngine, socket);

@@ -5,22 +5,29 @@ import CHANNELS from "../sharedJS/utils/channels.js";
 import CollisionEngine from "../sharedJS/collisionEngine.js";
 import { Circle } from "../sharedJS/shapes.js";
 import { projectileFromJSON } from "../sharedJS/utils/utils.js";
+import { MaxPlayers } from "../sharedJS/utils/enums.js";
 
 export default class Connections {
     /**
      * @param {import("http").Server | import("https").Server} server
      * @param {CollisionEngine} collisionEngine
      */
-    constructor(server, collisionEngine, gameMap, connections = new Map()) {
+    constructor(server, collisionEngine, gameMap, serverLoop, connections = new Map()) {
         if(!(collisionEngine instanceof CollisionEngine)) throw TypeError("collisionEngine is not a collisionEngine object;");
         this.sockets = io(server);
         this.gameMap = gameMap;
         this.connections = connections;
         this.collisionEngine = collisionEngine;
+        this.serverLoop = serverLoop;
+        this.readyCount = 0;
     }
 
     start() {
         this.sockets.on("connection", (client) => {
+            if(this.connections.size >= MaxPlayers) {
+                console.log("Too Many Players Connected");
+                return;
+            }
             console.log("a user has connected");
             //add client to the list of connections
             this.connections.set(client.id, client);
@@ -30,21 +37,11 @@ export default class Connections {
             player.id = client.id;
             //send the client their player
             client.emit(CHANNELS.newPlayer, player.makeObject());
-            //send client all existing players
-            console.log(this.collisionEngine.players.size);
-            for (const players of this.collisionEngine.players.values()) {
-                if(!this.connections.has(players.id)) {
-                    console.log(players);
-                    continue;
-                }
-                client.emit(CHANNELS.playerMove, players.makeObject());
-            }
-            //send client all existing projectiles
-            for (const projectile of this.collisionEngine.projectiles.values()) {
-                client.emit(CHANNELS.newProjectile, projectile.makeObject());
-            }
             //add player to collisionEngine
             this.collisionEngine.addPlayer(player);
+            //save the player to the connection
+            this.connections.get(client.id).player = player;
+            this.connections.get(client.id).ready = false;
             //send the other players the new player
             this.broadcast(CHANNELS.playerMove, player.makeObject(), client);
 
@@ -81,6 +78,47 @@ export default class Connections {
                 this.broadcast(CHANNELS.deletePlayer, playerInfo.id, client);
                 this.collisionEngine.removePlayer(playerInfo.id);
             });
+
+            //gameName can be used later if we can have more than one game going on a server
+            client.on(CHANNELS.gameData, (gameName) => {
+                //send client all existing players
+                for (const players of this.collisionEngine.players.values()) {
+                    //if the player isn't connected dont send
+                    if (!this.connections.has(players.id)) {
+                        console.log("Inactive Player:", players.id, players.name);
+                        continue;
+                    }
+                    client.emit(CHANNELS.playerMove, players.makeObject());
+                }
+                //send client all existing projectiles
+                for (const projectile of this.collisionEngine.projectiles.values()) {
+                    console.log(projectile);
+                    client.emit(CHANNELS.newProjectile, projectile.makeObject());
+                }
+            });
+
+            client.on(CHANNELS.ready, (data) => {
+                console.log(data);
+                const player = this.collisionEngine.players.get(client.id);
+                //if there is a display name set it
+                if(data.displayName) {
+                    player.name = data.displayName;
+                } else {
+                    player.name = client.id;
+                }
+                if(data.ready) {
+                    this.readyCount++;
+                    console.log(this.readyCount, this.collisionEngine.players.size);
+                    if(this.readyCount === this.collisionEngine.players.size) {
+                        this.broadcast(CHANNELS.startGame, "Start");
+                        console.log("starting game");
+                        this.serverLoop.start();
+                    }
+                } else {
+                    this.readyCount--;
+                }
+
+            })
         });
         return this;
     }

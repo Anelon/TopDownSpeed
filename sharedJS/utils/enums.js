@@ -6,7 +6,7 @@ import VictoryMonument from "../map/victoryMonument.js";
 import Vec2 from "../vec2.js";
 
 //Enum of the type strings for consistency
-const TYPES = {
+export const TYPES = {
     //ability types
     basic: "basic",
     fire: "fire",
@@ -16,7 +16,7 @@ const TYPES = {
 //lock the enum
 Object.freeze(TYPES);
 
-const CATEGORY = {
+export const CATEGORY = {
     //terain types
     region: "region",
     tile: "tile",
@@ -32,31 +32,33 @@ const CATEGORY = {
 //lock the enum
 Object.freeze(CATEGORY);
 
-const TILE_NAMES = {
+export const TILE_NAMES = {
     g: "grass",
     s: "snow",
     d: "dirt",
     w: "water",
+    u: "dungeon",
     v: "void",
     " ": "none",
 }
 //lock the enum
 Object.freeze(CATEGORY);
-const TILES = {
+export const TILES = {
     [TILE_NAMES.g]: new Tile(new Vec2(), TILE_NAMES.g, true, true, 0),
     [TILE_NAMES.s]: new Tile(new Vec2(), TILE_NAMES.s, true, true, 0),
     [TILE_NAMES.d]: new Tile(new Vec2(), TILE_NAMES.d, true, true, 0),
     [TILE_NAMES.w]: new Tile(new Vec2(), TILE_NAMES.w, false, true, 0),
+    [TILE_NAMES.u]: new Tile(new Vec2(), TILE_NAMES.u, true, true, 0),
     [TILE_NAMES[" "]]: new Tile(new Vec2(), TILE_NAMES[" "], true, true, 0),
 }
 //lock the enum
 Object.freeze(TILES);
 
-const TILE_OPTIONS = new Set(["walkable", "passable"]);
+export const TILE_OPTIONS = new Set(["walkable", "passable"]);
 //lock the enum
 Object.freeze(TILE_OPTIONS);
 
-const REGIONS = {
+export const REGIONS = {
     "pvp": Region,
     "pvpObjective": ObjectiveRegion,
     "pve": Region,
@@ -69,7 +71,7 @@ const REGIONS = {
 //lock the enum
 Object.freeze(REGIONS);
 
-const OBJECTIVE_COLORS = {
+export const OBJECTIVE_COLORS = {
     "pvpObjective": "red",
     "pveObjective": "blue",
     "puzzleObjective": "yellow",
@@ -78,4 +80,5 @@ const OBJECTIVE_COLORS = {
 //lock the enum
 Object.freeze(OBJECTIVE_COLORS);
 
-export { TYPES, CATEGORY, TILE_NAMES, TILES, TILE_OPTIONS, REGIONS, OBJECTIVE_COLORS };
+export const MaxPlayers = 6;
+export const MinPlayers = 6;

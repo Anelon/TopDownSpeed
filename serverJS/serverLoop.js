@@ -63,9 +63,7 @@ class ServerLoop {
         const gameMap = GameMap.makeFromJSON(mapJSON);
         const pixelDims = gameMap.dimentions.multiplyVec(gameMap.tileSize);
         this.collisionEngine = new CollisionEngine(pixelDims.x, pixelDims.y);
-        this.connections = new Connections(server, this.collisionEngine, this.gameMap).start();
-
-        this.start();
+        this.connections = new Connections(server, this.collisionEngine, this.gameMap, this).start();
     }
 }
 export default ServerLoop;

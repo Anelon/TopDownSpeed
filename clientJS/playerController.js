@@ -55,6 +55,7 @@ export default class PlayerController extends Player {
 
         //if true the player can not use any abilities
         this.silenced = false;
+        this.stunned = false;
     }
     //gets a Vec2 that is the look direction and updates lookDirection
     get look() {
@@ -70,6 +71,7 @@ export default class PlayerController extends Player {
      */
     update(time, dt, collisions, canvas, socket) {
         this.moved = false;
+        if(this.stunned) return;
         let direction = new Vec2();
         //go fast button
         if (keyPress[keyBinds.JUMP]) {

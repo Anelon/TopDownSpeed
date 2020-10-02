@@ -28,10 +28,16 @@ export default class ClientLoop {
         this.canvas = canvas;
         this.socket = socket;
         this.time = time;
-        this.running = true;
+        this.running = false;
 
         requestAnimationFrame(this.frame.bind(this));
     }
+    start() {
+        this.running = true;
+        this.playerController.stunned = false;
+        requestAnimationFrame(this.frame.bind(this));
+    }
+
     setGameMap(gameMap) {
         this.gameMap = gameMap;
         //set new regions and statics

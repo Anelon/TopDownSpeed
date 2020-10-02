@@ -75,6 +75,7 @@ canvas.addEventListener("mouseup", function(e) {
             traversalObject[elem.value] = elem.checked;
         }
         const tile = TILES[selectedTileName].clone().setTraversal(traversalObject);
+        console.log(tile);
         gameMap.update(regionStart, regionEnd, selectedLayer, tile);
         collisionEngine.setStatics(gameMap.generateStatic());
     } else if (editMode === EDIT_MODES.region) {
