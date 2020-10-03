@@ -23,6 +23,7 @@ export default class ServerLoop {
         this.collisionEngine = null;
         this.connections = null;
         this.setup(server);
+        this.running = false;
     }
 
     update() {
@@ -53,6 +54,7 @@ export default class ServerLoop {
                             if(/** @type {VictoryMonument} */(lane.regions.get("victoryMonument")).objectives.size === NUM_OBJECTIVES) {
                                 console.log(laneName, "Has Won");
                                 this.connections.broadcast(CHANNELS.endGame, laneName);
+                                this.stop();
                             }
                         }
                     }
@@ -70,11 +72,16 @@ export default class ServerLoop {
         }
         this.time.last = this.time.now;
         //sendToClients(this.time);
-        setImmediate(this.tick.bind(this));
+        if (this.running)
+            setImmediate(this.tick.bind(this));
     }
 
     start() {
+        this.running = true;
         setImmediate(this.tick.bind(this));
+    }
+    stop() {
+        this.running = false;
     }
 
     /**
