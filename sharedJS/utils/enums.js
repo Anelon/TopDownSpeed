@@ -1,4 +1,6 @@
 import ObjectiveRegion from "../map/objectiveRegion.js";
+import PVEObjectiveRegion from "../map/pveObjectiveRegion.js";
+import PVERegion from "../map/PVERegion.js";
 import Region from "../map/region.js";
 import SpawnRegion from "../map/spawnRegion.js";
 import Tile from "../map/tile.js";
@@ -24,6 +26,7 @@ export const CATEGORY = {
     //can be damaged
     damageable: "damageable",
     player: "player",
+    dragon: "dragon",
     //Projectile
     projectile: "projectile",
     //base
@@ -73,8 +76,8 @@ Object.freeze(TILE_OPTIONS);
 export const REGIONS = {
     "pvp": Region,
     "pvpObjective": ObjectiveRegion,
-    "pve": Region,
-    "pveObjective": ObjectiveRegion,
+    "pve": PVERegion,
+    "pveObjective": PVEObjectiveRegion,
     "puzzle": Region,
     "puzzleObjective": ObjectiveRegion,
     "victoryMonument": VictoryMonument,
@@ -83,6 +86,7 @@ export const REGIONS = {
 //lock the enum
 Object.freeze(REGIONS);
 
+export const NUM_OBJECTIVES = 3;
 export const OBJECTIVE_COLORS = {
     "pvpObjective": "red",
     "pveObjective": "blue",
@@ -93,5 +97,4 @@ export const OBJECTIVE_COLORS = {
 Object.freeze(OBJECTIVE_COLORS);
 
 export const MaxPlayers = 6;
-export const MinPlayers = 6;
-export const NUM_OBJECTIVES = 3;
+export const MinPlayers = 2;

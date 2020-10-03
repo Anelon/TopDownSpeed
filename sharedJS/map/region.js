@@ -19,6 +19,7 @@ export default class Region extends Rectangle {
         this.category = CATEGORY.region;
         this.overlaps = new Map();
         this.lastOverlaps = new Map();
+        this.locked = false;
     }
     static makeFromJSON(json) {
         const {
@@ -63,9 +64,15 @@ export default class Region extends Rectangle {
     beginOverlap(player) {
     }
     /**
+     * placeholder for regions that need to do something when first player begins overlap will probably just be used for the PVE dungeon to start AI
+     */
+    endOverlap() {
+    }
+    /**
      * @param {Player} player
      */
     addOverlaps(player) {
+        if(this.locked) return false;
         this.overlaps.set(player.id, player);
         if(this.lastOverlaps.size === 0) this.firstOverlap(player);
         if(!this.lastOverlaps.has(player.id)) {

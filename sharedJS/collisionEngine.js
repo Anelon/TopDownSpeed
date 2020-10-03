@@ -67,6 +67,11 @@ export default class CollisionEngine {
                 }
             }
         }
+        for (const region of this.regions) {
+            if(region.lastOverlaps.size && !region.overlaps.size) {
+                region.endOverlap();
+            }
+        }
         for (const projectile of this.projectiles.values()) {
             projectile.update(time, step, this);
             const added = this.collisionTree.push(projectile.makePoint());

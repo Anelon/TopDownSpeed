@@ -31,6 +31,9 @@ export default class Tile {
         this.around = around;
         return this;
     }
+    /**
+     * @param {{ walkable: boolean; passable: boolean; }} traversalObject
+     */
     setTraversal(traversalObject) {
         this.walkable = traversalObject.walkable;
         this.passable = traversalObject.passable;
@@ -41,6 +44,7 @@ export default class Tile {
     }
     /**
      * @param {Vec2} tileSize
+     * @param {Vec2} topLeft
      */
     makeBox(tileSize, topLeft) {
         this.tileSize = tileSize;
