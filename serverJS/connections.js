@@ -112,7 +112,7 @@ export default class Connections {
                 if(data.ready) {
                     this.readyCount++;
                     console.log(this.readyCount, this.collisionEngine.players.size);
-                    //add check that there is more than the minPlayers
+                    //TODO add check that there is more than the minPlayers
                     if(this.readyCount === this.collisionEngine.players.size) {
                         this.broadcast(CHANNELS.startGame, "start");
                         console.log("starting game");

@@ -32,10 +32,12 @@ export default class ServerLoop {
         //parse all of the items from the deleteArray
         for (const item of deleteArray) {
             if (item.category === CATEGORY.player) {
+                const player = /** @type {Player} */(item);
                 //ignore
-                if (/** @type {Player}*/(item).currHealth <= 0) {
-                    /** @type {Player}*/(item).kill();
-                    this.connections.broadcast(CHANNELS.playerMove, item.makeObject());
+                if (player.currHealth <= 0) {
+                    player.kill();
+                    console.log(player.name, " has Died.");
+                    this.connections.broadcast(CHANNELS.playerMove, player.makeObject());
                 }
             } else if (item.category === CATEGORY.projectile) {
                 this.collisionEngine.removeProjectile(/** @type {Projectile} */(item));
@@ -48,13 +50,13 @@ export default class ServerLoop {
                 if(region.name === "victoryMonument") {
                     // @ts-ignore
                     if(region.objectives.size === NUM_OBJECTIVES) {
-                        console.log("A Team has Won");
-                        //End the game
+                        //find which team won
                         for(const [laneName, lane] of this.gameMap.lanes) {
                             if(/** @type {VictoryMonument} */(lane.regions.get("victoryMonument")).objectives.size === NUM_OBJECTIVES) {
                                 console.log(laneName, "Has Won");
                                 this.connections.broadcast(CHANNELS.endGame, laneName);
                                 this.stop();
+                                break;
                             }
                         }
                     }
