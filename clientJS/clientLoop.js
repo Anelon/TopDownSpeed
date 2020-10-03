@@ -1,13 +1,13 @@
 import CollisionEngine from "../sharedJS/collisionEngine.js";
-import Vec2 from "../sharedJS/vec2.js";
 import Time from "../sharedJS/utils/time.js";
 import PlayerController from "./playerController.js";
 import Projectile from "../sharedJS/ability/projectile.js";
-import { TYPES, CATEGORY } from "../sharedJS/utils/enums.js";
+import { TYPES, CATEGORY, NUM_OBJECTIVES } from "../sharedJS/utils/enums.js";
 import GameMap from "../sharedJS/map/gameMap.js";
 import CanvasWrapper from "./canvasWrapper.js";
 import { tileSprites } from "./sprites.js";
 import CHANNELS from "../sharedJS/utils/channels.js";
+import Region from "../sharedJS/map/region.js";
 /** @typedef {import("../sharedJS/player.js").default} Player */
 
 export default class ClientLoop {
@@ -37,6 +37,10 @@ export default class ClientLoop {
         this.playerController.stunned = false;
         requestAnimationFrame(this.frame.bind(this));
     }
+    stop() {
+        this.running = false;
+        this.playerController.stunned = true;
+    }
 
     setGameMap(gameMap) {
         this.gameMap = gameMap;
@@ -57,9 +61,20 @@ export default class ClientLoop {
         for (const item of deleteArray) {
             if (item.category === CATEGORY.player) {
                 /** @type {Player} */ (item).kill();
-            } else {
+            } else if (item.category === CATEGORY.projectile) {
                 this.collisionEngine.removeProjectile(/** @type {Projectile} */(item));
                 this.canvas.removeDrawable(item);
+            } else if (item.category === CATEGORY.region) {
+                console.log(item);
+                /** @type {Region} */
+                //@ts-ignore
+                const region = item;
+                if(region.name === "victoryMonument") {
+                    // @ts-ignore
+                    if(region.objectives.size === NUM_OBJECTIVES) {
+                        console.log("A Team has Won");
+                    }
+                }
             }
         }
 

@@ -61,6 +61,7 @@ export default class CollisionEngine {
                 if(region.contains(player.location)) {
                     const newOverlap = region.addOverlaps(player);
                     if (newOverlap) {
+                        deleteList.push(region);
                         //possibly do something although handled on the region class
                     }
                 }

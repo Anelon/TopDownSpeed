@@ -77,7 +77,7 @@ export const REGIONS = {
     "pveObjective": ObjectiveRegion,
     "puzzle": Region,
     "puzzleObjective": ObjectiveRegion,
-    "vm": VictoryMonument,
+    "victoryMonument": VictoryMonument,
     "spawn": SpawnRegion,
 }
 //lock the enum
@@ -94,3 +94,4 @@ Object.freeze(OBJECTIVE_COLORS);
 
 export const MaxPlayers = 6;
 export const MinPlayers = 6;
+export const NUM_OBJECTIVES = 3;

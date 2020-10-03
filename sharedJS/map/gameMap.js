@@ -5,6 +5,8 @@ import VoidRegion from "./voidRegion.js";
 
 export default class GameMap {
     static numLayers = 4;
+    static LEFT = "Left";
+    static RIGHT = "Right";
     /**
      * @param {number} voidWidth
      * @param {Vec2} laneDimentions
@@ -14,10 +16,12 @@ export default class GameMap {
      */
     constructor(voidWidth, laneDimentions, tileSize, verticalLanes=true, lane) {
         this.voidWidth = voidWidth;
-        this.leftLane = lane;
+        /** @type {Map<string, Lane>} */
+        this.lanes = new Map();
+        this.lanes.set(GameMap.LEFT, lane);
         this.tileSize = tileSize;
-        if(!lane) this.leftLane = new Lane(laneDimentions, GameMap.numLayers, tileSize)
-        const laneTopLeft = this.leftLane.topLeft.clone();
+        if(!lane) this.lanes.set(GameMap.LEFT, new Lane("left", laneDimentions, GameMap.numLayers, tileSize));
+        const laneTopLeft = this.lanes.get(GameMap.LEFT).topLeft.clone();
 
         let voidCenter, voidDims;
         if (verticalLanes) {
@@ -38,7 +42,7 @@ export default class GameMap {
             voidDims = new Vec2(voidWidth, laneDimentions.y).multiplyVecS(tileSize);
         }
 
-        this.rightLane = this.leftLane.mirror(verticalLanes, laneTopLeft);
+        this.lanes.set(GameMap.RIGHT, this.lanes.get(GameMap.LEFT).mirror(verticalLanes, laneTopLeft));
 
         this.editMode = false;
         this.verticalLanes = verticalLanes;
@@ -51,7 +55,7 @@ export default class GameMap {
     saveMap() {
         const voidWidth = this.voidWidth;
         const tileSize = this.tileSize;
-        const leftLane = this.leftLane.makeObject();
+        const leftLane = this.lanes.get(GameMap.LEFT).makeObject();
         return JSON.stringify({voidWidth, tileSize, leftLane})
     }
     static makeFromJSON(json) {
@@ -72,21 +76,31 @@ export default class GameMap {
         //convert from tile to pixels
         const startPoint = regionStart.multiplyVec(this.tileSize);
         const endPoint = regionEnd.multiplyVec(this.tileSize);
-        //Left Lane
-        if(this.leftLane.region.contains(startPoint) && this.leftLane.region.contains(endPoint)) {
-            this.leftLane.update(regionStart, regionEnd, layer, tile);
-            this.rightLane = this.leftLane.mirror(this.verticalLanes, this.rightLane.topLeft);
+        let placed = false;
+
+        //find the lane that the selections are in
+        for (const lane of this.lanes.values()) {
+            if (lane.region.contains(startPoint) && lane.region.contains(endPoint)) {
+                lane.update(regionStart, regionEnd, layer, tile);
+
+                for (let other of this.lanes.keys()) {
+                    //skip the current lane
+                    if(this.lanes.get(other) === lane) continue;
+                    const name = this.lanes.get(other).name;
+                    const newLane = lane.mirror(this.verticalLanes, this.lanes.get(other).topLeft);
+                    this.lanes.set(other, newLane);
+                    //put name back on
+                    this.lanes.get(other).name = name;
+                }
+                placed = true;
+                console.log("Placed", placed)
+                break;
+            }
         }
-        //Right Lane
-        else if(this.rightLane.region.contains(startPoint) && this.rightLane.region.contains(endPoint)) {
-            this.rightLane.update(regionStart, regionEnd, layer, tile);
-            this.leftLane = this.rightLane.mirror(this.verticalLanes, this.leftLane.topLeft);
-        }
-        //Both points weren't in a lane
-        else {
+        if(!placed) {
             //TODO possibly alert an error message
             console.error("Failed to place tiles");
-            console.error(startPoint, endPoint, this.leftLane.region, this.rightLane.region);
+            console.error(startPoint, endPoint);
         }
     }
 
@@ -100,32 +114,42 @@ export default class GameMap {
         const startPoint = regionStart.multiplyVec(this.tileSize);
         const endPoint = regionEnd.multiplyVec(this.tileSize);
         //Left Lane
-        if(this.leftLane.region.contains(startPoint) && this.leftLane.region.contains(endPoint)) {
-            this.leftLane.addRegion(regionStart, regionEnd, region, name);
-            this.rightLane = this.leftLane.mirror(this.verticalLanes, this.rightLane.topLeft);
+        let placed = false;
+        //find the lane that the selections are in
+        for (const lane of this.lanes.values()) {
+            if (lane.region.contains(startPoint) && lane.region.contains(endPoint)) {
+                lane.addRegion(regionStart, regionEnd, region, name);
+
+                for (let other of this.lanes.values()) {
+                    //skip the current lane
+                    if(other === lane) continue;
+                    const name = other.name;
+                    other = lane.mirror(this.verticalLanes, other.topLeft);
+                    //put name back on
+                    other.name = name;
+                }
+                placed = true;
+                break;
+            }
         }
-        //Right Lane
-        else if(this.rightLane.region.contains(startPoint) && this.rightLane.region.contains(endPoint)) {
-            this.rightLane.addRegion(regionStart, regionEnd, region, name);
-            this.leftLane = this.rightLane.mirror(this.verticalLanes, this.leftLane.topLeft);
-        }
-        //Both points weren't in a lane
-        else {
+        if(placed) {
+            //TODO possibly alert an error message
             console.error("Failed to place tiles");
-            console.error(startPoint, endPoint, this.leftLane.region, this.rightLane.region);
-            //exit function
-            return;
+            console.error(startPoint, endPoint);
         }
     }
     generateStatic() {
-        let statics = this.rightLane.generateStatic();
-        statics.push(...this.leftLane.generateStatic());
+        const statics = new Array();
+        for(const lane of this.lanes.values()) {
+            statics.push(...lane.generateStatic());
+        }
         return statics
     }
     generateRegions() {
-        let regions = new Array(this.voidRegion);
-        regions.push(...this.rightLane.generateRegions());
-        regions.push(...this.leftLane.generateRegions());
+        const regions = new Array(this.voidRegion);
+        for(const lane of this.lanes.values()) {
+            regions.push(...lane.generateRegions());
+        }
         return regions;
     }
     /**
@@ -134,8 +158,9 @@ export default class GameMap {
      */
     draw(canvas, tileSprites) {
         canvas.clear();
-        this.rightLane.draw(canvas, tileSprites);
-        this.leftLane.draw(canvas, tileSprites);
+        for(const lane of this.lanes.values()) {
+            lane.draw(canvas, tileSprites);
+        }
         canvas.drawGrid();
     }
     bakeImage() {

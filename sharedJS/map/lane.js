@@ -5,6 +5,7 @@ import Region from "./region.js";
 
 export default class Lane {
     /**
+     * @param {string} name
      * @param {Vec2} dimentions In number of tiles wide, tall
      * @param {number} numLayers
      * @param {Vec2} tileSize
@@ -12,7 +13,8 @@ export default class Lane {
      * @param {Array<Layer>} [layers] Will fill with empty layers if not set
      * @param {Map<string, Region>} [regions]
      */
-    constructor(dimentions, numLayers, tileSize, topLeft=new Vec2(), layers, regions) {
+    constructor(name, dimentions, numLayers, tileSize, topLeft=new Vec2(), layers, regions) {
+        this.name = name;
         this.dimentions = dimentions;
         this.tileSize = tileSize;
         this.topLeft = topLeft;
@@ -47,12 +49,12 @@ export default class Lane {
         return {dimentions, numLayers, region, regions, layers}
     }
     /**
-     * @param {{ dimentions: Vec2; layers: Array<Layer>; regions: Array<Array<string|Region>>; }} json
+     * @param {{ name: string; dimentions: Vec2; layers: Array<Layer>; regions: Array<Array<string|Region>>; }} json
      * @param {Vec2} tileSize
      */
     static makeFromJSON(json, tileSize) {
         const {
-            dimentions, layers, regions
+            name, dimentions, layers, regions
         } = json;
         const dims = new Vec2(dimentions.x, dimentions.y);
         const tilesize = new Vec2(tileSize.x, tileSize.y);
@@ -60,7 +62,7 @@ export default class Lane {
         const newLayers = layers.map((layer) => Layer.makeFromJSON(layer, dims));
         const newRegions = new Map(regions.map((region) => [/** @type {string} */ (region[0]), Region.makeFromJSON(region[1])]));
 
-        return new Lane(dims, layers.length, tilesize, topleft, newLayers, newRegions);
+        return new Lane(name, dims, layers.length, tilesize, topleft, newLayers, newRegions);
     }
 
     /**
@@ -84,7 +86,7 @@ export default class Lane {
         }
 
         //create new mirrored lane
-        return new Lane(this.dimentions.clone(), this.layers.length, this.tileSize, laneTopLeft, mirroredLayers, mirroredRegions);
+        return new Lane("", this.dimentions.clone(), this.layers.length, this.tileSize, laneTopLeft, mirroredLayers, mirroredRegions);
     }
     getJSON() {
         return JSON.stringify(this);

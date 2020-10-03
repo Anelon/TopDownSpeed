@@ -6,6 +6,7 @@ const CHANNELS = {
     gameData: "gameData",
     ready: "ready",
     startGame: "startGame",
+    endGame: "endGame",
 }
 //lock the enum
 Object.freeze(CHANNELS);

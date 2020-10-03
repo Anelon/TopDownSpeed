@@ -24,6 +24,8 @@ const readyButton = document.querySelector("button#ready");
 const displayNameInput = document.querySelector("input#name");
 /** @type {HTMLDivElement} */
 const introMessageDiv = document.querySelector("div#introMessage");
+/** @type {HTMLDivElement} */
+const endMessageDiv = document.querySelector("div#endMessage");
 
 let displayName = "Player";
 readyButton.disabled = true;
@@ -109,6 +111,15 @@ async function main(playerInfoJson) {
         //hide the intro message ready screen
         introMessageDiv.hidden = true;
         clientLoop.start();
+    });
+
+    socket.on(CHANNELS.endGame, function (winLaneName) {
+        /** @type {HTMLSpanElement} */
+        const winLaneNameSpan = document.querySelector("span#winLaneName");
+        winLaneNameSpan.innerText = winLaneName;
+        //hide the intro message ready screen
+        endMessageDiv.hidden = false;
+        clientLoop.stop();
     });
 
     //pull the information from json

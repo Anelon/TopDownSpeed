@@ -28,7 +28,7 @@ export default class PlayerController extends Player {
         //create hitbox
         let image = new Image();
         image.src = imgSrc;
-        let hitbox = new Circle(location, 16);
+        let hitbox = new Circle(location, Player.WIDTH);
         super(location, name, imgSrc, speed, health, hitbox, scale);
         this.baseSpeed = speed;
         this.name = name;

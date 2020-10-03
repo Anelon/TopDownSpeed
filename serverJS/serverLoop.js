@@ -2,15 +2,17 @@ import Time from "../sharedJS/utils/time.js";
 import Connections from "./connections.js";
 import { performance } from "perf_hooks";
 import CollisionEngine from "../sharedJS/collisionEngine.js";
-import { TYPES, CATEGORY } from "../sharedJS/utils/enums.js";
-/** @typedef {import("../sharedJS/ability/projectile.js").default} Projectile */
+import { TYPES, CATEGORY, NUM_OBJECTIVES } from "../sharedJS/utils/enums.js";
 import Player from "../sharedJS/player.js";
 import CHANNELS from "../sharedJS/utils/channels.js";
 import GameMap from "../sharedJS/map/gameMap.js";
 import { loadMapSync } from "./serverUtils.js";
+/** @typedef {import("../sharedJS/ability/projectile.js").default} Projectile */
+/** @typedef {import("../sharedJS/map/victoryMonument.js").default} VictoryMonument */
+/** @typedef {import("../sharedJS/map/region.js").default} Region */
 //import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 
-class ServerLoop {
+export default class ServerLoop {
     /**
      * @param {import("http").Server | import("https").Server} server
      */
@@ -26,6 +28,7 @@ class ServerLoop {
     update() {
         //update all projectiles
         const deleteArray = this.collisionEngine.update(this.time, this.time.tickRate);
+        //parse all of the items from the deleteArray
         for (const item of deleteArray) {
             if (item.category === CATEGORY.player) {
                 //ignore
@@ -33,8 +36,27 @@ class ServerLoop {
                     /** @type {Player}*/(item).kill();
                     this.connections.broadcast(CHANNELS.playerMove, item.makeObject());
                 }
-            } else {
+            } else if (item.category === CATEGORY.projectile) {
                 this.collisionEngine.removeProjectile(/** @type {Projectile} */(item));
+            } else if (item.category === CATEGORY.region) {
+                //cast item to a region
+                /** @type {Region} */
+                //@ts-ignore
+                const region = item;
+                console.log(`Player entered the ${region.name} region`);
+                if(region.name === "victoryMonument") {
+                    // @ts-ignore
+                    if(region.objectives.size === NUM_OBJECTIVES) {
+                        console.log("A Team has Won");
+                        //End the game
+                        for(const [laneName, lane] of this.gameMap.lanes) {
+                            if(/** @type {VictoryMonument} */(lane.regions.get("victoryMonument")).objectives.size === NUM_OBJECTIVES) {
+                                console.log(laneName, "Has Won");
+                                this.connections.broadcast(CHANNELS.endGame, laneName);
+                            }
+                        }
+                    }
+                }
             }
         }
         //check if anyone is ready to think
@@ -60,10 +82,12 @@ class ServerLoop {
      */
     setup(server) {
         const mapJSON = JSON.parse(loadMapSync("map"));
-        const gameMap = GameMap.makeFromJSON(mapJSON);
-        const pixelDims = gameMap.dimentions.multiplyVec(gameMap.tileSize);
+        this.gameMap = GameMap.makeFromJSON(mapJSON);
+        const pixelDims = this.gameMap.dimentions.multiplyVec(this.gameMap.tileSize);
         this.collisionEngine = new CollisionEngine(pixelDims.x, pixelDims.y);
         this.connections = new Connections(server, this.collisionEngine, this.gameMap, this).start();
+        //add map regions and statics to the collision engine
+        this.collisionEngine.setRegions(this.gameMap.generateRegions());
+        this.collisionEngine.setStatics(this.gameMap.generateStatic());
     }
 }
-export default ServerLoop;

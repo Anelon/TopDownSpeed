@@ -32,7 +32,7 @@ export default class Connections {
             //add client to the list of connections
             this.connections.set(client.id, client);
             const spawn = new Vec2(50,50);//TODO set spawn based on map infoation
-            let player = new Player(spawn, "Player", "./img/player.png", 200, 200, new Circle(spawn, 32), 2);
+            let player = new Player(spawn, "Player", "./img/player.png", 200, 200, new Circle(spawn, Player.WIDTH), 2);
             //set player id to client id for easier lookup
             player.id = client.id;
             //send the client their player
@@ -112,6 +112,7 @@ export default class Connections {
                 if(data.ready) {
                     this.readyCount++;
                     console.log(this.readyCount, this.collisionEngine.players.size);
+                    //add check that there is more than the minPlayers
                     if(this.readyCount === this.collisionEngine.players.size) {
                         this.broadcast(CHANNELS.startGame, "start");
                         console.log("starting game");
