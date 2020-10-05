@@ -10,7 +10,7 @@ import { loadMapSync } from "./serverUtils.js";
 /** @typedef {import("../sharedJS/ability/projectile.js").default} Projectile */
 /** @typedef {import("../sharedJS/map/victoryMonument.js").default} VictoryMonument */
 /** @typedef {import("../sharedJS/map/region.js").default} Region */
-//import { MinPriorityQueue } from '@datastructures-js/priority-queue';
+/** @typedef {import("../sharedJS/dragon.js").default} Dragon */
 
 export default class ServerLoop {
     /**
@@ -40,7 +40,7 @@ export default class ServerLoop {
                     this.connections.broadcast(CHANNELS.playerMove, player.makeObject());
                 }
             } else if (item.category === CATEGORY.projectile) {
-                this.collisionEngine.removeProjectile(/** @type {Projectile} */(item));
+                this.collisionEngine.removeDynamic(/** @type {Projectile} */(item));
             } else if (item.category === CATEGORY.region) {
                 //cast item to a region
                 /** @type {Region} */
@@ -61,6 +61,9 @@ export default class ServerLoop {
                         }
                     }
                 }
+            } else if (item.category === CATEGORY.dragon) {
+                console.log("Dead dragon");
+                this.collisionEngine.removeDynamic(/** @type {Dragon} */(item));
             }
         }
         //check if anyone is ready to think
@@ -98,5 +101,10 @@ export default class ServerLoop {
         //add map regions and statics to the collision engine
         this.collisionEngine.setRegions(this.gameMap.generateRegions());
         this.collisionEngine.setStatics(this.gameMap.generateStatic());
+        const monsters = this.gameMap.getMonsters();
+        console.log(monsters);
+        for(const monster of monsters) {
+            this.collisionEngine.addDynamic(monster);
+        }
     }
 }

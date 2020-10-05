@@ -23,6 +23,8 @@ export default class PVERegion extends Region {
      * @param {Player} player
      */
     beginOverlap(player) {
-        player.objectives.add(this.color);
+        if(this.bossMonster) {
+            this.bossMonster.active = true;
+        }
     }
 }

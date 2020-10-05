@@ -83,7 +83,7 @@ async function main(playerInfoJson) {
     socket.on(CHANNELS.newProjectile, function (newProjectile) {
         const updated = JSON.parse(newProjectile.json);
         const projectile = projectileFromJSON(newProjectile);
-        collisionEngine.addProjectile(projectile);
+        collisionEngine.addDynamic(projectile);
         if (newProjectile.type === "Projectile") {
             canvas.addDrawable(projectile);
         } else {
@@ -143,6 +143,7 @@ async function main(playerInfoJson) {
     //reactivate the ready button
     readyButton.disabled = false;
 
+    console.log(canvas);
     //start up the client loop
     clientLoop = new ClientLoop(playerController, gameMap, canvas, time, collisionEngine, socket);
 }

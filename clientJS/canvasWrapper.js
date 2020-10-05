@@ -1,6 +1,8 @@
 import Vec2 from "../sharedJS/vec2.js";
 import Drawable from "./drawable.js";
 import Player from "../sharedJS/player.js";
+import Dragon from "../sharedJS/dragon.js";
+import DragonSprite from "./dragonSprite.js";
 /** @typedef {import("../sharedJS/ability/projectile.js").default} Projectile */
 /** @typedef {import("../sharedJS/entity.js").default} Entity */
 /** @typedef { import("./playerController.js").default } PlayerController; */
@@ -83,19 +85,21 @@ class CanvasWrapper {
 	}
 	/**
 	 * Adds a drawable to drawables
-	 * @param {Drawable|Entity|Player|Projectile|Sprite} drawable 
+	 * @param {Drawable|Entity|Player|Projectile|Sprite|Dragon} drawable 
 	 */
 	addDrawable(drawable) {
 		if(drawable instanceof Drawable) {
 			this.drawables.set(drawable.owner.id, drawable);
 			//this.drawables.push(drawable);
+		} else if (drawable instanceof Dragon) {
+			this.drawables.set(drawable.id, new DragonSprite(drawable, 1, drawable.scale));
 		} else {
 			this.drawables.set(drawable.id, new Drawable(drawable, drawable.scale));
 		}
 	}
 	/**
 	 * Deletes a drawable from drawables
-	 * @param {Drawable|Entity|Sprite} drawable 
+	 * @param {Drawable|Entity|Player|Projectile|Sprite|Dragon} drawable 
 	 */
 	removeDrawable(drawable) {
 		if(drawable instanceof Drawable) {
@@ -161,6 +165,10 @@ class CanvasWrapper {
 
 		this.ctx.transform(1, 0, 0, 1, origin.x, origin.y);
 		this.ctx.rotate(Math.atan2(look.y, look.x)); // Adjust image 90 degree anti clockwise (PI/2) because the image  is pointing in the wrong direction.
+
+		if (look.x < 0) {
+			this.ctx.scale(1, -1);
+		}
 
 		if(outlineColors.size) {
 			if (sx !== null) {

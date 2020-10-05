@@ -166,4 +166,11 @@ export default class GameMap {
     bakeImage() {
         //TODO generate image from canvas
     }
+    getMonsters() {
+        const monsters = new Array();
+        for(const lane of this.lanes.values()) {
+            monsters.push(...lane.getMonsters());
+        }
+        return monsters;
+    }
 }

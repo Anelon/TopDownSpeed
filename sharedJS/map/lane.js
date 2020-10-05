@@ -1,6 +1,9 @@
-import { REGIONS, TILES, TILE_NAMES } from "../utils/enums.js";
+import Dragon from "../dragon.js";
+import { REGIONS, REGION_NAMES, TILES, TILE_NAMES } from "../utils/enums.js";
 import Vec2 from "../vec2.js";
 import Layer from "./layer.js";
+import PVEObjectiveRegion from "./pveObjectiveRegion.js";
+import PVERegion from "./PVERegion.js";
 import Region from "./region.js";
 
 export default class Lane {
@@ -36,6 +39,18 @@ export default class Lane {
         /** @type {Map<string, Region>} */
         this.regions = new Map();
         if(regions) this.regions = regions;
+
+        this.monsters = new Array();
+        if(this.regions.get(REGION_NAMES.pve) && this.regions.get(REGION_NAMES.pveObjective)) {
+            console.log("Spawn Dragon?");
+            const pve = /** @type {PVERegion} */(this.regions.get(REGION_NAMES.pve));
+            const pveObjective = /** @type {PVEObjectiveRegion} */(this.regions.get(REGION_NAMES.pveObjective));
+            const shift = new Vec2(pve.center.x - pveObjective.center.x, 0).multiplyScalarS(.5);
+            const bossLocation = pve.center.sub(shift);
+            console.log(pve.center, bossLocation);
+            pve.bossMonster = new Dragon(bossLocation, "dragon", pveObjective, shift);
+            this.monsters.push(pve.bossMonster);
+        }
     }
     makeObject() {
         const dimentions = {x: this.dimentions.x, y: this.dimentions.y};
@@ -104,6 +119,9 @@ export default class Lane {
             regions.push(region);
         }
         return regions;
+    }
+    getMonsters() {
+        return this.monsters;
     }
     /**
      * @param {import("../../clientJS/canvasWrapper.js").default} canvas

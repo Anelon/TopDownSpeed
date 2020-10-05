@@ -1,6 +1,6 @@
 import Vec2 from "./vec2.js";
 import Point from "./point.js";
-import { Circle } from "./shapes.js";
+import { Circle, Rectangle } from "./shapes.js";
 import Time from "./utils/time.js";
 import { TYPES, CATEGORY } from "./utils/enums.js";
 
@@ -11,7 +11,7 @@ export default class Entity {
      * @constructor
      * @param {Vec2} location The start location of Entity
      * @param {string} imgSrc Display image
-     * @param {Circle} hitbox Hittable region
+     * @param {Circle|Rectangle} hitbox Hittable region
      * @param {number} [speed=0] How many pixels the entity moves per second
      * @param {number} [scale=1] The scale factor to get to 64 pixels per tile
      * @param {Vec2} [lookDirection=Vec2(1,0)] Which direction the entity is looking at

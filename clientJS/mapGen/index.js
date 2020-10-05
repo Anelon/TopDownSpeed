@@ -6,6 +6,8 @@ import PlayerController from "../playerController.js";
 import Time from "../../sharedJS/utils/time.js";
 import CollisionEngine from "../../sharedJS/collisionEngine.js";
 import ClientLoop from "../clientLoop.js";
+import Dragon from "../../sharedJS/dragon.js";
+import DragonSprite from "../dragonSprite.js";
 
 let mapName = "map";
 fetch(`./api/getMap/${mapName}`)
@@ -72,7 +74,10 @@ canvas.addEventListener("mouseup", function(e) {
     if(editMode === EDIT_MODES.tile) {
         /** @type {NodeListOf<HTMLInputElement>} */
         const traversal = document.querySelectorAll("input[name='traversal']");
-        const traversalObject = {};
+        const traversalObject = {
+            walkable: false,
+            passable: true
+        };
         for (const elem of traversal) {
             traversalObject[elem.value] = elem.checked;
         }

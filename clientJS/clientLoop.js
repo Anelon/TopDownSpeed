@@ -9,6 +9,8 @@ import { tileSprites } from "./sprites.js";
 import CHANNELS from "../sharedJS/utils/channels.js";
 import Region from "../sharedJS/map/region.js";
 /** @typedef {import("../sharedJS/player.js").default} Player */
+/** @typedef {import("../sharedJS/dragon.js").default} Dragon */
+/** @typedef {import("../sharedJS/entity.js").default} Entity */
 
 export default class ClientLoop {
     /**
@@ -23,12 +25,12 @@ export default class ClientLoop {
         this.playerController = playerController
         //this.gameMap = gameMap;
         this.collisionEngine = collisionEngine;
-        this.setGameMap(gameMap);
         this.collisionEngine.addPlayer(this.playerController);
         this.canvas = canvas;
         this.socket = socket;
         this.time = time;
         this.running = false;
+        this.setGameMap(gameMap);
 
         requestAnimationFrame(this.frame.bind(this));
     }
@@ -47,6 +49,13 @@ export default class ClientLoop {
         //set new regions and statics
         this.collisionEngine.setRegions(gameMap.generateRegions());
         this.collisionEngine.setStatics(gameMap.generateStatic());
+        const monsters = gameMap.getMonsters();
+        console.log(monsters);
+        for(const monster of monsters) {
+            this.collisionEngine.addDynamic(monster);
+            this.canvas.addDrawable(monster);
+            console.log(this.canvas.drawables);
+        }
     }
     /**
      * Updates the game state
@@ -62,8 +71,7 @@ export default class ClientLoop {
             if (item.category === CATEGORY.player) {
                 /** @type {Player} */ (item).kill();
             } else if (item.category === CATEGORY.projectile) {
-                this.collisionEngine.removeProjectile(/** @type {Projectile} */(item));
-                this.canvas.removeDrawable(item);
+                this.remove(/** @type {Projectile} */(item));
             } else if (item.category === CATEGORY.region) {
                 console.log(item);
                 /** @type {Region} */
@@ -75,6 +83,9 @@ export default class ClientLoop {
                         console.log("A Team has Won");
                     }
                 }
+            } else if (item.category === CATEGORY.dragon) {
+                //Set up dragon delete call back
+                /** @type {Dragon} */(item).deleteCall = this.remove.bind(this);
             }
         }
 
@@ -89,11 +100,21 @@ export default class ClientLoop {
 
     render() {
         //TODO look into moveing this to webworker for a different thread
+        //https://developers.google.com/web/updates/2018/08/offscreen-canvas
+        //https://yashints.dev/blog/2019/05/11/offscreen-canvas
         this.canvas.clear();
 
         this.gameMap.draw(this.canvas, tileSprites);
         this.canvas.render(this.playerController);
         this.playerController.draw(this.canvas);
+    }
+
+    /**
+     * @param {Dragon|Projectile} item
+     */
+    remove(item) {
+        this.collisionEngine.removeDynamic(item);
+        this.canvas.removeDrawable(item);
     }
 
     //based off of this site

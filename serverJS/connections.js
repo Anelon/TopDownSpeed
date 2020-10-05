@@ -5,7 +5,7 @@ import CHANNELS from "../sharedJS/utils/channels.js";
 import CollisionEngine from "../sharedJS/collisionEngine.js";
 import { Circle } from "../sharedJS/shapes.js";
 import { projectileFromJSON } from "../sharedJS/utils/utils.js";
-import { MaxPlayers } from "../sharedJS/utils/enums.js";
+import { CATEGORY, MaxPlayers } from "../sharedJS/utils/enums.js";
 
 export default class Connections {
     /**
@@ -66,7 +66,7 @@ export default class Connections {
 
             client.on(CHANNELS.newProjectile, (newProjectile) => {
                 const updated = JSON.parse(newProjectile.json);
-                this.collisionEngine.addProjectile(projectileFromJSON(newProjectile));
+                this.collisionEngine.addDynamic(projectileFromJSON(newProjectile));
                 //TODO: add validation of move here
                 //broadcast the message (add client to prevent echoing)
                 this.broadcast(CHANNELS.newProjectile, newProjectile, client);
@@ -90,8 +90,9 @@ export default class Connections {
                     }
                     client.emit(CHANNELS.playerMove, players.makeObject());
                 }
-                //send client all existing projectiles
-                for (const projectile of this.collisionEngine.projectiles.values()) {
+                //send client all existing dynamics
+                for (const projectile of this.collisionEngine.dynamics.values()) {
+                    if(projectile.category === CATEGORY.dragon) continue;
                     console.log(projectile);
                     client.emit(CHANNELS.newProjectile, projectile.makeObject());
                 }
