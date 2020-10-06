@@ -36,11 +36,13 @@ export default class ServerLoop {
                 //ignore
                 if (player.currHealth <= 0) {
                     player.kill();
+                    this.connections.message(player.id, CHANNELS.kill, "kill");
                     console.log(player.name, " has Died.");
                     this.connections.broadcast(CHANNELS.playerMove, player.makeObject());
                 }
             } else if (item.category === CATEGORY.projectile) {
                 this.collisionEngine.removeDynamic(/** @type {Projectile} */(item));
+                this.connections.broadcast(CHANNELS.deleteProjectile, item.id);
             } else if (item.category === CATEGORY.region) {
                 //cast item to a region
                 /** @type {Region} */
@@ -63,7 +65,7 @@ export default class ServerLoop {
                 }
             } else if (item.category === CATEGORY.dragon) {
                 console.log("Dead dragon");
-                this.collisionEngine.removeDynamic(/** @type {Dragon} */(item));
+                /** @type {Dragon} */(item).deleteCall = this.remove.bind(this);
             }
         }
         //check if anyone is ready to think
@@ -90,6 +92,13 @@ export default class ServerLoop {
     }
 
     /**
+     * @param {Dragon|Projectile} item
+     */
+    remove(item) {
+        this.collisionEngine.removeDynamic(item);
+    }
+
+    /**
      * @param {import("http").Server | import("https").Server} server
      */
     setup(server) {
@@ -101,7 +110,7 @@ export default class ServerLoop {
         //add map regions and statics to the collision engine
         this.collisionEngine.setRegions(this.gameMap.generateRegions());
         this.collisionEngine.setStatics(this.gameMap.generateStatic());
-        const monsters = this.gameMap.getMonsters();
+        const monsters = this.gameMap.getDynamics();
         console.log(monsters);
         for(const monster of monsters) {
             this.collisionEngine.addDynamic(monster);

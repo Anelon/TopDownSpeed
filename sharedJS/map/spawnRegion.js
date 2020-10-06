@@ -16,7 +16,7 @@ export default class SpawnRegion extends Region {
      * @param {Player} player
      */
     beginOverlap(player) {
-        player.spawnLocation = this.center.clone();
+        player.setSpawn(this.center);
         console.log("Set Spawn");
     }
 }

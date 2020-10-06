@@ -16,6 +16,7 @@ export default class Dragon extends Entity {
     static get HEALTH() {return 2000;}
     static get SIZE() {return new Vec2(400, 300);}
     static spritePath = "/img/dragon/";
+    static phaseSpeed = 2;
     /**
      * @param {Vec2} location 
      * @param {string} name 
@@ -57,6 +58,7 @@ export default class Dragon extends Entity {
     kill() {
         console.log("Dragon Killed");
         this.guardedRegion.locked = false;
+        this.category = CATEGORY.none;
     }
 
     /**
@@ -64,6 +66,7 @@ export default class Dragon extends Entity {
      * @param {Dragon|Projectile|Entity} other 
      */
     hit(other) {
+        if (this.phase === animations.death) return false;
         if(other.category === CATEGORY.projectile) {
             if(this.currHealth - other.damage <= 0) {
                 this.frame = 0;
@@ -78,12 +81,12 @@ export default class Dragon extends Entity {
      * @param {number} dt
      */
     update(time, dt) {
-        this.frame++;
+        this.frame += Dragon.phaseSpeed;
         if(animationLengths.get(this.phase) <= this.frame) {
             this.frame = 0;
             if (this.active) {
                 //think
-                this.phase = animations.attack1;
+                this.phase = animations.attack2;
             } else {
                 //reset to idle
                 this.phase = animations.idleBattle;
@@ -92,9 +95,9 @@ export default class Dragon extends Entity {
         if (keyFrames.has(`${this.phase}_${this.frame}`)) {
             const action = keyFrames.get(`${this.phase}_${this.frame}`);
             if(action === "melee") {
-                //melee attack
+                //TODO melee attack
             } else if(action === "fireball") {
-                //melee attack
+                //TODO Launch fireball
             } else if(action === "kill") {
                 this.kill();
             } else if(action === "delete") {

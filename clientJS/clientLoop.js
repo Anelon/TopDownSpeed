@@ -49,11 +49,11 @@ export default class ClientLoop {
         //set new regions and statics
         this.collisionEngine.setRegions(gameMap.generateRegions());
         this.collisionEngine.setStatics(gameMap.generateStatic());
-        const monsters = gameMap.getMonsters();
-        console.log(monsters);
-        for(const monster of monsters) {
-            this.collisionEngine.addDynamic(monster);
-            this.canvas.addDrawable(monster);
+        const dynamics = gameMap.getDynamics();
+        console.log(dynamics);
+        for(const dynamic of dynamics) {
+            this.collisionEngine.addDynamic(dynamic);
+            this.canvas.addDrawable(dynamic);
             console.log(this.canvas.drawables);
         }
     }

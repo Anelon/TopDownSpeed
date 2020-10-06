@@ -166,11 +166,14 @@ export default class GameMap {
     bakeImage() {
         //TODO generate image from canvas
     }
-    getMonsters() {
+    getDynamics() {
         const monsters = new Array();
         for(const lane of this.lanes.values()) {
-            monsters.push(...lane.getMonsters());
+            monsters.push(...lane.getDynamics());
         }
         return monsters;
+    }
+    addPlayer(newPlayer, laneName) {
+        this.lanes.get(laneName).addPlayer(newPlayer);
     }
 }

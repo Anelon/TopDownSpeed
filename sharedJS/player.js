@@ -52,7 +52,7 @@ class Player extends Entity {
         //clear the objectives
         this.objectives.clear();
         //move back to spawn
-        this.location = this.spawnLocation;
+        this.location = this.spawnLocation.clone();
         //reset health
         this.currHealth = this.maxHealth;
     }
@@ -69,7 +69,7 @@ class Player extends Entity {
         return false;
     }
     setSpawn(spawnLocation) {
-        this.spawnLocation = spawnLocation;
+        this.spawnLocation = spawnLocation.clone();
     }
 }
 

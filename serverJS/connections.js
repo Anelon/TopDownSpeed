@@ -5,12 +5,14 @@ import CHANNELS from "../sharedJS/utils/channels.js";
 import CollisionEngine from "../sharedJS/collisionEngine.js";
 import { Circle } from "../sharedJS/shapes.js";
 import { projectileFromJSON } from "../sharedJS/utils/utils.js";
-import { CATEGORY, MaxPlayers } from "../sharedJS/utils/enums.js";
+import { CATEGORY, MaxPlayers, REGION_NAMES } from "../sharedJS/utils/enums.js";
+/** @typedef {import("../sharedJS/map/gameMap.js").default} GameMap */
 
 export default class Connections {
     /**
      * @param {import("http").Server | import("https").Server} server
      * @param {CollisionEngine} collisionEngine
+     * @param {GameMap} gameMap
      */
     constructor(server, collisionEngine, gameMap, serverLoop, connections = new Map()) {
         if(!(collisionEngine instanceof CollisionEngine)) throw TypeError("collisionEngine is not a collisionEngine object;");
@@ -31,10 +33,20 @@ export default class Connections {
             console.log("a user has connected");
             //add client to the list of connections
             this.connections.set(client.id, client);
-            const spawn = new Vec2(50,50);//TODO set spawn based on map infoation
+            let setLane = null;
+            let leastPlayers = MaxPlayers;
+            for(const [laneName, lane] of this.gameMap.lanes) {
+                if(lane.players.size < leastPlayers) {
+                    leastPlayers = lane.players.size;
+                    setLane = laneName;
+                }
+            }
+            console.log(setLane);
+            const spawn = this.gameMap.lanes.get(setLane).regions.get(REGION_NAMES.spawn).center.clone();
             let player = new Player(spawn, "Player", "./img/player.png", 200, 200, new Circle(spawn, Player.WIDTH), 2);
             //set player id to client id for easier lookup
             player.id = client.id;
+            this.gameMap.addPlayer(player, setLane);
             //send the client their player
             client.emit(CHANNELS.newPlayer, player.makeObject());
             //add player to collisionEngine
@@ -150,6 +162,15 @@ export default class Connections {
         } else {
             this.sockets.emit(channel, message);
         }
+    }
 
+    //broadcasts a message on a channel, if sender exists it sends to everyone else
+    /**
+     * @param {string} playerID
+     * @param {string} channel
+     * @param {any} message
+     */
+    message(playerID, channel, message) {
+        this.connections.get(playerID).emit(channel, message);
     }
 }

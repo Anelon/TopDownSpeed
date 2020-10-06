@@ -40,17 +40,22 @@ export default class Lane {
         this.regions = new Map();
         if(regions) this.regions = regions;
 
-        this.monsters = new Array();
+        this.dynamics = new Array();
+        //spawn dragon
         if(this.regions.get(REGION_NAMES.pve) && this.regions.get(REGION_NAMES.pveObjective)) {
-            console.log("Spawn Dragon?");
+            //pull regions for simplicity
             const pve = /** @type {PVERegion} */(this.regions.get(REGION_NAMES.pve));
             const pveObjective = /** @type {PVEObjectiveRegion} */(this.regions.get(REGION_NAMES.pveObjective));
+            //calcuate the shift / look directions of the dragon
             const shift = new Vec2(pve.center.x - pveObjective.center.x, 0).multiplyScalarS(.5);
+            //create boss location
             const bossLocation = pve.center.sub(shift);
-            console.log(pve.center, bossLocation);
+            //make the boss Dragon
             pve.bossMonster = new Dragon(bossLocation, "dragon", pveObjective, shift);
-            this.monsters.push(pve.bossMonster);
+            //add the Boss monster
+            this.dynamics.push(pve.bossMonster);
         }
+        this.players = new Map();
     }
     makeObject() {
         const dimentions = {x: this.dimentions.x, y: this.dimentions.y};
@@ -120,8 +125,8 @@ export default class Lane {
         }
         return regions;
     }
-    getMonsters() {
-        return this.monsters;
+    getDynamics() {
+        return this.dynamics;
     }
     /**
      * @param {import("../../clientJS/canvasWrapper.js").default} canvas
@@ -158,5 +163,8 @@ export default class Lane {
         const center = topLeft.multiplyVec(this.tileSize).addS(dimentions.multiplyScalar(0.5));
         //update or add the region to the map
         this.regions.set(name, new region(center, dimentions, name));
+    }
+    addPlayer(newPlayer) {
+        this.players.set(newPlayer.id, newPlayer);
     }
 }

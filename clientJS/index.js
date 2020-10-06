@@ -98,6 +98,17 @@ async function main(playerInfoJson) {
         if (newPlayer) canvas.addDrawable(/** @type {Player} */(newPlayer));
     });
 
+    socket.on(CHANNELS.kill, function (killMessage) {
+        playerController.kill();
+    });
+
+    socket.on(CHANNELS.deleteProjectile, function (projectileID) {
+        if(collisionEngine.dynamics.has(projectileID)) {
+            collisionEngine.removeDynamic(projectileID);
+            canvas.removeDrawable(projectileID);
+        }
+    });
+
     socket.on(CHANNELS.deletePlayer, function (playerID) {
         collisionEngine.removePlayer(playerID);
         canvas.removeDrawable(playerID);
@@ -143,7 +154,6 @@ async function main(playerInfoJson) {
     //reactivate the ready button
     readyButton.disabled = false;
 
-    console.log(canvas);
     //start up the client loop
     clientLoop = new ClientLoop(playerController, gameMap, canvas, time, collisionEngine, socket);
 }
