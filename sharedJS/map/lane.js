@@ -3,7 +3,7 @@ import { REGIONS, REGION_NAMES, TILES, TILE_NAMES } from "../utils/enums.js";
 import Vec2 from "../vec2.js";
 import Layer from "./layer.js";
 import PVEObjectiveRegion from "./pveObjectiveRegion.js";
-import PVERegion from "./PVERegion.js";
+import PVERegion from "./pveRegion.js";
 import Region from "./region.js";
 
 export default class Lane {
