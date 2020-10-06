@@ -8,7 +8,10 @@ import Box from "./box.js";
 /** @typedef {import("./map/region.js").default} Region */
 //import Ability from "../../sharedJS/ability.js";
 
-//class for holding the other players and as a parent to PlayerController
+/**
+ * Class for the dragon boss
+ * @extends Entity
+ */
 export default class Dragon extends Entity {
     static get SPEED() {return 0;}
     static get SCALE() {return 1;}

@@ -49,7 +49,7 @@ export default class Lane {
             //calcuate the shift / look directions of the dragon
             const shift = new Vec2(pve.center.x - pveObjective.center.x, 0).multiplyScalarS(.5);
             //create boss location
-            const bossLocation = pve.center.sub(shift);
+            const bossLocation = pve.center.sub(shift.add(new Vec2(0, -30)));
             //make the boss Dragon
             pve.bossMonster = new Dragon(bossLocation, "dragon", pveObjective, shift);
             //add the Boss monster
