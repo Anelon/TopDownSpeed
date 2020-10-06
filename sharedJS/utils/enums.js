@@ -1,6 +1,6 @@
 import ObjectiveRegion from "../map/objectiveRegion.js";
 import PVEObjectiveRegion from "../map/pveObjectiveRegion.js";
-import PVERegion from "../map/PVERegion.js";
+import PVERegion from "../map/pveRegion.js";
 import Region from "../map/region.js";
 import SpawnRegion from "../map/spawnRegion.js";
 import Tile from "../map/tile.js";
