@@ -59,7 +59,7 @@ export default class Projectile extends Entity {
      */
     hit(other) {
         //if hitting a player deal damage
-        if(other.category === CATEGORY.damageable || other.category === CATEGORY.player) {
+        if(other.category === CATEGORY.damageable || other.category === CATEGORY.player || other.category === CATEGORY.dragon) {
             /** @type {Player} */(other).currHealth -= this.damage;
             return true;
         } else if (other.category === CATEGORY.tile) {

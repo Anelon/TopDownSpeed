@@ -1,10 +1,14 @@
-import { REGIONS, TILES, TILE_NAMES } from "../utils/enums.js";
+import Dragon from "../dragon.js";
+import { REGIONS, REGION_NAMES, TILES, TILE_NAMES } from "../utils/enums.js";
 import Vec2 from "../vec2.js";
 import Layer from "./layer.js";
+import PVEObjectiveRegion from "./pveObjectiveRegion.js";
+import PVERegion from "./PVERegion.js";
 import Region from "./region.js";
 
 export default class Lane {
     /**
+     * @param {string} name
      * @param {Vec2} dimentions In number of tiles wide, tall
      * @param {number} numLayers
      * @param {Vec2} tileSize
@@ -12,7 +16,8 @@ export default class Lane {
      * @param {Array<Layer>} [layers] Will fill with empty layers if not set
      * @param {Map<string, Region>} [regions]
      */
-    constructor(dimentions, numLayers, tileSize, topLeft=new Vec2(), layers, regions) {
+    constructor(name, dimentions, numLayers, tileSize, topLeft=new Vec2(), layers, regions) {
+        this.name = name;
         this.dimentions = dimentions;
         this.tileSize = tileSize;
         this.topLeft = topLeft;
@@ -34,6 +39,23 @@ export default class Lane {
         /** @type {Map<string, Region>} */
         this.regions = new Map();
         if(regions) this.regions = regions;
+
+        this.dynamics = new Array();
+        //spawn dragon
+        if(this.regions.get(REGION_NAMES.pve) && this.regions.get(REGION_NAMES.pveObjective)) {
+            //pull regions for simplicity
+            const pve = /** @type {PVERegion} */(this.regions.get(REGION_NAMES.pve));
+            const pveObjective = /** @type {PVEObjectiveRegion} */(this.regions.get(REGION_NAMES.pveObjective));
+            //calcuate the shift / look directions of the dragon
+            const shift = new Vec2(pve.center.x - pveObjective.center.x, 0).multiplyScalarS(.5);
+            //create boss location
+            const bossLocation = pve.center.sub(shift);
+            //make the boss Dragon
+            pve.bossMonster = new Dragon(bossLocation, "dragon", pveObjective, shift);
+            //add the Boss monster
+            this.dynamics.push(pve.bossMonster);
+        }
+        this.players = new Map();
     }
     makeObject() {
         const dimentions = {x: this.dimentions.x, y: this.dimentions.y};
@@ -47,12 +69,12 @@ export default class Lane {
         return {dimentions, numLayers, region, regions, layers}
     }
     /**
-     * @param {{ dimentions: Vec2; layers: Array<Layer>; regions: Array<Array<string|Region>>; }} json
+     * @param {{ name: string; dimentions: Vec2; layers: Array<Layer>; regions: Array<Array<string|Region>>; }} json
      * @param {Vec2} tileSize
      */
     static makeFromJSON(json, tileSize) {
         const {
-            dimentions, layers, regions
+            name, dimentions, layers, regions
         } = json;
         const dims = new Vec2(dimentions.x, dimentions.y);
         const tilesize = new Vec2(tileSize.x, tileSize.y);
@@ -60,7 +82,7 @@ export default class Lane {
         const newLayers = layers.map((layer) => Layer.makeFromJSON(layer, dims));
         const newRegions = new Map(regions.map((region) => [/** @type {string} */ (region[0]), Region.makeFromJSON(region[1])]));
 
-        return new Lane(dims, layers.length, tilesize, topleft, newLayers, newRegions);
+        return new Lane(name, dims, layers.length, tilesize, topleft, newLayers, newRegions);
     }
 
     /**
@@ -84,7 +106,7 @@ export default class Lane {
         }
 
         //create new mirrored lane
-        return new Lane(this.dimentions.clone(), this.layers.length, this.tileSize, laneTopLeft, mirroredLayers, mirroredRegions);
+        return new Lane("", this.dimentions.clone(), this.layers.length, this.tileSize, laneTopLeft, mirroredLayers, mirroredRegions);
     }
     getJSON() {
         return JSON.stringify(this);
@@ -102,6 +124,9 @@ export default class Lane {
             regions.push(region);
         }
         return regions;
+    }
+    getDynamics() {
+        return this.dynamics;
     }
     /**
      * @param {import("../../clientJS/canvasWrapper.js").default} canvas
@@ -138,5 +163,8 @@ export default class Lane {
         const center = topLeft.multiplyVec(this.tileSize).addS(dimentions.multiplyScalar(0.5));
         //update or add the region to the map
         this.regions.set(name, new region(center, dimentions, name));
+    }
+    addPlayer(newPlayer) {
+        this.players.set(newPlayer.id, newPlayer);
     }
 }

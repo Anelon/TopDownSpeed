@@ -1,6 +1,9 @@
 import Vec2 from "./vec2.js";
 import { Circle } from "./shapes.js";
 /** @typedef {import("./entity.js").default} Entity */
+/** @typedef {import("./dragon.js").default} Dragon */
+/** @typedef {import("./map/region.js").default} Region */
+/** @typedef {import("./map/tile.js").default} Tile */
 
 //Might have this extend Circle
 class Point extends Circle {
@@ -9,7 +12,7 @@ class Point extends Circle {
      * @constructor
 	 * @param {Vec2} center center of the center of the point
 	 * @param {number} [radius=2] Radius of the cirlce
-	 * @param {Entity} [owner] Who owns this point
+	 * @param {Entity|Dragon|Region|Tile} [owner] Who owns this point
 	 * @param {string} [color="#aaaaaa"] Hex color string for drawing to canvas when debugging
 	 */
 	constructor(center, radius = 2, owner = null, color = "#aaaaaa") {

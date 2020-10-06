@@ -7,7 +7,7 @@ import Projectile from "./ability/projectile.js";
 
 //class for holding the other players and as a parent to PlayerController
 class Player extends Entity {
-    static get WIDTH() {return 32;}
+    static get WIDTH() {return 16;}
     /**
      * @param {Vec2} location 
      * @param {string} name 
@@ -52,7 +52,7 @@ class Player extends Entity {
         //clear the objectives
         this.objectives.clear();
         //move back to spawn
-        this.location = this.spawnLocation;
+        this.location = this.spawnLocation.clone();
         //reset health
         this.currHealth = this.maxHealth;
     }
@@ -69,7 +69,7 @@ class Player extends Entity {
         return false;
     }
     setSpawn(spawnLocation) {
-        this.spawnLocation = spawnLocation;
+        this.spawnLocation = spawnLocation.clone();
     }
 }
 

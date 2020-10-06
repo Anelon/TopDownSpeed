@@ -28,7 +28,7 @@ export default class PlayerController extends Player {
         //create hitbox
         let image = new Image();
         image.src = imgSrc;
-        let hitbox = new Circle(location, 16);
+        let hitbox = new Circle(location, Player.WIDTH);
         super(location, name, imgSrc, speed, health, hitbox, scale);
         this.baseSpeed = speed;
         this.name = name;
@@ -55,12 +55,9 @@ export default class PlayerController extends Player {
 
         //if true the player can not use any abilities
         this.silenced = false;
+        this.stunned = false;
     }
     //gets a Vec2 that is the look direction and updates lookDirection
-    get look() {
-        this.lookDirection = new Vec2(this.mouse.x, this.mouse.y).subS(this.location);
-        return this.lookDirection;
-    }
     /**
      * @param {Time} time
      * @param {number} dt
@@ -70,6 +67,7 @@ export default class PlayerController extends Player {
      */
     update(time, dt, collisions, canvas, socket) {
         this.moved = false;
+        if(this.stunned) return;
         let direction = new Vec2();
         //go fast button
         if (keyPress[keyBinds.JUMP]) {
@@ -100,7 +98,7 @@ export default class PlayerController extends Player {
             //TODO make melee ability (currently debugging prints this)
             if (keyPress[keyBinds.MELEE]) {
                 console.log(this);
-                console.log(collisions.projectiles);
+                console.log(collisions.dynamics);
             }
             //basic arrow ability
             if (keyPress[keyBinds.RANGE]) {
@@ -109,7 +107,7 @@ export default class PlayerController extends Player {
                 //if the ability was successful
                 if (arrow) {
                     //add projectile to the collisions
-                    collisions.addProjectile(arrow);
+                    collisions.addDynamic(arrow);
                     canvas.addDrawable(arrow);
                     socket.emit(CHANNELS.newProjectile, arrow.makeObject());
                 } else {
@@ -120,11 +118,11 @@ export default class PlayerController extends Player {
             //TODO make ranged ability right now does fireball
             if (keyPress[keyBinds.ABILITY1]) {
                 //attempt to use the ability
-                let fireball = this.abilities[keyBinds.ABILITY1].use(time.now, this, this.look);
+                let fireball = this.abilities[keyBinds.ABILITY1].use(time.now, this, this.lookDirection);
                 //if the ability was successful
                 if (fireball) {
                     //add projectile to the collisions
-                    collisions.addProjectile(fireball);
+                    collisions.addDynamic(fireball);
                     canvas.addDrawable(fireball.makeSprite());
                     socket.emit(CHANNELS.newProjectile, fireball.makeObject());
                 } else {
@@ -139,7 +137,7 @@ export default class PlayerController extends Player {
                 //if the ability was successful
                 if (waterball) {
                     //add projectile to the collisions
-                    collisions.addProjectile(waterball);
+                    collisions.addDynamic(waterball);
                     canvas.addDrawable(waterball.makeSprite());
                     socket.emit(CHANNELS.newProjectile, waterball.makeObject());
                 } else {
@@ -152,7 +150,7 @@ export default class PlayerController extends Player {
                 //if the ability was successful
                 if (plantSeed) {
                     //add projectile to the collisions
-                    collisions.addProjectile(plantSeed);
+                    collisions.addDynamic(plantSeed);
                     canvas.addDrawable(plantSeed.makeSprite());
                     socket.emit(CHANNELS.newProjectile, plantSeed.makeObject());
                 } else {

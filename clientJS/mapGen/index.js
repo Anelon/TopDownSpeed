@@ -6,6 +6,8 @@ import PlayerController from "../playerController.js";
 import Time from "../../sharedJS/utils/time.js";
 import CollisionEngine from "../../sharedJS/collisionEngine.js";
 import ClientLoop from "../clientLoop.js";
+import Dragon from "../../sharedJS/dragon.js";
+import DragonSprite from "../dragonSprite.js";
 
 let mapName = "map";
 fetch(`./api/getMap/${mapName}`)
@@ -36,6 +38,7 @@ const time = new Time(performance);
 
 const EDIT_MODES = {
     tile: "tile",
+    decoration: "decoration",
     region: "region",
 }
 
@@ -54,6 +57,7 @@ playerController.draw(canvas);
 
 //--- Initialize the client loop ---//
 const clientLoop = new ClientLoop(playerController, gameMap, canvas, time, collisionEngine);
+clientLoop.start();
 
 //reagions for selections
 let regionStart = new Vec2();
@@ -70,11 +74,15 @@ canvas.addEventListener("mouseup", function(e) {
     if(editMode === EDIT_MODES.tile) {
         /** @type {NodeListOf<HTMLInputElement>} */
         const traversal = document.querySelectorAll("input[name='traversal']");
-        const traversalObject = {};
+        const traversalObject = {
+            walkable: false,
+            passable: true
+        };
         for (const elem of traversal) {
             traversalObject[elem.value] = elem.checked;
         }
         const tile = TILES[selectedTileName].clone().setTraversal(traversalObject);
+        console.log(tile);
         gameMap.update(regionStart, regionEnd, selectedLayer, tile);
         collisionEngine.setStatics(gameMap.generateStatic());
     } else if (editMode === EDIT_MODES.region) {
@@ -125,7 +133,7 @@ for(const option of TILE_OPTIONS) {
 }
 
 
-//--- set up layer selection ---//
+//--- set up regions selection ---//
 const regionSelectList = document.querySelector("#regionSelectList");
 for(const regionName of Object.keys(REGIONS)) {
     const regionSelect = document.createElement("li");
@@ -146,6 +154,8 @@ tileSelectList.addEventListener("click", function(e) {
         editMode = EDIT_MODES.tile;
     }
 });
+
+//--- set up layer selection ---//
 layerSelectList.addEventListener("click", function(e) {
     const layerSelect = /** @type HTMLElement */(e.target).innerText;
     document.querySelector(`#Layer${selectedLayer}`).classList.remove("active");
@@ -157,6 +167,7 @@ layerSelectList.addEventListener("click", function(e) {
         editMode = EDIT_MODES.tile;
     }
 });
+
 regionSelectList.addEventListener("click", function(e) {
     const regionSelect = /** @type HTMLElement */(e.target).innerText;
     document.querySelector(`#${selectedRegion}`).classList.remove("active");

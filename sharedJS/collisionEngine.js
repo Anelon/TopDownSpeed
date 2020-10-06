@@ -6,6 +6,7 @@ import Projectile from "./ability/projectile.js";
 import Player from "./player.js";
 import Time from "./utils/time.js";
 /** @typedef {import("./entity.js").default} Entity */
+/** @typedef {import("./dragon.js").default} Dragon */
 /** @typedef {import("./map/region.js").default} Region */
 //import PlayerController from "../clientJS/playerController.js";
 //import { MinPriorityQueue } from '@datastructures-js/priority-queue';
@@ -23,7 +24,7 @@ export default class CollisionEngine {
 
         //map for holding player and projectiles id -> object
         this.players = new Map();
-        this.projectiles = new Map();
+        this.dynamics = new Map();
 
         this.boundry = new Rectangle(new Vec2(this.width/2, this.height/2), this.width, this.height);
         this.qTreeCapacity = 10;
@@ -61,12 +62,18 @@ export default class CollisionEngine {
                 if(region.contains(player.location)) {
                     const newOverlap = region.addOverlaps(player);
                     if (newOverlap) {
+                        deleteList.push(region);
                         //possibly do something although handled on the region class
                     }
                 }
             }
         }
-        for (const projectile of this.projectiles.values()) {
+        for (const region of this.regions) {
+            if(region.lastOverlaps.size && !region.overlaps.size) {
+                region.endOverlap();
+            }
+        }
+        for (const projectile of this.dynamics.values()) {
             projectile.update(time, step, this);
             const added = this.collisionTree.push(projectile.makePoint());
             //if projectile is out of the map region delete it
@@ -92,7 +99,7 @@ export default class CollisionEngine {
                 }
             }
         }
-        for (const projectile of this.projectiles.values()) {
+        for (const projectile of this.dynamics.values()) {
             //skip projectiles that have already done something
             if (deleteList.includes(projectile)) continue;
             const projectileShape = projectile.makeShape();
@@ -164,19 +171,19 @@ export default class CollisionEngine {
     }
 
     /**
-     * Adds projectile to the projectiles Map
-     * @param {Projectile} newProjectile 
+     * Adds dynamic to the dynamics Map
+     * @param {Projectile|Dragon} newDynamic 
      */
-    addProjectile(newProjectile) {
-        this.projectiles.set(newProjectile.id, newProjectile);
+    addDynamic(newDynamic) {
+        this.dynamics.set(newDynamic.id, newDynamic);
     }
 
     /**
-     * Removes projectile from player Map
-     * @param {Projectile} oldProjectile 
+     * Removes Dynamic from player Map
+     * @param {Projectile|Dragon} oldDynamic 
      */
-    removeProjectile(oldProjectile) {
-        this.projectiles.delete(oldProjectile.id);
+    removeDynamic(oldDynamic) {
+        this.dynamics.delete(oldDynamic.id);
     }
     /**
      * @param {import("./box.js").default[]} statics

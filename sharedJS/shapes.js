@@ -21,6 +21,9 @@ class Circle {
     get width() {
         return this.radius * 2;
     }
+    get height() {
+        return this.radius * 2;
+    }
     get halfWidth() {
         return this.radius;
     }
@@ -109,6 +112,9 @@ class Rectangle {
     }
     get halfHeight() {
         return this.height / 2;
+    }
+    get radius() {
+        return this.width / 2;
     }
 
     /**

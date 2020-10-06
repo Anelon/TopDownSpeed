@@ -12,11 +12,11 @@ export default class Waterball extends Projectile {
     static get SPRITEDIMS() {return new Vec2(64,64);} //Dimentions of each Sprite
     static get IMAGE() { return "./img/abilities/waterball/waterball64.png"; }
     /**
-     * @param {import("../vec2").default} origin
+     * @param {Vec2} origin
      * @param {string} name
      * @param {number} speed
      * @param {number} scale
-     * @param {import("../vec2").default} look
+     * @param {Vec2} look
      * @param {number} range
      * @param {number} damage
      * @param {import("../shapes.js").Circle} hitbox

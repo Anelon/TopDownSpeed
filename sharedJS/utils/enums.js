@@ -1,4 +1,6 @@
 import ObjectiveRegion from "../map/objectiveRegion.js";
+import PVEObjectiveRegion from "../map/pveObjectiveRegion.js";
+import PVERegion from "../map/PVERegion.js";
 import Region from "../map/region.js";
 import SpawnRegion from "../map/spawnRegion.js";
 import Tile from "../map/tile.js";
@@ -6,7 +8,7 @@ import VictoryMonument from "../map/victoryMonument.js";
 import Vec2 from "../vec2.js";
 
 //Enum of the type strings for consistency
-const TYPES = {
+export const TYPES = {
     //ability types
     basic: "basic",
     fire: "fire",
@@ -16,7 +18,7 @@ const TYPES = {
 //lock the enum
 Object.freeze(TYPES);
 
-const CATEGORY = {
+export const CATEGORY = {
     //terain types
     region: "region",
     tile: "tile",
@@ -24,6 +26,7 @@ const CATEGORY = {
     //can be damaged
     damageable: "damageable",
     player: "player",
+    dragon: "dragon",
     //Projectile
     projectile: "projectile",
     //base
@@ -32,50 +35,79 @@ const CATEGORY = {
 //lock the enum
 Object.freeze(CATEGORY);
 
-const TILE_NAMES = {
+export const TILE_NAMES = {
     g: "grass",
     s: "snow",
     d: "dirt",
     w: "water",
+    u: "dungeon",
     v: "void",
     " ": "none",
 }
 //lock the enum
-Object.freeze(CATEGORY);
-const TILES = {
+Object.freeze(TILE_NAMES);
+
+export const DECORATION_NAMES = {
+    redPillar: "redPillar",
+    bluePillar: "bluePillar",
+    greenPillar: "greenPillar",
+}
+//lock the enum
+Object.freeze(DECORATION_NAMES);
+
+export const TILES = {
     [TILE_NAMES.g]: new Tile(new Vec2(), TILE_NAMES.g, true, true, 0),
     [TILE_NAMES.s]: new Tile(new Vec2(), TILE_NAMES.s, true, true, 0),
     [TILE_NAMES.d]: new Tile(new Vec2(), TILE_NAMES.d, true, true, 0),
     [TILE_NAMES.w]: new Tile(new Vec2(), TILE_NAMES.w, false, true, 0),
+    [TILE_NAMES.u]: new Tile(new Vec2(), TILE_NAMES.u, true, true, 0),
+    [DECORATION_NAMES.redPillar]: new Tile(new Vec2(), DECORATION_NAMES.redPillar, false, true, 0),
+    [DECORATION_NAMES.bluePillar]: new Tile(new Vec2(), DECORATION_NAMES.bluePillar, false, true, 0),
+    [DECORATION_NAMES.greenPillar]: new Tile(new Vec2(), DECORATION_NAMES.greenPillar, false, true, 0),
     [TILE_NAMES[" "]]: new Tile(new Vec2(), TILE_NAMES[" "], true, true, 0),
 }
 //lock the enum
 Object.freeze(TILES);
 
-const TILE_OPTIONS = new Set(["walkable", "passable"]);
+export const TILE_OPTIONS = new Set(["walkable", "passable"]);
 //lock the enum
 Object.freeze(TILE_OPTIONS);
 
-const REGIONS = {
-    "pvp": Region,
-    "pvpObjective": ObjectiveRegion,
-    "pve": Region,
-    "pveObjective": ObjectiveRegion,
-    "puzzle": Region,
-    "puzzleObjective": ObjectiveRegion,
-    "vm": VictoryMonument,
-    "spawn": SpawnRegion,
+export const REGION_NAMES = {
+    pvp: "pvp",
+    pve: "pve",
+    puzzle: "puzzle",
+    victoryMonument: "victoryMonument",
+    pvpObjective: "pvpObjective",
+    pveObjective: "pveObjective",
+    puzzleObjective: "puzzleObjective",
+    spawn: "spawn",
+}
+//lock the enum
+Object.freeze(REGION_NAMES);
+
+export const REGIONS = {
+    [REGION_NAMES.pvp]: Region,
+    [REGION_NAMES.pvpObjective]: ObjectiveRegion,
+    [REGION_NAMES.pve]: PVERegion,
+    [REGION_NAMES.pveObjective]: PVEObjectiveRegion,
+    [REGION_NAMES.puzzle]: Region,
+    [REGION_NAMES.puzzleObjective]: ObjectiveRegion,
+    [REGION_NAMES.victoryMonument]: VictoryMonument,
+    [REGION_NAMES.spawn]: SpawnRegion,
 }
 //lock the enum
 Object.freeze(REGIONS);
 
-const OBJECTIVE_COLORS = {
-    "pvpObjective": "red",
-    "pveObjective": "blue",
-    "puzzleObjective": "yellow",
-    "spawn": "green",
+export const NUM_OBJECTIVES = 3;
+export const OBJECTIVE_COLORS = {
+    [REGION_NAMES.pvpObjective]: "red",
+    [REGION_NAMES.pveObjective]: "blue",
+    [REGION_NAMES.puzzleObjective]: "green",
+    [REGION_NAMES.spawn]: "yellow",
 }
 //lock the enum
 Object.freeze(OBJECTIVE_COLORS);
 
-export { TYPES, CATEGORY, TILE_NAMES, TILES, TILE_OPTIONS, REGIONS, OBJECTIVE_COLORS };
+export const MaxPlayers = 6;
+export const MinPlayers = 2;

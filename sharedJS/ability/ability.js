@@ -2,7 +2,7 @@ import Projectile from "./projectile.js";
 import { Circle } from "../shapes.js";
 import Vec2 from "../vec2.js";
 
-class Ability {
+export default class Ability {
     /**
      * @param {string} abilityName
      * @param {number} speed
@@ -36,7 +36,7 @@ class Ability {
      */
     use(now, owner, target) {
         if(now >= this.nextAvailable) {
-            const offset = owner.hitbox.width + this.projectileHitbox.width;
+            const offset = owner.hitbox.halfWidth + this.projectileHitbox.halfWidth;
             //make projectile
             const location = owner.location.clone().addS(target.getUnit().multiplyScalarS(offset));
             const abilityProjectile = new this.projectileConstructor(
@@ -51,5 +51,3 @@ class Ability {
         }
     }
 }
-
-export default Ability;

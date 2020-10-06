@@ -1,14 +1,16 @@
 import CollisionEngine from "../sharedJS/collisionEngine.js";
-import Vec2 from "../sharedJS/vec2.js";
 import Time from "../sharedJS/utils/time.js";
 import PlayerController from "./playerController.js";
 import Projectile from "../sharedJS/ability/projectile.js";
-import { TYPES, CATEGORY } from "../sharedJS/utils/enums.js";
+import { TYPES, CATEGORY, NUM_OBJECTIVES } from "../sharedJS/utils/enums.js";
 import GameMap from "../sharedJS/map/gameMap.js";
 import CanvasWrapper from "./canvasWrapper.js";
 import { tileSprites } from "./sprites.js";
 import CHANNELS from "../sharedJS/utils/channels.js";
+import Region from "../sharedJS/map/region.js";
 /** @typedef {import("../sharedJS/player.js").default} Player */
+/** @typedef {import("../sharedJS/dragon.js").default} Dragon */
+/** @typedef {import("../sharedJS/entity.js").default} Entity */
 
 export default class ClientLoop {
     /**
@@ -23,19 +25,37 @@ export default class ClientLoop {
         this.playerController = playerController
         //this.gameMap = gameMap;
         this.collisionEngine = collisionEngine;
-        this.setGameMap(gameMap);
         this.collisionEngine.addPlayer(this.playerController);
         this.canvas = canvas;
         this.socket = socket;
         this.time = time;
+        this.running = false;
+        this.setGameMap(gameMap);
 
         requestAnimationFrame(this.frame.bind(this));
     }
+    start() {
+        this.running = true;
+        this.playerController.stunned = false;
+        requestAnimationFrame(this.frame.bind(this));
+    }
+    stop() {
+        this.running = false;
+        this.playerController.stunned = true;
+    }
+
     setGameMap(gameMap) {
         this.gameMap = gameMap;
         //set new regions and statics
         this.collisionEngine.setRegions(gameMap.generateRegions());
         this.collisionEngine.setStatics(gameMap.generateStatic());
+        const dynamics = gameMap.getDynamics();
+        console.log(dynamics);
+        for(const dynamic of dynamics) {
+            this.collisionEngine.addDynamic(dynamic);
+            this.canvas.addDrawable(dynamic);
+            console.log(this.canvas.drawables);
+        }
     }
     /**
      * Updates the game state
@@ -50,12 +70,26 @@ export default class ClientLoop {
         for (const item of deleteArray) {
             if (item.category === CATEGORY.player) {
                 /** @type {Player} */ (item).kill();
-            } else {
-                this.collisionEngine.removeProjectile(/** @type {Projectile} */(item));
-                this.canvas.removeDrawable(item);
+            } else if (item.category === CATEGORY.projectile) {
+                this.remove(/** @type {Projectile} */(item));
+            } else if (item.category === CATEGORY.region) {
+                console.log(item);
+                /** @type {Region} */
+                //@ts-ignore
+                const region = item;
+                if(region.name === "victoryMonument") {
+                    // @ts-ignore
+                    if(region.objectives.size === NUM_OBJECTIVES) {
+                        console.log("A Team has Won");
+                    }
+                }
+            } else if (item.category === CATEGORY.dragon) {
+                //Set up dragon delete call back
+                /** @type {Dragon} */(item).deleteCall = this.remove.bind(this);
             }
         }
 
+        //if connected to a server send the player movement updates
         if (this.socket) {
             if (this.playerController.moved || this.playerController.mouse.changed) {
                 // if player moved send update to server
@@ -66,12 +100,21 @@ export default class ClientLoop {
 
     render() {
         //TODO look into moveing this to webworker for a different thread
-        //clear the collisionEngine
+        //https://developers.google.com/web/updates/2018/08/offscreen-canvas
+        //https://yashints.dev/blog/2019/05/11/offscreen-canvas
         this.canvas.clear();
 
         this.gameMap.draw(this.canvas, tileSprites);
         this.canvas.render(this.playerController);
         this.playerController.draw(this.canvas);
+    }
+
+    /**
+     * @param {Dragon|Projectile} item
+     */
+    remove(item) {
+        this.collisionEngine.removeDynamic(item);
+        this.canvas.removeDrawable(item);
     }
 
     //based off of this site
@@ -85,6 +128,7 @@ export default class ClientLoop {
         }
         this.render();
         this.time.last = this.time.now;
-        requestAnimationFrame(this.frame.bind(this));
+        if (this.running)
+            requestAnimationFrame(this.frame.bind(this));
     }
 }

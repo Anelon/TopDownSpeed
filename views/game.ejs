@@ -2,6 +2,24 @@
 <link href="./css/game.css" rel="stylesheet">
 
 <main>
+    <div class="centerMessage ui" id="introMessage">
+        <h2>Welcome to</h2>
+        <h1>Mirrored Fantasy</h1>
+        <br>
+        <hr>
+        <label for="name">Display Name</label>
+        <input id="name" placeholder="Player">
+        <p id="error"></p>
+        <br>
+        <button id="ready" disabled>Ready</button>
+    </div>
+    <div class="centerMessage ui" id="endMessage" hidden>
+        <h1>Mirrored Fantasy</h1>
+        <br>
+        <hr>
+        <h2><span id="winLaneName"></span> has Won</h2>
+        <button id="ready" disabled>Ready</button>
+    </div>
     <canvas class="game"></canvas>
 </main>
 
