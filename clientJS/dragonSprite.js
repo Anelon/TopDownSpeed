@@ -1,6 +1,7 @@
 import Vec2 from "../sharedJS/vec2.js";
 import { animationLengths, animations } from "../sharedJS/dragonData.js";
 import Dragon from "../sharedJS/dragon.js";
+import { endedImageLoad, startedImageLoad } from "./clientUtils.js";
 /** @typedef {import("./canvasWrapper.js").default} CanvasWrapper */
 
 export default class DragonSprite {
@@ -18,8 +19,12 @@ export default class DragonSprite {
         this.animationImgs = new Map();
         this.animationTileWidth = new Map();
         for(const imgStr of Object.values(animations)) {
+            startedImageLoad();
             const image = new Image();
             image.src = Dragon.spritePath + imgStr + "-test.png";
+            image.addEventListener('load', () => {
+                endedImageLoad();
+            });
             this.animationImgs.set(imgStr, image);
             this.animationTileWidth.set(imgStr, image.width / this.size.x);
         }

@@ -12,6 +12,9 @@ import Fireball from "../sharedJS/ability/fireball.js";
 import PlantSeed from "../sharedJS/ability/plantSeed.js";
 import GameMap from "../sharedJS/map/gameMap.js";
 import ClientLoop from "./clientLoop.js";
+import Dragon from "../sharedJS/dragon.js";
+import { setLoadingCallback } from "./clientUtils.js";
+import DragonSprite from "./dragonSprite.js";
 
 //setup the sockets and listening
 // @ts-ignore
@@ -28,6 +31,8 @@ const introMessageDiv = document.querySelector("div#introMessage");
 const endMessageDiv = document.querySelector("div#endMessage");
 
 let displayName = "Player";
+let imagesLoaded = false;
+
 readyButton.disabled = true;
 readyButton.addEventListener("click", (e) => {
     ready = !ready;
@@ -57,14 +62,20 @@ async function loadMap(mapName) {
 }
 
 let clientLoop = null;
+let gameMap = null, pixelDims = null, collisionEngine = null, playerInfoJson = null;;
 
-async function main(playerInfoJson) {
+async function load() {
     const mapName = "map";
     //load the map
-    const gameMap = await loadMap(mapName);
+    gameMap = await loadMap(mapName);
     //Globals
-    const pixelDims = gameMap.dimentions.multiplyVec(gameMap.tileSize);
-    const collisionEngine = new CollisionEngine(pixelDims.x, pixelDims.y);
+    pixelDims = gameMap.dimentions.multiplyVec(gameMap.tileSize);
+    collisionEngine = new CollisionEngine(pixelDims.x, pixelDims.y);
+
+    const testDragon = new DragonSprite(null, 1, 1);
+}
+
+function main() {
     // @ts-ignore
     const time = new Time(performance);
 
@@ -76,6 +87,7 @@ async function main(playerInfoJson) {
     const waterBall = new Waterball(initLocation, "test", 0, 1, new Vec2(1, 0), 100, 100, new Circle(initLocation, 0), null);
     const fireBall = new Fireball(initLocation, "test", 0, 1, new Vec2(1, 0), 100, 100, new Circle(initLocation, 0), null);
     const plantSeed = new PlantSeed(initLocation, "test", 0, 1, new Vec2(1, 0), 100, 100, new Circle(initLocation, 0), null);
+    const dragon = new Dragon(initLocation, "test", null, new Vec2(1,0));
     canvas.addDrawable(waterBall.makeSprite());
     canvas.addDrawable(fireBall.makeSprite());
     canvas.addDrawable(plantSeed.makeSprite());
@@ -162,10 +174,20 @@ async function main(playerInfoJson) {
 //wait for the server to give the player its location
 socket.on(CHANNELS.newPlayer, function (playerInfo) {
     //parse the player's info
-    const playerInfoJson = JSON.parse(playerInfo.json);
+    playerInfoJson = JSON.parse(playerInfo.json);
     if(clientLoop) {
         //stop the old clientLoop
         clientLoop.running = false;
     }
-    main(playerInfoJson);
+    console.log(playerInfoJson);
+    load();
 });
+
+function loaded() {
+    if(imagesLoaded) return;
+    imagesLoaded = true;
+    console.log(imagesLoaded);
+    main();
+}
+
+setLoadingCallback(loaded);

@@ -37,7 +37,7 @@ export default class Dragon extends Entity {
         this.category = CATEGORY.dragon;
         this.guardedRegion = guardedRegion;
         //lock the region
-        this.guardedRegion.locked = true;
+        if(guardedRegion) this.guardedRegion.locked = true;
         this.active = false;
         this.phase = animations.idleBattle;
         this.frame = 0;
@@ -60,7 +60,7 @@ export default class Dragon extends Entity {
 
     kill() {
         console.log("Dragon Killed");
-        this.guardedRegion.locked = false;
+        if(this.guardedRegion) this.guardedRegion.locked = false;
         this.category = CATEGORY.none;
     }
 
