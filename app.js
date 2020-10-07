@@ -1,9 +1,15 @@
 import express from "express";
 import ejs from "ejs";
 import ejsLint from "ejs-lint";
+import dotenv from "dotenv";
 import ServerLoop from "./serverJS/serverLoop.js";
 import GameMap from "./sharedJS/map/gameMap.js";
 import { loadMap, loadMapSync } from "./serverJS/serverUtils.js";
+
+const result = dotenv.config();
+if(result.error) {
+   throw result.error;
+}
 
 const app = express();
 app.set("view engine", "ejs");
