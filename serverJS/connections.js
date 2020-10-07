@@ -28,7 +28,7 @@ export default class Connections {
         this.sockets.on("connection", (client) => {
             if(this.connections.size >= MaxPlayers) {
                 console.log("Too Many Players Connected");
-                return;
+                //return;
             }
             console.log("a user has connected");
             //add client to the list of connections
