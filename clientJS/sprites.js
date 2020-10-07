@@ -33,3 +33,6 @@ export const sprites = new Map(
     ]
 );
 Object.freeze(sprites);
+
+export const dragonImages = new Map();
+export const dragonAnimationWidths = new Map();

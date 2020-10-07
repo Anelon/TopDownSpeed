@@ -1,4 +1,3 @@
-import { DIRBITS, DIRS } from "../sharedJS/utils/dirsMap.js";
 import CanvasWrapper from "./canvasWrapper.js";
 import Vec2 from "../sharedJS/vec2.js";
 
@@ -11,6 +10,8 @@ export default class DecorationSprite {
      * @param {string} char
      */
     constructor(imgSrc, char) {
+        //prevent from running on server
+        if(typeof window === "undefined") return null;
         //add one to imagesLoading
         DecorationSprite.imagesToLoad++;
         this.imgSrc = imgSrc;

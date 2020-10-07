@@ -12,6 +12,8 @@ export default class TileSprite {
      * @param {Array<string>} [connects] What this tile connects to defaults to just char
      */
     constructor(imgSrc, char, connects = [char]) {
+        //prevent from running on server
+        if(typeof window === "undefined") return null;
         //add one to imagesLoading
         TileSprite.imagesToLoad++;
         this.imgSrc = imgSrc;

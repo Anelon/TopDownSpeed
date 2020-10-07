@@ -13,8 +13,9 @@ import PlantSeed from "../sharedJS/ability/plantSeed.js";
 import GameMap from "../sharedJS/map/gameMap.js";
 import ClientLoop from "./clientLoop.js";
 import Dragon from "../sharedJS/dragon.js";
-import { setLoadingCallback } from "./clientUtils.js";
-import DragonSprite from "./dragonSprite.js";
+import { endedImageLoad, setLoadingCallback, startedImageLoad } from "./clientUtils.js";
+import { animations } from "../sharedJS/dragonData.js";
+import { dragonAnimationWidths, dragonImages } from "./sprites.js";
 
 //setup the sockets and listening
 // @ts-ignore
@@ -72,7 +73,16 @@ async function load() {
     pixelDims = gameMap.dimentions.multiplyVec(gameMap.tileSize);
     collisionEngine = new CollisionEngine(pixelDims.x, pixelDims.y);
 
-    const testDragon = new DragonSprite(null, 1, 1);
+    for (const imgStr of Object.values(animations)) {
+        startedImageLoad();
+        const image = new Image();
+        image.src = Dragon.spritePath + imgStr + "-test.png";
+        image.addEventListener('load', () => {
+            endedImageLoad();
+        });
+        dragonImages.set(imgStr, image);
+        dragonAnimationWidths.set(imgStr, image.width / Dragon.SIZE.x);
+    }
 }
 
 function main() {

@@ -1,7 +1,6 @@
 import Vec2 from "../sharedJS/vec2.js";
-import { animationLengths, animations } from "../sharedJS/dragonData.js";
 import Dragon from "../sharedJS/dragon.js";
-import { endedImageLoad, startedImageLoad } from "./clientUtils.js";
+import { dragonAnimationWidths, dragonImages } from "./sprites.js";
 /** @typedef {import("./canvasWrapper.js").default} CanvasWrapper */
 
 export default class DragonSprite {
@@ -16,18 +15,6 @@ export default class DragonSprite {
         this.size = Dragon.SIZE;
         this.frameCount = 0;
         this.animationSpeed = animationSpeed;
-        this.animationImgs = new Map();
-        this.animationTileWidth = new Map();
-        for(const imgStr of Object.values(animations)) {
-            startedImageLoad();
-            const image = new Image();
-            image.src = Dragon.spritePath + imgStr + "-test.png";
-            image.addEventListener('load', () => {
-                endedImageLoad();
-            });
-            this.animationImgs.set(imgStr, image);
-            this.animationTileWidth.set(imgStr, image.width / this.size.x);
-        }
     }
     /**
      * @param {CanvasWrapper} canvas
@@ -35,11 +22,11 @@ export default class DragonSprite {
     draw(canvas) {
         const phase = this.owner.phase;
         let index = this.owner.frame;
-        if(!this.animationImgs.get(phase)) console.log(phase);
+        if(!dragonImages.get(phase)) console.log(phase);
 
-        const sx = Math.floor(index % this.animationTileWidth.get(phase)) * this.size.x;
-        const sy = Math.floor(index / this.animationTileWidth.get(phase)) * this.size.y;
-        canvas.drawImageLookat(this.animationImgs.get(phase), this.owner.location, this.owner.lookDirection.multiplyScalar(-1), this.scale, sx, sy, this.size.x, this.size.y);
+        const sx = Math.floor(index % dragonAnimationWidths.get(phase)) * this.size.x;
+        const sy = Math.floor(index / dragonAnimationWidths.get(phase)) * this.size.y;
+        canvas.drawImageLookat(dragonImages.get(phase), this.owner.location, this.owner.lookDirection.multiplyScalar(-1), this.scale, sx, sy, this.size.x, this.size.y);
 
         //if the dragon has health draw healthbar
         if(this.owner.currHealth > 0) this.drawHealthBar(canvas);
