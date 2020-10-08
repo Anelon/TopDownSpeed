@@ -1,7 +1,7 @@
 <%- include('partials/header.ejs') %>
 <link href="./css/game.css" rel="stylesheet">
 
-<main style="overflow: hidden;">
+<main>
     <div class="centerMessage ui" id="introMessage">
         <h2>Welcome to</h2>
         <h1>Mirrored Fantasy</h1>
@@ -20,7 +20,37 @@
         <h2><span id="winLaneName"></span> has Won</h2>
         <button id="ready" disabled>Ready</button>
     </div>
+    <div class="playerInfo ui">
+        <div class="abilities" id="abilities">
+            <div class="ability">
+                <img src="./img/arrow.png" class="abilityIcon" id="basicAbilityImg">
+                <p id="basicAbilityKey">M2</p>
+                <p id="basicAbilityName">Arrow</p>
+            </div>
+            <div class="ability">
+                <img src="./img/abilities/fireball/fireball.gif" class="abilityIcon" id="rangedAbilityImg">
+                <p id="rangedAbilityKey">Q</p>
+                <p id="rangedAbilityName">Fireball</p>
+            </div>
+            <div class="ability">
+                <img src="./img/abilities/waterball/waterball64.gif" class="abilityIcon" id="terainAbilityImg">
+                <p id="terainAbilityKey">E</p>
+                <p id="terainAbilityName">Waterball</p>
+            </div>
+            <div class="ability">
+                <img src="./img/abilities/seed/seed64.gif" class="abilityIcon" id="rotateAbilityName">
+                <p id="rotateAbilityKey">F</p>
+                <p id="rotateAbilityName">Plant Seed</p>
+            </div>
+        </div>
+        <div class="healthInfo">
+            <h3 class="healthValue"><span id="healthNum"></span> hp</h3>
+            <progress class="healthBar" id="healthBar" max="100" value="100"></progress>
+        </div>
+    </div>
     <canvas class="game"></canvas>
+
+
     <!-- PreLoad Images -->
     <!-- Dragon Images -->
     <img src="./img/dragon/attack1-test.png" id="attack1" hidden>

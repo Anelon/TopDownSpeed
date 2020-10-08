@@ -32,16 +32,72 @@ h3 {
 h4 {
     margin: 0px;
 }
+p {
+    margin: 0px;
+}
 .ui {
     z-index: 5;
     border: solid black 2px;
     background-color: gray;
+    text-align: center;
 }
 .centerMessage {
-    text-align: center;
     position: absolute; 
     left: 50%; 
     top: 50%; 
     transform: translate(-50%,-50%);
     padding: 25px;
+}
+.playerInfo {
+    position: absolute; 
+    left: 50%; 
+    bottom: 0%; 
+    transform: translate(-50%,0%);
+    padding: 5px;
+    margin: 0px;
+}
+.abilityIcon {
+    width: 32px;
+    border-style: solid;
+    border-color: black;
+    border-width: 2px;
+}
+.abilities {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+.healthInfo {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+.healthValue {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    right: 0;
+}
+.healthBar {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    border-style: solid;
+    border-color: black;
+    border-width: 2px;
+
+    width: 100%;
+    height: 32px;
+
+    color: red;
+}
+.healthBar::-webkit-progress-bar {
+    background-color: white;
+}
+.healthBar::-webkit-progress-value {
+    background-color: red;
+}
+.healthBar::-moz-progress-bar {
+    background-color: red;
 }

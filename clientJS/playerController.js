@@ -32,6 +32,16 @@ export default class PlayerController extends Player {
         /** @type {HTMLImageElement} */
         this.image = document.querySelector(`img#${imgSrc}`);
 
+        /** @type {HTMLProgressElement} */
+        this.healthBar = document.querySelector("progress#healthBar");
+        this.healthBar.max = this.maxHealth;
+        this.healthBar.value = this.currHealth;
+
+        /** @type {HTMLSpanElement} */
+        this.healthValue = document.querySelector("span#healthNum");
+        this.healthValue.innerText = this.currHealth.toString();
+
+
         //create default abilities
         this.abilities = {
             [keyBinds.MELEE]: new Ability("Melee", 100, 100, 100, 10, Projectile, 1, new Circle(new Vec2(), 16)),
@@ -184,5 +194,20 @@ export default class PlayerController extends Player {
         this.mouse.y = e.offsetY;
         this.mouse.changed = true;
         this.mouse.changeCount += 1;
+    }
+    /**
+     * @param {number} damage
+     */
+    hurt(damage) {
+        this.currHealth -= damage;
+        //update healthbar and value
+        this.healthBar.value = this.currHealth;
+        this.healthValue.innerText = this.currHealth.toString();
+    }
+    kill() {
+        super.kill();
+        //update healthbar and value
+        this.healthBar.value = this.currHealth;
+        this.healthValue.innerText = this.currHealth.toString();
     }
 }

@@ -6,7 +6,7 @@ import Projectile from "./ability/projectile.js";
 //import Ability from "../../sharedJS/ability.js";
 
 //class for holding the other players and as a parent to PlayerController
-class Player extends Entity {
+export default class Player extends Entity {
     static get WIDTH() {return 16;}
     /**
      * @param {Vec2} location 
@@ -72,5 +72,3 @@ class Player extends Entity {
         this.spawnLocation = spawnLocation.clone();
     }
 }
-
-export default Player;

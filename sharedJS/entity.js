@@ -128,4 +128,10 @@ export default class Entity {
     //should be called when projectile hits max range
     think(map) {
     }
+    /**
+     * @param {number} damage
+     */
+    hurt(damage) {
+        this.currHealth -= damage;
+    }
 }
