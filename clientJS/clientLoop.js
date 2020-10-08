@@ -72,7 +72,7 @@ export default class ClientLoop {
                 if (item.currHealth <= 0) {
                     /** @type {Player} */ (item).kill();
                 }
-                if(this.socket) this.socket.emit(CHANNELS.playerMove, this.playerController.makeObject());
+                if(this.socket) this.socket.emit(CHANNELS.playerMove, item.makeObject());
             } else if (item.category === CATEGORY.projectile) {
                 this.remove(/** @type {Projectile} */(item));
             } else if (item.category === CATEGORY.region) {
@@ -94,10 +94,7 @@ export default class ClientLoop {
 
         //if connected to a server send the player movement updates
         if (this.socket) {
-            if (this.playerController.moved || this.playerController.mouse.changed) {
-                // if player moved send update to server
-                this.socket.emit(CHANNELS.playerMove, this.playerController.makeObject());
-            }
+            this.socket.emit(CHANNELS.playerMove, this.playerController.makeObject());
         }
     }
 

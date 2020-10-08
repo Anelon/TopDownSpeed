@@ -69,22 +69,22 @@ export default class Connections {
             });
 
             client.on(CHANNELS.playerMove, (playerInfo) => {
+                this.broadcast(CHANNELS.playerMove, playerInfo, client);
                 let updated = JSON.parse(playerInfo.json);
                 //if player moving isn't connected ignore it
                 this.collisionEngine.updatePlayer(updated);
                 //TODO: add validation of move here
                 //broadcast the message (add client to prevent echoing)
-                this.broadcast(CHANNELS.playerMove, playerInfo, client);
             });
 
             client.on(CHANNELS.newProjectile, (newProjectile, fn) => {
                 //const updated = JSON.parse(newProjectile.json);
+                this.broadcast(CHANNELS.newProjectile, newProjectile, client);
                 const projectile = projectileFromJSON(newProjectile);
                 projectile.id = getProjectileID().toString();
                 this.collisionEngine.addDynamic(projectile);
                 //TODO: add validation of move here
                 //broadcast the message (add client to prevent echoing)
-                this.broadcast(CHANNELS.newProjectile, newProjectile, client);
 
                 //send projectileid back to client
                 fn(projectile.id);
