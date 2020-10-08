@@ -37,18 +37,25 @@ export default class Waterball extends Projectile {
      * @param {Player|Projectile|Entity|Tile} other 
      */
     hit(other) {
-        //if hitting a player deal damage
-        if(other.category === CATEGORY.damageable || other.category === CATEGORY.player) {
-            /** @type {Player} */(other).hurt(this.damage);
-            return true;
-        } else if (other.type === this.type) {
+        let remove = false;
+        if (other.type === this.type) {
             //Same type do nothing
-            return false;
         } else if (other.type === TYPES.fire) {
-            return false;
-        } else {
-            //flag to be deleted
-            return super.hit(other);
+            //put out fire and add damage
+            if (other.category === CATEGORY.projectile)
+                this.damage += /** @type {Projectile} */(other).damage;
+
+            //check if hitting a damagable
+            if (other.category === CATEGORY.damageable || other.category === CATEGORY.player || other.category === CATEGORY.dragon) {
+            /** @type {Player} */(other).hurt(this.damage);
+                remove = true;
+            }
+            return remove;
+        } else if (other.type === TYPES.plant) {
+            //delete me
+            remove = true;
         }
+
+        return remove || super.hit(other);
     }
 }

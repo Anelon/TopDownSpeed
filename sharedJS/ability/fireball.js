@@ -1,8 +1,8 @@
 import Projectile from "./projectile.js";
 import { TYPES, CATEGORY } from "../utils/enums.js";
-import Player from "../player.js";
 import Sprite from "../../clientJS/sprite.js";
 import Vec2 from "../vec2.js";
+/** @typedef {import("../player").default} Player */
 /** @typedef {import("../entity.js").default} Entity */
 /** @typedef {import("../map/tile.js").default} Tile */
 
@@ -37,21 +37,25 @@ export default class Fireball extends Projectile {
      * @param {Player|Projectile|Entity|Tile} other 
      */
     hit(other) {
-        //if hitting a player deal damage
-        if(other.category === CATEGORY.damageable || other.category === CATEGORY.player) {
-            /** @type {Player} */(other).hurt(this.damage);
-            return true;
-        } else if (other.type === this.type) {
+        let remove = false;
+        if (other.type === this.type) {
             //Same type do nothing
-            return false;
         } else if (other.type === TYPES.plant) {
-            //double the damage
-            this.damage *= 2;
-            //TODO make a damage cap
-            return false;
-        } else {
-            //fall back on projectile defaults
-            return super.hit(other);
+            //if projectile add their damage to this
+            if (other.category === CATEGORY.projectile)
+                this.damage += /** @type {Projectile} */(other).damage;
+
+            //check if hitting a damagable
+            if (other.category === CATEGORY.damageable || other.category === CATEGORY.player || other.category === CATEGORY.dragon) {
+            /** @type {Player} */(other).hurt(this.damage);
+                remove = true;
+            }
+            return remove;
+        } else if (other.type === TYPES.water) {
+            //delete me
+            remove = true;
         }
+
+        return remove || super.hit(other);
     }
 }

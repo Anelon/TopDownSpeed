@@ -16,27 +16,32 @@ export function projectileFromJSON(object) {
 
     //destructure data object
     const {
-        location, name, speed, scale, lookDirection, range, hitbox, damage, owner
+        id, location, name, speed, scale, lookDirection, range, hitbox, damage, owner
     } = data;
     const loc = new Vec2(location.x, location.y);
+    const look = new Vec2(lookDirection.x, lookDirection.y);
+    let projectile = null;
 
     //construct based on object type
     if (object.type === "Fireball") {
-        return new Fireball(
-            loc, name, speed, scale, new Vec2(lookDirection.x, lookDirection.y), range, damage, new Circle(loc, hitbox.radius), owner
+        projectile = new Fireball(
+            loc, name, speed, scale, look, range, damage, new Circle(loc, hitbox.radius), owner
         );
     }
     else if (object.type === "Waterball") {
-        return new Waterball(
-            loc, name, speed, scale, new Vec2(lookDirection.x, lookDirection.y), range, damage, new Circle(loc, hitbox.radius), owner
+        projectile = new Waterball(
+            loc, name, speed, scale, look, range, damage, new Circle(loc, hitbox.radius), owner
         );
     }
     else if (object.type === "PlantSeed") {
-        return new PlantSeed(
-            loc, name, speed, scale, new Vec2(lookDirection.x, lookDirection.y), range, damage, new Circle(loc, hitbox.radius), owner
+        projectile = new PlantSeed(
+            loc, name, speed, scale, look, range, damage, new Circle(loc, hitbox.radius), owner
         );
     }
-    return Projectile.makeFromJSON(data);
+    if(!projectile) projectile = Projectile.makeFromJSON(data);
+    projectile.id = id;
+
+    return projectile;
 }
 
 /**

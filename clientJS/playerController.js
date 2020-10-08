@@ -11,7 +11,6 @@ import Projectile from "../sharedJS/ability/projectile.js";
 import FireballAbility from "../sharedJS/ability/fireballAbility.js";
 import WaterballAbility from "../sharedJS/ability/waterballAbility.js";
 import PlantSeedAbility from "../sharedJS/ability/plantSeedAbility.js";
-import Waterball from "../sharedJS/ability/waterball.js";
 
 //class for handling the current player
 export default class PlayerController extends Player {
@@ -29,6 +28,7 @@ export default class PlayerController extends Player {
         super(location, name, imgSrc, speed, health, hitbox, scale);
         this.baseSpeed = speed;
         this.name = name;
+
         /** @type {HTMLImageElement} */
         this.image = document.querySelector(`img#${imgSrc}`);
 
@@ -44,7 +44,7 @@ export default class PlayerController extends Player {
 
         //create default abilities
         this.abilities = {
-            [keyBinds.MELEE]: new Ability("Melee", 100, 100, 100, 10, Projectile, 1, new Circle(new Vec2(), 16)),
+            //[keyBinds.MELEE]: new Ability("Melee", 100, 100, 100, 10, Projectile, 1, new Circle(new Vec2(), 16)),
             [keyBinds.RANGE]: new Ability("Arrow", 200, 100, 200, 10, Projectile, 1, new Circle(new Vec2(), 16)),
             [keyBinds.ABILITY1]: new FireballAbility(),
             [keyBinds.ABILITY2]: new WaterballAbility(),
@@ -108,61 +108,23 @@ export default class PlayerController extends Player {
                 console.log(this);
                 console.log(collisions.dynamics);
             }
-            //basic arrow ability
-            if (keyPress[keyBinds.RANGE]) {
-                //attempt to use the ability
-                let arrow = this.abilities[keyBinds.RANGE].use(time.now, this, this.lookDirection)
-                //if the ability was successful
-                if (arrow) {
-                    //add projectile to the collisions
-                    collisions.addDynamic(arrow);
-                    canvas.addDrawable(arrow);
-                    socket.emit(CHANNELS.newProjectile, arrow.makeObject());
-                } else {
-                    console.log("On CoolDown");
-                }
-            }
-
-            //TODO make ranged ability right now does fireball
-            if (keyPress[keyBinds.ABILITY1]) {
-                //attempt to use the ability
-                let fireball = this.abilities[keyBinds.ABILITY1].use(time.now, this, this.lookDirection);
-                //if the ability was successful
-                if (fireball) {
-                    //add projectile to the collisions
-                    collisions.addDynamic(fireball);
-                    canvas.addDrawable(fireball.makeSprite());
-                    socket.emit(CHANNELS.newProjectile, fireball.makeObject());
-                } else {
-                    console.log("On CoolDown");
-                }
-            }
-            if (keyPress[keyBinds.ABILITY2]) {
-                //attempt to use the ability
-                /** @type {Waterball} */
-                // @ts-ignore
-                let waterball = this.abilities[keyBinds.ABILITY2].use(time.now, this, this.lookDirection);
-                //if the ability was successful
-                if (waterball) {
-                    //add projectile to the collisions
-                    collisions.addDynamic(waterball);
-                    canvas.addDrawable(waterball.makeSprite());
-                    socket.emit(CHANNELS.newProjectile, waterball.makeObject());
-                } else {
-                    console.log("On CoolDown");
-                }
-            }
-            if (keyPress[keyBinds.ABILITY3]) {
-                //attempt to use the ability
-                let plantSeed = this.abilities[keyBinds.ABILITY3].use(time.now, this, this.lookDirection);
-                //if the ability was successful
-                if (plantSeed) {
-                    //add projectile to the collisions
-                    collisions.addDynamic(plantSeed);
-                    canvas.addDrawable(plantSeed.makeSprite());
-                    socket.emit(CHANNELS.newProjectile, plantSeed.makeObject());
-                } else {
-                    console.log("On CoolDown");
+            //handle abilities
+            for(const key of Object.keys(this.abilities)) {
+                //if that ability is pressed use it
+                if(keyPress[key]) {
+                    const projectile = this.abilities[key].use(time.now, this, this.lookDirection);
+                    //if the ability was successful
+                    if (projectile) {
+                        socket.emit(CHANNELS.newProjectile, projectile.makeObject(), (id) => {
+                            projectile.id = id;
+                            console.log("ProjectileID AK", id);
+                            //add projectile to the collisions
+                            collisions.addDynamic(projectile);
+                            canvas.addDrawable(projectile.makeSprite());
+                        });
+                    } else {
+                        console.log("On CoolDown");
+                    }
                 }
             }
         }

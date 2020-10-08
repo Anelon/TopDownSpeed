@@ -34,7 +34,7 @@ export default class Dragon extends Entity {
         this.maxHealth = Dragon.HEALTH;
         this.currHealth = Dragon.HEALTH;
 
-        this.type = TYPES.basic;
+        this.type = TYPES.fire;
         this.category = CATEGORY.dragon;
         this.guardedRegion = guardedRegion;
         //lock the region

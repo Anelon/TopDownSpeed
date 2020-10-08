@@ -69,7 +69,10 @@ export default class ClientLoop {
         const deleteArray = this.collisionEngine.update(this.time, this.time.tickRate);
         for (const item of deleteArray) {
             if (item.category === CATEGORY.player) {
-                /** @type {Player} */ (item).kill();
+                if (item.currHealth <= 0) {
+                    /** @type {Player} */ (item).kill();
+                }
+                if(this.socket) this.socket.emit(CHANNELS.playerMove, this.playerController.makeObject());
             } else if (item.category === CATEGORY.projectile) {
                 this.remove(/** @type {Projectile} */(item));
             } else if (item.category === CATEGORY.region) {

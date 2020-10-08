@@ -58,24 +58,27 @@ export default class Projectile extends Entity {
      * @param {Player|Projectile|Entity|Tile} other 
      */
     hit(other) {
+        let remove = false;
+        if (other.type === this.type) {
+            //Same type do nothing
+        } else {
+            if (other.category !== CATEGORY.tile)
+                remove = true;
+        }
+
         //if hitting a player deal damage
-        if(other.category === CATEGORY.damageable || other.category === CATEGORY.player || other.category === CATEGORY.dragon) {
+        if (other.category === CATEGORY.damageable || other.category === CATEGORY.player || other.category === CATEGORY.dragon) {
             /** @type {Player} */(other).hurt(this.damage);
-            return true;
+            remove = true;
         } else if (other.category === CATEGORY.tile) {
             //Projectiles go over passable tiles
-            if(/** @type {Tile} */(other).passable) return false;
-            return true;
-        } else if (other.type === this.type) {
-            //Same type do nothing
-            return false;
-        } else {
-            //flag to be deleted
-            return true;
+            if(!/** @type {Tile} */(other).passable) remove = true;
         }
+
+        return remove;
     }
 
     makeSprite() {
-        return new Drawable(this.owner, this.owner.scale);
+        return new Drawable(this, this.scale);
     }
 }

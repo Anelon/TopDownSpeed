@@ -9,3 +9,8 @@ export function loadMapSync(mapName) {
     //TODO regex to make sure map name is just a string
     return fs.readFileSync(`${mapPath+mapName}.json`, "utf8");
 }
+
+let projectileID = 0;
+export function getProjectileID() {
+    return projectileID++;
+}

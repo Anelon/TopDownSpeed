@@ -143,6 +143,8 @@ async function main() {
         if(collisionEngine.dynamics.has(projectileID)) {
             collisionEngine.removeDynamic(projectileID);
             canvas.removeDrawable(projectileID);
+        } else {
+            console.log(projectileID);
         }
     });
 

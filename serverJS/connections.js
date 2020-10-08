@@ -6,6 +6,7 @@ import CollisionEngine from "../sharedJS/collisionEngine.js";
 import { Circle } from "../sharedJS/shapes.js";
 import { projectileFromJSON } from "../sharedJS/utils/utils.js";
 import { CATEGORY, MaxPlayers, REGION_NAMES } from "../sharedJS/utils/enums.js";
+import { getProjectileID } from "./serverUtils.js";
 /** @typedef {import("../sharedJS/map/gameMap.js").default} GameMap */
 
 export default class Connections {
@@ -76,12 +77,17 @@ export default class Connections {
                 this.broadcast(CHANNELS.playerMove, playerInfo, client);
             });
 
-            client.on(CHANNELS.newProjectile, (newProjectile) => {
-                const updated = JSON.parse(newProjectile.json);
-                this.collisionEngine.addDynamic(projectileFromJSON(newProjectile));
+            client.on(CHANNELS.newProjectile, (newProjectile, fn) => {
+                //const updated = JSON.parse(newProjectile.json);
+                const projectile = projectileFromJSON(newProjectile);
+                projectile.id = getProjectileID().toString();
+                this.collisionEngine.addDynamic(projectile);
                 //TODO: add validation of move here
                 //broadcast the message (add client to prevent echoing)
                 this.broadcast(CHANNELS.newProjectile, newProjectile, client);
+
+                //send projectileid back to client
+                fn(projectile.id);
             });
 
             client.on(CHANNELS.deletePlayer, (playerInfo) => {
@@ -171,6 +177,9 @@ export default class Connections {
      * @param {any} message
      */
     message(playerID, channel, message) {
-        this.connections.get(playerID).emit(channel, message);
+        if (this.connections.has(playerID))
+            this.connections.get(playerID).emit(channel, message);
+        else
+            this.sockets.emit(channel, message);
     }
 }

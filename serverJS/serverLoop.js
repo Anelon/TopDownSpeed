@@ -38,8 +38,8 @@ export default class ServerLoop {
                     player.kill();
                     this.connections.message(player.id, CHANNELS.kill, "kill");
                     console.log(player.name, " has Died.");
-                    this.connections.broadcast(CHANNELS.playerMove, player.makeObject());
                 }
+                this.connections.broadcast(CHANNELS.playerMove, player.makeObject());
             } else if (item.category === CATEGORY.projectile) {
                 this.collisionEngine.removeDynamic(/** @type {Projectile} */(item));
                 this.connections.broadcast(CHANNELS.deleteProjectile, item.id);

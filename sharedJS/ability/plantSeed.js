@@ -2,8 +2,6 @@ import Projectile from "./projectile.js";
 import { TYPES, CATEGORY } from "../utils/enums.js";
 import Vec2 from "../vec2.js";
 import Sprite from "../../clientJS/sprite.js";
-import PlantSeedAbility from "./plantSeedAbility.js";
-//TODO: Find unneccisary imports and replace with typedefs
 /** @typedef {import("../player").default} Player */
 /** @typedef {import("../entity").default} Entity */
 /** @typedef {import("../map/tile.js").default} Tile */
@@ -39,22 +37,25 @@ export default class PlantSeed extends Projectile {
      * @param {Player|Projectile|Entity|Tile} other 
      */
     hit(other) {
-        //if hitting a player deal damage
-        if(other.category === CATEGORY.damageable || other.category === CATEGORY.player) {
-            /** @type {Player} */(other).hurt(this.damage);
-            return true;
-        } else if (other.type === this.type) {
+        let remove = false;
+        if (other.type === this.type) {
             //Same type do nothing
-            return false;
         } else if (other.type === TYPES.water) {
-            //TODO figure out what plants do when they hit water
-            return false;
+            //eat the other's damage 
+            if (other.category === CATEGORY.projectile)
+                this.damage += /** @type {Projectile} */(other).damage;
+
+            //check if hitting a damagable
+            if (other.category === CATEGORY.damageable || other.category === CATEGORY.player || other.category === CATEGORY.dragon) {
+            /** @type {Player} */(other).hurt(this.damage);
+                remove = true;
+            }
+            return remove;
         } else if (other.type === TYPES.fire) {
             //delete me
-            return true;
-        } else {
-            //flag to be deleted
-            return super.hit(other);
+            remove = true;
         }
+
+        return remove || super.hit(other);
     }
 }

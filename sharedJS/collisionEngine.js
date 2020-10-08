@@ -183,7 +183,15 @@ export default class CollisionEngine {
      * @param {Projectile|Dragon} oldDynamic 
      */
     removeDynamic(oldDynamic) {
-        this.dynamics.delete(oldDynamic.id);
+        if(oldDynamic.id) {
+            if(!this.dynamics.has(oldDynamic.id)) return;
+            console.log(this.dynamics.get(oldDynamic.id).type);
+            this.dynamics.delete(oldDynamic.id);
+        } else {
+            if(!this.dynamics.has(oldDynamic)) return;
+            console.log(this.dynamics.get(oldDynamic).type);
+            this.dynamics.delete(oldDynamic);
+        }
     }
     /**
      * @param {import("./box.js").default[]} statics
