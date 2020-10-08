@@ -73,14 +73,14 @@ export default class CollisionEngine {
                 region.endOverlap();
             }
         }
-        for (const projectile of this.dynamics.values()) {
-            projectile.update(time, step, this);
-            const added = this.collisionTree.push(projectile.makePoint());
-            //if projectile is out of the map region delete it
+        for (const dynamic of this.dynamics.values()) {
+            dynamic.update(time, step, this);
+            const added = this.collisionTree.push(dynamic.makePoint());
+            //if dynamic is out of the map region delete it
             if(!added) {
-                deleteList.push(projectile);
+                deleteList.push(dynamic);
             }
-            projectile.overlapping = false;
+            dynamic.overlapping = false;
         }
         //check for collisions
         for (const player of this.players.values()) {
@@ -99,21 +99,21 @@ export default class CollisionEngine {
                 }
             }
         }
-        for (const projectile of this.dynamics.values()) {
-            //skip projectiles that have already done something
-            if (deleteList.includes(projectile)) continue;
-            const projectileShape = projectile.makeShape();
-            //make shape with 2 to have it search an area double the size of the projectile
-            const others = this.collisionTree.query(projectileShape);
+        for (const dynamic of this.dynamics.values()) {
+            //skip dynamic that have already done something
+            if (deleteList.includes(dynamic)) continue;
+            const dynamicShape = dynamic.makeShape();
+            //make shape with 2 to have it search an area double the size of the dynamic
+            const others = this.collisionTree.query(dynamicShape);
             //check static objects as well
-            this.staticObjects.query(projectileShape, others);
+            this.staticObjects.query(dynamicShape, others);
             for(const other of others) {
-                if(other.owner === projectile) continue;
-                if(projectileShape.intersects(other)) {
-                    projectile.overlapping = true;
-                    if(projectile.hit(other.owner)) deleteList.push(projectile);
+                if(other.owner === dynamic) continue;
+                if(dynamicShape.intersects(other)) {
+                    dynamic.overlapping = true;
+                    if(dynamic.hit(other.owner)) deleteList.push(dynamic);
                     other.owner.overlapping = true;
-                    if(other.owner.hit(projectile)) deleteList.push(other.owner);
+                    if(other.owner.hit(dynamic)) deleteList.push(other.owner);
                 }
             }
         }

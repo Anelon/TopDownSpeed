@@ -19,7 +19,6 @@ export default class TileSprite {
         this.imgSrc = imgSrc;
         /** @type {HTMLImageElement} */
         this.image = document.querySelector(`img#${imgSrc}`);
-        console.log(this.image, imgSrc);
         this.tilesWide = this.image.width / TileSprite.width;
         this.char = char;
         this.connects = connects;

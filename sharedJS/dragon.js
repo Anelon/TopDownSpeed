@@ -126,6 +126,6 @@ export default class Dragon extends Entity {
      */
     // @ts-ignore
     makeShape(scale = 1) {
-        return new Rectangle(this.location, (this.hitbox.width) * scale, this.hitbox.height * scale);
+        return new Rectangle(this.location, (Dragon.BoxSIZE.x) * scale, this.hitbox.height * scale);
     }
 }

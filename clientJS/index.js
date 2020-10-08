@@ -82,6 +82,7 @@ let clientLoop = null;
 let playerInfoJson = null;;
 
 async function main() {
+    //wait for document and playerInfo to be ready
     if(!playerInfoJson || !documentReady) return;
     const mapName = "map";
     //load the map
