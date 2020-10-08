@@ -12,7 +12,7 @@ export default class PlantSeed extends Projectile {
     static get FRAMES() {return 4;} //Number of frames of animation
     static get ANIMSPEED() {return 3;} //Number of renders before next frame
     static get SPRITEDIMS() {return new Vec2(64,64);} //Dimentions of each Sprite
-    static get IMAGE() { return "./img/abilities/seed/seed64.png"; }
+    static get IMAGE() { return "seed"; }
     /**
      * @param {Vec2} origin
      * @param {string} name

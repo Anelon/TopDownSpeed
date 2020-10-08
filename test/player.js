@@ -14,7 +14,7 @@ import { performance } from "perf_hooks";
 describe('Player', function () {
     //variables for entity testing
     const location = new Vec2(1, 2);
-    const imgSrc = "img/test.png";
+    const imgSrc = "test";
     const hitbox = new Circle(location, 16);
     const speed = 100;
     const health = 200;

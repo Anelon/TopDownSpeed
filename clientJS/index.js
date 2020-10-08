@@ -13,7 +13,6 @@ import PlantSeed from "../sharedJS/ability/plantSeed.js";
 import GameMap from "../sharedJS/map/gameMap.js";
 import ClientLoop from "./clientLoop.js";
 import Dragon from "../sharedJS/dragon.js";
-import { endedImageLoad, setLoadingCallback, startedImageLoad } from "./clientUtils.js";
 import { animations } from "../sharedJS/dragonData.js";
 import { dragonAnimationWidths, dragonImages } from "./sprites.js";
 
@@ -21,9 +20,27 @@ import { dragonAnimationWidths, dragonImages } from "./sprites.js";
 // @ts-ignore
 let socket = io();
 
+let documentReady = false;
+function test() {
+    console.log("Page loaded");
+}
+if(document.readyState === 'complete') {
+    main();
+} else {
+    document.addEventListener("readystatechange", function (e) {
+        const readyState = /** @type {Document} */(e.target).readyState;
+        if(readyState === "complete") {
+            documentReady = true;
+            main();
+        }
+    });
+}
+
 let ready = false;
 /** @type {HTMLButtonElement} */
 const readyButton = document.querySelector("button#ready");
+/** @type {HTMLParagraphElement} */
+const errorP = document.querySelector("p#error");
 /** @type {HTMLInputElement} */
 const displayNameInput = document.querySelector("input#name");
 /** @type {HTMLDivElement} */
@@ -32,7 +49,6 @@ const introMessageDiv = document.querySelector("div#introMessage");
 const endMessageDiv = document.querySelector("div#endMessage");
 
 let displayName = "Player";
-let imagesLoaded = false;
 
 readyButton.disabled = true;
 readyButton.addEventListener("click", (e) => {
@@ -63,29 +79,27 @@ async function loadMap(mapName) {
 }
 
 let clientLoop = null;
-let gameMap = null, pixelDims = null, collisionEngine = null, playerInfoJson = null;;
+let playerInfoJson = null;;
 
-async function load() {
+async function main() {
+    if(!playerInfoJson || !documentReady) return;
     const mapName = "map";
     //load the map
-    gameMap = await loadMap(mapName);
+    errorP.innerText = "Loading Map";
+    const gameMap = await loadMap(mapName);
     //Globals
-    pixelDims = gameMap.dimentions.multiplyVec(gameMap.tileSize);
-    collisionEngine = new CollisionEngine(pixelDims.x, pixelDims.y);
+    const pixelDims = gameMap.dimentions.multiplyVec(gameMap.tileSize);
+    const collisionEngine = new CollisionEngine(pixelDims.x, pixelDims.y);
 
     for (const imgStr of Object.values(animations)) {
-        startedImageLoad();
-        const image = new Image();
-        image.src = Dragon.spritePath + imgStr + "-test.png";
-        image.addEventListener('load', () => {
-            endedImageLoad();
-        });
-        dragonImages.set(imgStr, image);
-        dragonAnimationWidths.set(imgStr, image.width / Dragon.SIZE.x);
+        /** @type {HTMLImageElement} */
+        const imgElem = document.querySelector(`img#${imgStr}`);
+        if(imgElem) {
+            dragonImages.set(imgStr, imgElem);
+            dragonAnimationWidths.set(imgStr, imgElem.width / Dragon.SIZE.x);
+        }
     }
-}
 
-function main() {
     // @ts-ignore
     const time = new Time(performance);
 
@@ -175,6 +189,7 @@ function main() {
     socket.emit(CHANNELS.gameData, "game");
     //reactivate the ready button
     readyButton.disabled = false;
+    errorP.innerText = "";
 
     //start up the client loop
     clientLoop = new ClientLoop(playerController, gameMap, canvas, time, collisionEngine, socket);
@@ -190,14 +205,5 @@ socket.on(CHANNELS.newPlayer, function (playerInfo) {
         clientLoop.running = false;
     }
     console.log(playerInfoJson);
-    load();
-});
-
-function loaded() {
-    if(imagesLoaded) return;
-    imagesLoaded = true;
-    console.log(imagesLoaded);
     main();
-}
-
-setLoadingCallback(loaded);
+});

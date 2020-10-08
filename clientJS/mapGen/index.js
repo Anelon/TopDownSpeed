@@ -50,7 +50,7 @@ let selectedRegion = Object.keys(REGIONS)[0];
 
 //set up canvas
 const canvas = new CanvasWrapper({tileSize, canvasSize: gameMap.dimentions.clone().multiplyVecS(tileSize)});
-const playerController = new PlayerController(new Vec2(100, 100), "Player","./img/player.png", 500, 200, 2, canvas);
+const playerController = new PlayerController(new Vec2(100, 100), "Player","player", 500, 200, 2, canvas);
 playerController.silenced = true;
 canvas.setCenter(playerController.location);
 playerController.draw(canvas);

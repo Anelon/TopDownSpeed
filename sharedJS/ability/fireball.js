@@ -10,7 +10,7 @@ export default class Fireball extends Projectile {
     static get FRAMES() {return 6;} //Number of frames of animation
     static get ANIMSPEED() {return 3;} //Number of renders before next frame
     static get SPRITEDIMS() {return new Vec2(32,32);} //Dimentions of each Sprite
-    static get IMAGE() { return "./img/abilities/fireball/fireball.png"; }
+    static get IMAGE() { return "fireball"; }
     /**
      * @param {Vec2} origin
      * @param {string} name

@@ -9,8 +9,8 @@ class Drawable {
      */
     constructor(owner, scale) {
         this.owner = owner;
-        this.image = new Image();
-        this.image.src = owner.imgSrc;
+        /** @type {HTMLImageElement} */
+        this.image = document.querySelector(`img#${this.owner.imgSrc}`);
         this.scale = scale;
     }
     //function to pass an update to the owner

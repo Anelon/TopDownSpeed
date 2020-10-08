@@ -17,15 +17,10 @@ export default class TileSprite {
         //add one to imagesLoading
         TileSprite.imagesToLoad++;
         this.imgSrc = imgSrc;
-        this.image = new Image();
-        this.image.addEventListener('load', () => {
-            this.tilesWide = this.image.width / TileSprite.width;
-            TileSprite.imagesToLoad--;
-            if (TileSprite.imagesToLoad === 0) {
-                //drawMap();
-            }
-        });
-        this.image.src = imgSrc;
+        /** @type {HTMLImageElement} */
+        this.image = document.querySelector(`img#${imgSrc}`);
+        console.log(this.image, imgSrc);
+        this.tilesWide = this.image.width / TileSprite.width;
         this.char = char;
         this.connects = connects;
         this.scale = 2;

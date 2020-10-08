@@ -24,7 +24,6 @@ export default class Entity {
         this.id = (idGen++).toString();
         this.location = location.clone();
         this.oldLocation = location.clone();
-        //this.image = new Image();
         this.imgSrc = imgSrc;
         this.hitbox = hitbox.clone();
         this.lookDirection = lookDirection;

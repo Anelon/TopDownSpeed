@@ -7,7 +7,7 @@ import Drawable from "../../clientJS/drawable.js";
 /** @typedef {import("../map/tile.js").default} Tile */
 
 export default class Projectile extends Entity {
-    static get IMAGE() { return "./img/arrow.png"; }
+    static get IMAGE() { return "arrow"; }
     /**
      * Constructs a new Projectile
      * @param {Vec2} origin Location of Projectile

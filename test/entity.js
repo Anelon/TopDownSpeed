@@ -16,7 +16,7 @@ import { performance } from "perf_hooks";
 describe('Entity', function () {
     //variables for entity testing
     let location = new Vec2(1, 2);
-    let imgSrc = "img/test.png";
+    let imgSrc = "test";
     let hitbox = new Circle(location, 8);
     let speed = 100;
     let entity = new Entity(location, imgSrc, hitbox, speed);

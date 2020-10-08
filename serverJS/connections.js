@@ -43,7 +43,7 @@ export default class Connections {
             }
             console.log(setLane);
             const spawn = this.gameMap.lanes.get(setLane).regions.get(REGION_NAMES.spawn).center.clone();
-            let player = new Player(spawn, "Player", "./img/player.png", 200, 200, new Circle(spawn, Player.WIDTH), 2);
+            let player = new Player(spawn, "Player", "player", 200, 200, new Circle(spawn, Player.WIDTH), 2);
             //set player id to client id for easier lookup
             player.id = client.id;
             this.gameMap.addPlayer(player, setLane);

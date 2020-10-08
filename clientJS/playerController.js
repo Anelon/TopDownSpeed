@@ -25,14 +25,12 @@ export default class PlayerController extends Player {
      * @param {number} scale 
      */
     constructor(location, name, imgSrc, speed, health, scale, canvas) {
-        //create hitbox
-        let image = new Image();
-        image.src = imgSrc;
         let hitbox = new Circle(location, Player.WIDTH);
         super(location, name, imgSrc, speed, health, hitbox, scale);
         this.baseSpeed = speed;
         this.name = name;
-        this.image = image;
+        /** @type {HTMLImageElement} */
+        this.image = document.querySelector(`img#${imgSrc}`);
 
         //create default abilities
         this.abilities = {

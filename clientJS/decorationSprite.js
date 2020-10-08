@@ -15,15 +15,9 @@ export default class DecorationSprite {
         //add one to imagesLoading
         DecorationSprite.imagesToLoad++;
         this.imgSrc = imgSrc;
-        this.image = new Image();
-        this.image.addEventListener('load', () => {
-            this.tilesWide = this.image.width / DecorationSprite.width;
-            DecorationSprite.imagesToLoad--;
-            if (DecorationSprite.imagesToLoad === 0) {
-                //drawMap();
-            }
-        });
-        this.image.src = imgSrc;
+        /** @type {HTMLImageElement} */
+        this.image = document.querySelector(`img#${imgSrc}`);
+        this.tilesWide = this.image.width / DecorationSprite.width;
         this.char = char;
         this.scale = 2;
     }

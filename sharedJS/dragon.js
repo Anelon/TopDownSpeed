@@ -18,6 +18,7 @@ export default class Dragon extends Entity {
     static get WIDTH() {return 16;}
     static get HEALTH() {return 2000;}
     static get SIZE() {return new Vec2(400, 300);}
+    static get BoxSIZE() {return new Vec2(300, 300);}
     static spritePath = "/img/dragon/";
     static phaseSpeed = 2;
     /**
@@ -115,7 +116,7 @@ export default class Dragon extends Entity {
      * @returns {Box}
      */
     makePoint() {
-        return new Box(this.location, Dragon.SIZE, this);
+        return new Box(this.location, Dragon.BoxSIZE, this);
     }
 
     /**
