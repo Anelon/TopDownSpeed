@@ -117,6 +117,9 @@ export default class Entity {
         if(infoJSON.speed) {
             this.speed = infoJSON.speed;
         }
+        if(infoJSON.lastHit) {
+            this.lastHit = infoJSON.lastHit;
+        }
         return this;
     }
     /**

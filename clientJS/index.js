@@ -126,6 +126,7 @@ async function main() {
         const updated = JSON.parse(playerInfo.json);
         const newPlayer = collisionEngine.updatePlayer(updated, playerInfo.objectives);
         if (newPlayer) canvas.addDrawable(/** @type {Player} */(newPlayer));
+        //if just updated the player controller make sure the healthbar is updated
         if(updated.id === playerController.id) {
             //update healthbar
             playerController.hurt(0, "");
