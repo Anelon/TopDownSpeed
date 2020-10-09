@@ -62,10 +62,9 @@ export default class Player extends Entity {
      * @param {Player|Projectile|Entity} other 
      */
     hit(other) {
-        if(other.category === CATEGORY.projectile)
-            if(this.currHealth - other.damage <= 0) {
-                return true;
-            }
+        if (other.category === CATEGORY.projectile) {
+            return true;
+        }
         return false;
     }
     setSpawn(spawnLocation) {

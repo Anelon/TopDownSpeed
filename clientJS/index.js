@@ -90,15 +90,6 @@ async function main() {
     const pixelDims = gameMap.dimentions.multiplyVec(gameMap.tileSize);
     const collisionEngine = new CollisionEngine(pixelDims.x, pixelDims.y);
 
-    for (const imgStr of Object.values(animations)) {
-        /** @type {HTMLImageElement} */
-        const imgElem = document.querySelector(`img#${imgStr}`);
-        if(imgElem) {
-            dragonImages.set(imgStr, imgElem);
-            dragonAnimationWidths.set(imgStr, imgElem.width / Dragon.SIZE.x);
-        }
-    }
-
     // @ts-ignore
     const time = new Time(performance);
 
@@ -134,6 +125,10 @@ async function main() {
         const updated = JSON.parse(playerInfo.json);
         const newPlayer = collisionEngine.updatePlayer(updated);
         if (newPlayer) canvas.addDrawable(/** @type {Player} */(newPlayer));
+        if(updated.id === playerController.id) {
+            //update healthbar
+            playerController.hurt(0);
+        }
     });
 
     socket.on(CHANNELS.kill, function (killMessage) {
@@ -145,7 +140,7 @@ async function main() {
             collisionEngine.removeDynamic(projectileID);
             canvas.removeDrawable(projectileID);
         } else {
-            console.error(projectileID);
+            console.error(projectileID, " Not Found");
         }
     });
 

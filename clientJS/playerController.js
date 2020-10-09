@@ -15,31 +15,35 @@ import PlantSeedAbility from "../sharedJS/ability/plantSeedAbility.js";
 //class for handling the current player
 export default class PlayerController extends Player {
     /**
-     * 
-     * @param {Vec2} location 
-     * @param {string} name 
-     * @param {string} imgSrc 
-     * @param {number} speed 
-     * @param {number} health 
-     * @param {number} scale 
+     * @param {Vec2} location
+     * @param {string} name
+     * @param {string} imgSrc
+     * @param {number} speed
+     * @param {number} health
+     * @param {number} scale
+     * @param {CanvasWrapper} canvas
+     * @param {boolean} hasUI
      */
-    constructor(location, name, imgSrc, speed, health, scale, canvas) {
+    constructor(location, name, imgSrc, speed, health, scale, canvas, hasUI = true) {
         let hitbox = new Circle(location, Player.WIDTH);
         super(location, name, imgSrc, speed, health, hitbox, scale);
         this.baseSpeed = speed;
         this.name = name;
-
+        this.hasUI = hasUI
         /** @type {HTMLImageElement} */
         this.image = document.querySelector(`img#${imgSrc}`);
 
-        /** @type {HTMLProgressElement} */
-        this.healthBar = document.querySelector("progress#healthBar");
-        this.healthBar.max = this.maxHealth;
-        this.healthBar.value = this.currHealth;
 
-        /** @type {HTMLSpanElement} */
-        this.healthValue = document.querySelector("span#healthNum");
-        this.healthValue.innerText = this.currHealth.toString();
+        if (this.hasUI) {
+            /** @type {HTMLProgressElement} */
+            this.healthBar = document.querySelector("progress#healthBar");
+            this.healthBar.max = this.maxHealth;
+            this.healthBar.value = this.currHealth;
+
+            /** @type {HTMLSpanElement} */
+            this.healthValue = document.querySelector("span#healthNum");
+            this.healthValue.innerText = this.currHealth.toString();
+        }
 
 
         //create default abilities
@@ -160,10 +164,13 @@ export default class PlayerController extends Player {
      * @param {number} damage
      */
     hurt(damage) {
+        console.log("Hit for", damage);
         this.currHealth -= damage;
-        //update healthbar and value
-        this.healthBar.value = this.currHealth;
-        this.healthValue.innerText = this.currHealth.toString();
+        if (this.hasUI) {
+            //update healthbar and value
+            this.healthBar.value = this.currHealth;
+            this.healthValue.innerText = this.currHealth.toString();
+        }
     }
     kill() {
         super.kill();
