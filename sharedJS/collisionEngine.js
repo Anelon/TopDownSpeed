@@ -144,14 +144,15 @@ export default class CollisionEngine {
     /**
      * Updates the player on the map or creates a new player
      * @param {Player} playerJSON 
+     * @param {Array<string>} objectives 
      * @returns {Player|boolean}
      */
-    updatePlayer(playerJSON) {
+    updatePlayer(playerJSON, objectives) {
         const player = this.players.get(playerJSON.id);
         //this should not happen in production hopefully
         //console.assert(player instanceof Player, "Player not found", playerJSON.id);
         if(player instanceof Player) {
-            player.updateInfo(playerJSON);
+            player.updateInfo(playerJSON, objectives);
             return false;
         } else {
             //handle if the server reloads but the client doesn't (could just reset the client but this seems better for development)

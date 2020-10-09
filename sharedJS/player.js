@@ -33,19 +33,36 @@ export default class Player extends Entity {
     /**
      * Updates where the player is based on the json data given
      * @param {Player} json 
+     * @param {Array<string>} [objectives] 
      * @returns reference to this
      */
-    updateInfo(json) {
+    updateInfo(json, objectives) {
         if (json.currHealth)
             this.currHealth = json.currHealth;
         if (json.maxHealth)
             this.maxHealth = json.maxHealth;
+        if (objectives) {
+            this.objectives.clear();
+            for(const objective of objectives) {
+                this.objectives.add(objective);
+            }
+        }
         //call entity's updateFromJSON
         super.updateInfo(json);
         if(json.spawnLocation) {
             this.spawnLocation = new Vec2(json.spawnLocation.x, json.spawnLocation.y);
         }
         return this;
+    }
+
+    makeObject() {
+        const object = super.makeObject();
+        object.objectives = new Array();
+        for(const objective of this.objectives.keys()) {
+            object.objectives.push(objective);
+        }
+
+        return object;
     }
 
     kill() {

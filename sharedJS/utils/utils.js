@@ -10,9 +10,6 @@ import PlantSeed from "../ability/plantSeed.js";
  */
 export function projectileFromJSON(object) {
     const data = JSON.parse(object.json);
-    if(object.type === "Projectile") {
-        return Projectile.makeFromJSON(data);
-    }
 
     //destructure data object
     const {
@@ -40,6 +37,7 @@ export function projectileFromJSON(object) {
     }
     if(!projectile) projectile = Projectile.makeFromJSON(data);
     projectile.id = id;
+    console.log("Projectile IDS ", id, projectile.id);
 
     return projectile;
 }

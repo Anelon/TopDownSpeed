@@ -47,7 +47,7 @@ export default class Fireball extends Projectile {
 
             //check if hitting a damagable
             if (other.category === CATEGORY.damageable || other.category === CATEGORY.player || other.category === CATEGORY.dragon) {
-            /** @type {Player} */(other).hurt(this.damage);
+            /** @type {Player} */(other).hurt(this.damage, this.id);
                 remove = true;
             }
             return remove;

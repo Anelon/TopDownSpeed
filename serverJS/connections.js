@@ -73,7 +73,7 @@ export default class Connections {
                 this.broadcast(CHANNELS.playerMove, playerInfo, client);
                 let updated = JSON.parse(playerInfo.json);
                 //if player moving isn't connected ignore it
-                this.collisionEngine.updatePlayer(updated);
+                this.collisionEngine.updatePlayer(updated, playerInfo.objectives);
             });
 
             client.on(CHANNELS.newProjectile, (newProjectile, fn) => {

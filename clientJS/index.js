@@ -109,6 +109,7 @@ async function main() {
     socket.on(CHANNELS.newProjectile, function (newProjectile) {
         const updated = JSON.parse(newProjectile.json);
         const projectile = projectileFromJSON(newProjectile);
+        console.log(projectile);
         if(!projectile.id.includes("projectile_")) {
             console.error("Bad Projectile", updated.id);
         }
@@ -123,11 +124,11 @@ async function main() {
 
     socket.on(CHANNELS.playerMove, function (playerInfo) {
         const updated = JSON.parse(playerInfo.json);
-        const newPlayer = collisionEngine.updatePlayer(updated);
+        const newPlayer = collisionEngine.updatePlayer(updated, playerInfo.objectives);
         if (newPlayer) canvas.addDrawable(/** @type {Player} */(newPlayer));
         if(updated.id === playerController.id) {
             //update healthbar
-            playerController.hurt(0);
+            playerController.hurt(0, "");
         }
     });
 

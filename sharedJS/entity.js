@@ -37,6 +37,7 @@ export default class Entity {
 
         this.type = TYPES.basic;
         this.category = CATEGORY.none;
+        this.lastHit = null;
     }
     get x() {
         return this.location.x;
@@ -130,8 +131,11 @@ export default class Entity {
     }
     /**
      * @param {number} damage
+     * @param {string} hitID
      */
-    hurt(damage) {
+    hurt(damage, hitID) {
+        if(this.lastHit === hitID) return;
+        this.lastHit = hitID;
         this.currHealth -= damage;
     }
 }

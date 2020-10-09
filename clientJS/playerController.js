@@ -162,8 +162,13 @@ export default class PlayerController extends Player {
     }
     /**
      * @param {number} damage
+     * @param {string} hitID
      */
-    hurt(damage) {
+    hurt(damage, hitID) {
+        if(this.lastHit === hitID) {
+            console.log(hitID, " already hit");
+            return;
+        }
         console.log("Hit for", damage);
         this.currHealth -= damage;
         if (this.hasUI) {

@@ -68,7 +68,7 @@ export default class Projectile extends Entity {
 
         //if hitting a player deal damage
         if (other.category === CATEGORY.damageable || other.category === CATEGORY.player || other.category === CATEGORY.dragon) {
-            /** @type {Player} */(other).hurt(this.damage);
+            /** @type {Player} */(other).hurt(this.damage, this.id);
             remove = true;
         } else if (other.category === CATEGORY.tile) {
             //Projectiles go over passable tiles
