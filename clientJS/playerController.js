@@ -105,8 +105,8 @@ export default class PlayerController extends Player {
             this.lookDirection = new Vec2(this.mouse.x, this.mouse.y).addS(canvas.topRight).subS(this.location);
             //TODO make melee ability (currently debugging prints this)
             if (keyPress[keyBinds.MELEE]) {
-                console.log(this);
-                console.log(collisions.dynamics);
+                console.info(this);
+                console.info(collisions.dynamics);
             }
             //handle abilities
             for(const key of Object.keys(this.abilities)) {
@@ -117,13 +117,12 @@ export default class PlayerController extends Player {
                     if (projectile) {
                         socket.emit(CHANNELS.newProjectile, projectile.makeObject(), (id) => {
                             projectile.id = id;
-                            console.log("ProjectileID AK", id);
                             //add projectile to the collisions
                             collisions.addDynamic(projectile);
                             canvas.addDrawable(projectile.makeSprite());
                         });
                     } else {
-                        console.log("On CoolDown");
+                        console.info("On CoolDown");
                     }
                 }
             }

@@ -22,7 +22,7 @@ export default class DragonSprite {
     draw(canvas) {
         const phase = this.owner.phase;
         let index = this.owner.frame;
-        if(!dragonImages.get(phase)) console.log(phase);
+        if(!dragonImages.get(phase)) console.error(phase);
 
         const sx = Math.floor(index % dragonAnimationWidths.get(phase)) * this.size.x;
         const sy = Math.floor(index / dragonAnimationWidths.get(phase)) * this.size.y;

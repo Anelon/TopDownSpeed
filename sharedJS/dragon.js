@@ -60,7 +60,6 @@ export default class Dragon extends Entity {
     }
 
     kill() {
-        console.log("Dragon Killed");
         if(this.guardedRegion) this.guardedRegion.locked = false;
         this.category = CATEGORY.none;
     }
@@ -105,7 +104,6 @@ export default class Dragon extends Entity {
             } else if(action === "kill") {
                 this.kill();
             } else if(action === "delete") {
-                console.log("deleting dragon");
                 this.deleteCall(this);
             }
         }

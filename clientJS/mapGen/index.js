@@ -82,7 +82,6 @@ canvas.addEventListener("mouseup", function(e) {
             traversalObject[elem.value] = elem.checked;
         }
         const tile = TILES[selectedTileName].clone().setTraversal(traversalObject);
-        console.log(tile);
         gameMap.update(regionStart, regionEnd, selectedLayer, tile);
         collisionEngine.setStatics(gameMap.generateStatic());
     } else if (editMode === EDIT_MODES.region) {
@@ -185,6 +184,6 @@ document.querySelector(`#Layer${selectedLayer}`).classList.add("active");
 document.querySelector(`#${selectedTileName}`).classList.add("active");
 
 document.querySelector("#save").addEventListener("click", function(e) {
-    console.log("saving");
-    console.log(gameMap.saveMap());
+    console.info("saving");
+    console.info(gameMap.saveMap());
 });

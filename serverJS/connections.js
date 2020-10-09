@@ -28,10 +28,10 @@ export default class Connections {
     start() {
         this.sockets.on("connection", (client) => {
             if(this.connections.size >= MaxPlayers) {
-                console.log("Too Many Players Connected");
+                console.info("Too Many Players Connected");
+                //disabled for now 
                 //return;
             }
-            console.log("a user has connected");
             //add client to the list of connections
             this.connections.set(client.id, client);
             let setLane = null;
@@ -42,7 +42,6 @@ export default class Connections {
                     setLane = laneName;
                 }
             }
-            console.log(setLane);
             const spawn = this.gameMap.lanes.get(setLane).regions.get(REGION_NAMES.spawn).center.clone();
             let player = new Player(spawn, "Player", "player", 200, 200, new Circle(spawn, Player.WIDTH), 2);
             //set player id to client id for easier lookup
@@ -59,42 +58,48 @@ export default class Connections {
             this.broadcast(CHANNELS.playerMove, player.makeObject(), client);
 
             client.on("disconnect", (event) => {
-                console.log("a user has disconnected");
+                console.info("a user has disconnected");
                 this.broadcast(CHANNELS.deletePlayer, client.id);
                 this.collisionEngine.removePlayer(client.id);
             });
 
             client.on("event", (event) => {
-                console.log("a user has evented");
+                console.info("a user has evented");
             });
 
             client.on(CHANNELS.playerMove, (playerInfo) => {
+                //TODO: add validation of move here
+                //broadcast the message (add client to prevent echoing)
                 this.broadcast(CHANNELS.playerMove, playerInfo, client);
                 let updated = JSON.parse(playerInfo.json);
                 //if player moving isn't connected ignore it
                 this.collisionEngine.updatePlayer(updated);
-                //TODO: add validation of move here
-                //broadcast the message (add client to prevent echoing)
             });
 
             client.on(CHANNELS.newProjectile, (newProjectile, fn) => {
                 //const updated = JSON.parse(newProjectile.json);
-                this.broadcast(CHANNELS.newProjectile, newProjectile, client);
                 const projectile = projectileFromJSON(newProjectile);
                 projectile.id = getProjectileID().toString();
                 this.collisionEngine.addDynamic(projectile);
                 //TODO: add validation of move here
                 //broadcast the message (add client to prevent echoing)
+                this.broadcast(CHANNELS.newProjectile, projectile.makeObject(), client);
 
                 //send projectileid back to client
                 fn(projectile.id);
             });
 
             client.on(CHANNELS.deletePlayer, (playerInfo) => {
-                console.log("an extra user has been disconnected");
                 //send the deleted player to other clients
                 this.broadcast(CHANNELS.deletePlayer, playerInfo.id, client);
                 this.collisionEngine.removePlayer(playerInfo.id);
+            });
+
+            client.on(CHANNELS.deleteProjectile, (projectileID) => {
+                console.log("Recieved Delete Projectile", projectileID);
+                //send the deleted player to other clients
+                this.broadcast(CHANNELS.deleteProjectile, projectileID, client);
+                this.collisionEngine.removeDynamic(projectileID);
             });
 
             //gameName can be used later if we can have more than one game going on a server
@@ -103,7 +108,6 @@ export default class Connections {
                 for (const players of this.collisionEngine.players.values()) {
                     //if the player isn't connected dont send
                     if (!this.connections.has(players.id)) {
-                        console.log("Inactive Player:", players.id, players.name);
                         continue;
                     }
                     client.emit(CHANNELS.playerMove, players.makeObject());
@@ -111,13 +115,11 @@ export default class Connections {
                 //send client all existing dynamics
                 for (const projectile of this.collisionEngine.dynamics.values()) {
                     if(projectile.category === CATEGORY.dragon) continue;
-                    console.log(projectile);
                     client.emit(CHANNELS.newProjectile, projectile.makeObject());
                 }
             });
 
             client.on(CHANNELS.ready, (data) => {
-                console.log(data);
                 const player = this.collisionEngine.players.get(client.id);
                 //if there is a display name set it
                 if(data.displayName) {
@@ -130,11 +132,10 @@ export default class Connections {
                 //if ready add to count and check if there is enough ready
                 if(data.ready) {
                     this.readyCount++;
-                    console.log(this.readyCount, this.collisionEngine.players.size);
                     //TODO add check that there is more than the minPlayers
                     if(this.readyCount === this.collisionEngine.players.size) {
                         this.broadcast(CHANNELS.startGame, "start");
-                        console.log("starting game");
+                        console.info("starting game");
                         this.serverLoop.start();
                     } else if (this.readyCount > this.collisionEngine.players.size) {
                         //just tell the client that just readied to start

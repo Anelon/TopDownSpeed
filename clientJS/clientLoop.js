@@ -50,11 +50,9 @@ export default class ClientLoop {
         this.collisionEngine.setRegions(gameMap.generateRegions());
         this.collisionEngine.setStatics(gameMap.generateStatic());
         const dynamics = gameMap.getDynamics();
-        console.log(dynamics);
         for(const dynamic of dynamics) {
             this.collisionEngine.addDynamic(dynamic);
             this.canvas.addDrawable(dynamic);
-            console.log(this.canvas.drawables);
         }
     }
     /**
@@ -75,15 +73,15 @@ export default class ClientLoop {
                 if(this.socket) this.socket.emit(CHANNELS.playerMove, item.makeObject());
             } else if (item.category === CATEGORY.projectile) {
                 this.remove(/** @type {Projectile} */(item));
+                if(this.socket) this.socket.emit(CHANNELS.deleteProjectile, item.id);
             } else if (item.category === CATEGORY.region) {
-                console.log(item);
                 /** @type {Region} */
                 //@ts-ignore
                 const region = item;
                 if(region.name === "victoryMonument") {
                     // @ts-ignore
                     if(region.objectives.size === NUM_OBJECTIVES) {
-                        console.log("A Team has Won");
+                        console.info("A Team has Won");
                     }
                 }
             } else if (item.category === CATEGORY.dragon) {

@@ -61,9 +61,7 @@ export default class Tile {
     hit(other) {
         if(other.category === CATEGORY.player) {
             if(!this.walkable) {
-                console.log(other);
                 //TODO just block what would colide with (x values if above or below)
-                console.log("Block Movement");
                 //put player back to old location
                 other.location = other.oldLocation;
             }

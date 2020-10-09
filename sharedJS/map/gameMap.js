@@ -93,7 +93,6 @@ export default class GameMap {
                     this.lanes.get(other).name = name;
                 }
                 placed = true;
-                console.log("Placed", placed)
                 break;
             }
         }

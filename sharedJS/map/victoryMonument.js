@@ -18,14 +18,13 @@ export default class VictoryMonument extends Region {
     beginOverlap(player) {
         if(player.objectives.size) {
             for(const objective of player.objectives) {
-                console.log(objective);
+                console.info(objective, " added to VM");
                 this.objectives.add(objective);
             }
             if(this.objectives.size === 3) {
-                console.log("A winner is you");
+                console.info("A winner is you");
             }
             player.objectives.clear();
-
         }
     }
 }

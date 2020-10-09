@@ -12,5 +12,5 @@ export function loadMapSync(mapName) {
 
 let projectileID = 0;
 export function getProjectileID() {
-    return projectileID++;
+    return `projectile_${projectileID++}`;
 }

@@ -12,8 +12,10 @@ export default class PVERegion extends Region {
         this.bossMonster = null;
     }
     endOverlap() {
-        console.log("No longer have anyone overlapping");
         //pause the dragon
+        if (this.bossMonster) {
+            this.bossMonster.active = false;
+        }
     }
     firstOverlap(player) {
         //start the dragon

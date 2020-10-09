@@ -38,7 +38,7 @@ app.get("/api/getMap/:mapName", async function(req, res) {
 const mapJSON = JSON.parse(loadMapSync("map"));
 const gameMap = GameMap.makeFromJSON(mapJSON);
 
-let server = app.listen(app.get('port'), app.get('ip'),()=>{console.log(`Express Server is Running at http://${app.get('ip')}:${app.get('port')}`);});
+let server = app.listen(app.get('port'), app.get('ip'),()=>{console.info(`Express Server is Running at http://${app.get('ip')}:${app.get('port')}`);});
 
 //create a new server
 let serverLoop = new ServerLoop(server);

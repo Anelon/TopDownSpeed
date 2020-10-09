@@ -185,11 +185,11 @@ export default class CollisionEngine {
     removeDynamic(oldDynamic) {
         if(oldDynamic.id) {
             if(!this.dynamics.has(oldDynamic.id)) return;
-            console.log(this.dynamics.get(oldDynamic.id).type);
+            console.log(oldDynamic.id, this.dynamics.get(oldDynamic.id).type);
             this.dynamics.delete(oldDynamic.id);
         } else {
             if(!this.dynamics.has(oldDynamic)) return;
-            console.log(this.dynamics.get(oldDynamic).type);
+            console.log(oldDynamic, this.dynamics.get(oldDynamic).type);
             this.dynamics.delete(oldDynamic);
         }
     }

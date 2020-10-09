@@ -58,7 +58,6 @@ class CanvasWrapper {
 		window.addEventListener("resize", this.resize.bind(this));
 	}
 	resize() {
-		console.log("resizing");
 		this.borderSize = 40;
 		this.canvas.width = window.innerWidth - this.borderSize;
 		this.canvas.height = window.innerHeight - this.borderSize;

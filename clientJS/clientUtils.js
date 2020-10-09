@@ -7,12 +7,10 @@ export function setLoadingCallback(callback) {
 
 export function startedImageLoad() {
     imagesLoading++;
-    console.log(imagesLoading);
 }
 
 export function endedImageLoad() {
     imagesLoading--;
-    console.log(imagesLoading);
     if(imagesLoading === 0) {
         if(loadingCallBack) loadingCallBack();
     }

@@ -21,9 +21,7 @@ import { dragonAnimationWidths, dragonImages } from "./sprites.js";
 let socket = io();
 
 let documentReady = false;
-function test() {
-    console.log("Page loaded");
-}
+
 if(document.readyState === 'complete') {
     main();
 } else {
@@ -120,6 +118,9 @@ async function main() {
     socket.on(CHANNELS.newProjectile, function (newProjectile) {
         const updated = JSON.parse(newProjectile.json);
         const projectile = projectileFromJSON(newProjectile);
+        if(!projectile.id.includes("projectile_")) {
+            console.error("Bad Projectile", updated.id);
+        }
         collisionEngine.addDynamic(projectile);
         if (newProjectile.type === "Projectile") {
             canvas.addDrawable(projectile);
@@ -144,7 +145,7 @@ async function main() {
             collisionEngine.removeDynamic(projectileID);
             canvas.removeDrawable(projectileID);
         } else {
-            console.log(projectileID);
+            console.error(projectileID);
         }
     });
 
@@ -207,6 +208,5 @@ socket.on(CHANNELS.newPlayer, function (playerInfo) {
         //stop the old clientLoop
         clientLoop.running = false;
     }
-    console.log(playerInfoJson);
     main();
 });

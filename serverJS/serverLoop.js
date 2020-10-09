@@ -37,25 +37,25 @@ export default class ServerLoop {
                 if (player.currHealth <= 0) {
                     player.kill();
                     this.connections.message(player.id, CHANNELS.kill, "kill");
-                    console.log(player.name, " has Died.");
                 }
                 this.connections.broadcast(CHANNELS.playerMove, player.makeObject());
             } else if (item.category === CATEGORY.projectile) {
                 this.collisionEngine.removeDynamic(/** @type {Projectile} */(item));
+                console.log("Send Delete Projectile", item.id);
                 this.connections.broadcast(CHANNELS.deleteProjectile, item.id);
             } else if (item.category === CATEGORY.region) {
                 //cast item to a region
                 /** @type {Region} */
                 //@ts-ignore
                 const region = item;
-                console.log(`Player entered the ${region.name} region`);
+                console.info(`Player entered the ${region.name} region`);
                 if(region.name === "victoryMonument") {
                     // @ts-ignore
                     if(region.objectives.size === NUM_OBJECTIVES) {
                         //find which team won
                         for(const [laneName, lane] of this.gameMap.lanes) {
                             if(/** @type {VictoryMonument} */(lane.regions.get("victoryMonument")).objectives.size === NUM_OBJECTIVES) {
-                                console.log(laneName, "Has Won");
+                                console.info(laneName, "Has Won");
                                 this.connections.broadcast(CHANNELS.endGame, laneName);
                                 this.stop();
                                 break;
@@ -64,7 +64,6 @@ export default class ServerLoop {
                     }
                 }
             } else if (item.category === CATEGORY.dragon) {
-                console.log("Dead dragon");
                 /** @type {Dragon} */(item).deleteCall = this.remove.bind(this);
             }
         }
@@ -110,10 +109,9 @@ export default class ServerLoop {
         //add map regions and statics to the collision engine
         this.collisionEngine.setRegions(this.gameMap.generateRegions());
         this.collisionEngine.setStatics(this.gameMap.generateStatic());
-        const monsters = this.gameMap.getDynamics();
-        console.log(monsters);
-        for(const monster of monsters) {
-            this.collisionEngine.addDynamic(monster);
+        const dynamics = this.gameMap.getDynamics();
+        for(const dynamic of dynamics) {
+            this.collisionEngine.addDynamic(dynamic);
         }
     }
 }
