@@ -37,7 +37,6 @@ export function projectileFromJSON(object) {
     }
     if(!projectile) projectile = Projectile.makeFromJSON(data);
     projectile.id = id;
-    console.log("Projectile IDS ", id, projectile.id);
 
     return projectile;
 }

@@ -35,7 +35,7 @@ export default class Connections {
             //add client to the list of connections
             this.connections.set(client.id, client);
             let setLane = null;
-            let leastPlayers = MaxPlayers;
+            let leastPlayers = 1000;
             for(const [laneName, lane] of this.gameMap.lanes) {
                 if(lane.players.size < leastPlayers) {
                     leastPlayers = lane.players.size;
@@ -96,7 +96,6 @@ export default class Connections {
             });
 
             client.on(CHANNELS.deleteProjectile, (projectileID) => {
-                console.log("Recieved Delete Projectile", projectileID);
                 //send the deleted player to other clients
                 this.broadcast(CHANNELS.deleteProjectile, projectileID, client);
                 this.collisionEngine.removeDynamic(projectileID);

@@ -166,10 +166,10 @@ export default class PlayerController extends Player {
      */
     hurt(damage, hitID) {
         if(this.lastHit === hitID) {
-            console.log(hitID, " already hit");
+            console.info(hitID, " already hit");
             return;
         }
-        console.log("Hit for", damage);
+        console.info("Hit for", damage);
         this.currHealth -= damage;
         if (this.hasUI) {
             //update healthbar and value

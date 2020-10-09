@@ -41,7 +41,6 @@ export default class ServerLoop {
                 this.connections.broadcast(CHANNELS.playerMove, player.makeObject());
             } else if (item.category === CATEGORY.projectile) {
                 this.collisionEngine.removeDynamic(/** @type {Projectile} */(item));
-                console.log("Send Delete Projectile", item.id);
                 this.connections.broadcast(CHANNELS.deleteProjectile, item.id);
             } else if (item.category === CATEGORY.region) {
                 //cast item to a region

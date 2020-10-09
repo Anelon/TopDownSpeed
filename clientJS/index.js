@@ -28,6 +28,12 @@ if(document.readyState === 'complete') {
     document.addEventListener("readystatechange", function (e) {
         const readyState = /** @type {Document} */(e.target).readyState;
         if(readyState === "complete") {
+            console.log("Document is ready");
+            /** @type {NodeListOf<HTMLImageElement>} */
+            const imgs = (document.querySelectorAll("img"));
+            for(const img of imgs){ 
+                console.log(img.src, img.complete);
+            }
             documentReady = true;
             main();
         }
@@ -105,11 +111,15 @@ async function main() {
     canvas.addDrawable(waterBall.makeSprite());
     canvas.addDrawable(fireBall.makeSprite());
     canvas.addDrawable(plantSeed.makeSprite());
+    canvas.addEventListener("contextMenu", (e) => {
+        console.log("context Menu", e);
+        e.preventDefault();
+        return false;
+    });
 
     socket.on(CHANNELS.newProjectile, function (newProjectile) {
         const updated = JSON.parse(newProjectile.json);
         const projectile = projectileFromJSON(newProjectile);
-        console.log(projectile);
         if(!projectile.id.includes("projectile_")) {
             console.error("Bad Projectile", updated.id);
         }

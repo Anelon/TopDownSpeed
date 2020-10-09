@@ -40,7 +40,6 @@ class CanvasWrapper {
 		//supposed to fix antialiasing but its not =(
 		//TODO just scale all of the images
 		this.ctx['imageSmoothingEnabled'] = false;       /* standard */
-		this.ctx['mozImageSmoothingEnabled'] = false;    /* Firefox */
 		this.ctx['oImageSmoothingEnabled'] = false;      /* Opera */
 		this.ctx['webkitImageSmoothingEnabled'] = false; /* Safari */
 		this.ctx['msImageSmoothingEnabled'] = false;     /* IE */
