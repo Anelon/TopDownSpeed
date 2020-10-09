@@ -13,8 +13,6 @@ import PlantSeed from "../sharedJS/ability/plantSeed.js";
 import GameMap from "../sharedJS/map/gameMap.js";
 import ClientLoop from "./clientLoop.js";
 import Dragon from "../sharedJS/dragon.js";
-import { animations } from "../sharedJS/dragonData.js";
-import { dragonAnimationWidths, dragonImages } from "./sprites.js";
 
 //setup the sockets and listening
 // @ts-ignore

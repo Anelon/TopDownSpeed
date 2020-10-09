@@ -1,9 +1,9 @@
 import TileSprite from "./tileSprite.js";
 import { DECORATION_NAMES, TILE_NAMES } from "../sharedJS/utils/enums.js";
-import Drawable from "./drawable.js";
 import DecorationSprite from "./decorationSprite.js";
 
-//TODO figure out why dungeonTiles isn't working
+//TODO figure out why dungeonTiles isn't working Solved image is wrong size
+//TODO move creating TileSprites till after document loads
 export const tileSprites = new Map(
     [
         [TILE_NAMES.g, new TileSprite("grassTiles", TILE_NAMES.g, [TILE_NAMES.g, TILE_NAMES.d])],

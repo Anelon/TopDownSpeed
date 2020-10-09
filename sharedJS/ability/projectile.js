@@ -6,6 +6,7 @@ import Player from "../player.js";
 import Drawable from "../../clientJS/drawable.js";
 /** @typedef {import("../map/tile.js").default} Tile */
 
+//TODO add owner to projectile so you can't hit yourself
 export default class Projectile extends Entity {
     static get IMAGE() { return "arrow"; }
     /**

@@ -11,7 +11,7 @@ import DragonSprite from "./dragonSprite.js";
 //https://stackoverflow.com/questions/1664785/resize-html5-canvas-to-fit-window
 
 //this handles all canvas drawing and holding the canvas
-class CanvasWrapper {
+export default class CanvasWrapper {
 	/**
 	 * 
 	 * @param {Object} [params] 
@@ -381,5 +381,3 @@ class CanvasWrapper {
 		this.canvas.addEventListener(event, func);
 	}
 }
-
-export default CanvasWrapper;
