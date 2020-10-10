@@ -19,10 +19,10 @@ export default class Projectile extends Entity {
      * @param {number} range How far the projectile can go
      * @param {number} damage How much damage the projectile does
      * @param {Circle} hitbox
-     * @param {Player} owner Who spaned the projectile
+     * @param {string} ownerID Who spaned the projectile
      * @param {string} [imgSrc] Image sprite path
      */
-    constructor(origin, name, speed, scale, look, range, damage, hitbox, owner, imgSrc) {
+    constructor(origin, name, speed, scale, look, range, damage, hitbox, ownerID, imgSrc) {
         console.assert(hitbox instanceof Circle, "Hitbox not cirlce?");
         //temporary hitbox, need to find better place for this at somepoint (probably when we make specific abilities)
         hitbox = hitbox || new Circle(origin, 8);
@@ -35,7 +35,7 @@ export default class Projectile extends Entity {
         //how far the projectile can go
         this.range = range;
         this.damage = damage;
-        this.owner = owner;
+        this.ownerID = ownerID;
         
         this.type = TYPES.basic;
         this.category = CATEGORY.projectile;
@@ -46,12 +46,12 @@ export default class Projectile extends Entity {
      */
     static makeFromJSON(json) {
         const {
-            location, name, imgSrc, speed, scale, lookDirection, range, hitbox, damage, owner, type, category
+            location, name, imgSrc, speed, scale, lookDirection, range, hitbox, damage, ownerID, type, category
         } = json;
         //construct projectile
         const loc = new Vec2(location.x, location.y);
         return new Projectile(
-            loc, name, speed, scale, new Vec2(lookDirection.x, lookDirection.y), range, damage, new Circle(loc, hitbox.radius), owner, imgSrc
+            loc, name, speed, scale, new Vec2(lookDirection.x, lookDirection.y), range, damage, new Circle(loc, hitbox.radius), ownerID, imgSrc
         );
     }
     /**
@@ -59,6 +59,9 @@ export default class Projectile extends Entity {
      * @param {Player|Projectile|Entity|Tile} other 
      */
     hit(other) {
+        if (/** @type {Player} */(other).id === this.ownerID) {
+            return false;
+        }
         let remove = false;
         if (other.type === this.type) {
             //Same type do nothing

@@ -5,6 +5,8 @@ import Fireball from "../ability/fireball.js";
 import Waterball from "../ability/waterball.js";
 import PlantSeed from "../ability/plantSeed.js";
 
+export const mapName = "wallsMap";
+
 /**
  * @param {{ json: string; type: string; }} object
  */
@@ -13,7 +15,7 @@ export function projectileFromJSON(object) {
 
     //destructure data object
     const {
-        id, location, name, speed, scale, lookDirection, range, hitbox, damage, owner
+        id, location, name, speed, scale, lookDirection, range, hitbox, damage, ownerID
     } = data;
     const loc = new Vec2(location.x, location.y);
     const look = new Vec2(lookDirection.x, lookDirection.y);
@@ -22,17 +24,17 @@ export function projectileFromJSON(object) {
     //construct based on object type
     if (object.type === "Fireball") {
         projectile = new Fireball(
-            loc, name, speed, scale, look, range, damage, new Circle(loc, hitbox.radius), owner
+            loc, name, speed, scale, look, range, damage, new Circle(loc, hitbox.radius), ownerID
         );
     }
     else if (object.type === "Waterball") {
         projectile = new Waterball(
-            loc, name, speed, scale, look, range, damage, new Circle(loc, hitbox.radius), owner
+            loc, name, speed, scale, look, range, damage, new Circle(loc, hitbox.radius), ownerID
         );
     }
     else if (object.type === "PlantSeed") {
         projectile = new PlantSeed(
-            loc, name, speed, scale, look, range, damage, new Circle(loc, hitbox.radius), owner
+            loc, name, speed, scale, look, range, damage, new Circle(loc, hitbox.radius), ownerID
         );
     }
     if(!projectile) projectile = Projectile.makeFromJSON(data);

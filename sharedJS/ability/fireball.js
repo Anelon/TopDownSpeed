@@ -18,12 +18,12 @@ export default class Fireball extends Projectile {
      * @param {Vec2} look
      * @param {number} range
      * @param {number} damage
-     * @param {import("../player").default} owner
+     * @param {string} ownerID
      * @param {number} scale
      * @param {import("../shapes.js").Circle} hitbox
      */
-    constructor(origin, name, speed, scale, look, range, damage, hitbox, owner) {
-        super(origin, name, speed, scale, look, range, damage, hitbox, owner, Fireball.IMAGE);
+    constructor(origin, name, speed, scale, look, range, damage, hitbox, ownerID) {
+        super(origin, name, speed, scale, look, range, damage, hitbox, ownerID, Fireball.IMAGE);
 
         this.type = TYPES.fire;
     }
@@ -37,6 +37,9 @@ export default class Fireball extends Projectile {
      * @param {Player|Projectile|Entity|Tile} other 
      */
     hit(other) {
+        if (/** @type {Player} */(other).id === this.ownerID) {
+            return false;
+        }
         let remove = false;
         if (other.type === this.type) {
             //Same type do nothing
@@ -47,7 +50,7 @@ export default class Fireball extends Projectile {
 
             //check if hitting a damagable
             if (other.category === CATEGORY.damageable || other.category === CATEGORY.player || other.category === CATEGORY.dragon) {
-            /** @type {Player} */(other).hurt(this.damage, this.id);
+                /** @type {Player} */(other).hurt(this.damage, this.id);
                 remove = true;
             }
             return remove;

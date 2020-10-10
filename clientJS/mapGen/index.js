@@ -8,6 +8,19 @@ import CollisionEngine from "../../sharedJS/collisionEngine.js";
 import ClientLoop from "../clientLoop.js";
 import Dragon from "../../sharedJS/dragon.js";
 import DragonSprite from "../dragonSprite.js";
+import { loadDecorationSprites, loadTileSprites } from "../sprites.js";
+
+if(document.readyState === 'complete') {
+} else {
+    document.addEventListener("readystatechange", function (e) {
+        const readyState = /** @type {Document} */(e.target).readyState;
+        if(readyState === "complete") {
+            console.log("Document is ready");
+            loadTileSprites();
+            loadDecorationSprites();
+        }
+    });
+}
 
 let mapName = "map";
 fetch(`./api/getMap/${mapName}`)

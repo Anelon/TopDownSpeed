@@ -20,10 +20,10 @@ export default class PlantSeed extends Projectile {
      * @param {number} range
      * @param {number} damage
      * @param {import("../shapes.js").Circle} hitbox
-     * @param {Player} owner
+     * @param {string} ownerID
      */
-    constructor(origin, name, speed, scale, look, range, damage, hitbox, owner) {
-        super(origin, name, speed, scale, look, range, damage, hitbox, owner, PlantSeed.IMAGE);
+    constructor(origin, name, speed, scale, look, range, damage, hitbox, ownerID) {
+        super(origin, name, speed, scale, look, range, damage, hitbox, ownerID, PlantSeed.IMAGE);
 
         this.type = TYPES.plant;
     }
@@ -37,6 +37,9 @@ export default class PlantSeed extends Projectile {
      * @param {Player|Projectile|Entity|Tile} other 
      */
     hit(other) {
+        if (/** @type {Player} */(other).id === this.ownerID) {
+            return false;
+        }
         let remove = false;
         if (other.type === this.type) {
             //Same type do nothing
@@ -47,7 +50,7 @@ export default class PlantSeed extends Projectile {
 
             //check if hitting a damagable
             if (other.category === CATEGORY.damageable || other.category === CATEGORY.player || other.category === CATEGORY.dragon) {
-            /** @type {Player} */(other).hurt(this.damage, this.id);
+                /** @type {Player} */(other).hurt(this.damage, this.id);
                 remove = true;
             }
             return remove;

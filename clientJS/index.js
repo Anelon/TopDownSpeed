@@ -13,6 +13,7 @@ import PlantSeed from "../sharedJS/ability/plantSeed.js";
 import GameMap from "../sharedJS/map/gameMap.js";
 import ClientLoop from "./clientLoop.js";
 import Dragon from "../sharedJS/dragon.js";
+import { loadDecorationSprites, loadTileSprites } from "./sprites.js";
 
 //setup the sockets and listening
 // @ts-ignore
@@ -29,10 +30,12 @@ if(document.readyState === 'complete') {
             console.log("Document is ready");
             /** @type {NodeListOf<HTMLImageElement>} */
             const imgs = (document.querySelectorAll("img"));
-            for(const img of imgs){ 
+            for(const img of imgs) { 
                 console.log(img.src, img.complete);
             }
             documentReady = true;
+            loadTileSprites();
+            loadDecorationSprites();
             main();
         }
     });
@@ -86,7 +89,7 @@ let playerInfoJson = null;;
 async function main() {
     //wait for document and playerInfo to be ready
     if(!playerInfoJson || !documentReady) return;
-    const mapName = "map";
+    const mapName = "wallsMap";
     //load the map
     errorP.innerText = "Loading Map";
     const gameMap = await loadMap(mapName);

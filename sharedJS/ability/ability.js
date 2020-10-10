@@ -40,7 +40,7 @@ export default class Ability {
             //make projectile
             const location = owner.location.clone().addS(target.getUnit().multiplyScalarS(offset));
             const abilityProjectile = new this.projectileConstructor(
-                location, this.abilityName, this.speed, this.projectileScale, target.clone(), this.range, this.damage, this.projectileHitbox, owner
+                location, this.abilityName, this.speed, this.projectileScale, target.clone(), this.range, this.damage, this.projectileHitbox, owner.id
             );
 
             //set the cooldown
