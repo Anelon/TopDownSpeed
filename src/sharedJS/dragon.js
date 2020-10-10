@@ -5,8 +5,10 @@ import { TYPES, CATEGORY } from "./utils/enums.js";
 import Projectile from "./ability/projectile.js";
 import { keyFrames, animations, animationLengths } from "./dragonData.js";
 import Box from "./box.js";
+import Fireball from "./ability/fireball.js";
+import FireballAbility from "./ability/fireballAbility.js";
 /** @typedef {import("./map/region.js").default} Region */
-//import Ability from "../../sharedJS/ability.js";
+/** @typedef {import("./collisionEngine.js").default} CollisionEngine */
 
 /**
  * Class for the dragon boss
@@ -43,7 +45,15 @@ export default class Dragon extends Entity {
         this.phase = animations.idleBattle;
         this.frame = 0;
         this.deleteCall = null;
+
+        this.targetPlayers = new Set();
+        this.attackOrigin = this.location.sub(new Vec2(0,0));
     }
+
+    setTargetPlayers(targetPlayers) {
+        this.targetPlayers = targetPlayers;
+    }
+    
     /**
      * Updates where the player is based on the json data given
      * @param {Dragon} json 
@@ -65,6 +75,17 @@ export default class Dragon extends Entity {
     }
 
     /**
+     * @param {CollisionEngine} [collisionEngine]
+    */
+    attack(collisionEngine) {
+        for (const player of this.targetPlayers.values()) {
+            console.log(player.name);
+            const fireball = new Fireball(this.attackOrigin, "fireBall", 200, 1, player.location.sub(this.attackOrigin), 500, 150, FireballAbility.hitbox, this.id);
+            collisionEngine.addDynamic(fireball);
+        }
+    }
+
+    /**
      * 
      * @param {Dragon|Projectile|Entity} other 
      */
@@ -82,8 +103,9 @@ export default class Dragon extends Entity {
     /**
      * @param {import("./utils/time.js").default} time
      * @param {number} dt
+     * @param {CollisionEngine} [collisionEngine]
      */
-    update(time, dt) {
+    update(time, dt, collisionEngine) {
         this.frame += Dragon.phaseSpeed;
         if(animationLengths.get(this.phase) <= this.frame) {
             this.frame = 0;
@@ -101,6 +123,7 @@ export default class Dragon extends Entity {
                 //TODO melee attack
             } else if(action === "fireball") {
                 //TODO Launch fireball
+                this.attack(collisionEngine);
             } else if(action === "kill") {
                 this.kill();
             } else if(action === "delete") {

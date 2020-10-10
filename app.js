@@ -2,9 +2,9 @@ import express from "express";
 import ejs from "ejs";
 import ejsLint from "ejs-lint";
 import dotenv from "dotenv";
-import ServerLoop from "./serverJS/serverLoop.js";
-import GameMap from "./sharedJS/map/gameMap.js";
-import { loadMap, loadMapSync } from "./serverJS/serverUtils.js";
+import ServerLoop from "./src/serverJS/serverLoop.js";
+import { loadMap } from "./src/serverJS/serverUtils.js";
+//import { MAPNAME } from "./sharedJS/utils/enums.js";
 
 const result = dotenv.config();
 
@@ -34,10 +34,6 @@ app.get("/api/getMap/:mapName", async function(req, res) {
     const mapJSON = JSON.parse(await loadMap(req.params.mapName));
     res.send({"data": mapJSON});
 });
-
-const mapName = "wallsMap"
-const mapJSON = JSON.parse(loadMapSync(mapName));
-const gameMap = GameMap.makeFromJSON(mapJSON);
 
 let server = app.listen(app.get('port'), app.get('ip'),()=>{console.info(`Express Server is Running at http://${app.get('ip')}:${app.get('port')}`);});
 

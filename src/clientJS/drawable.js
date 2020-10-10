@@ -19,7 +19,7 @@ class Drawable {
      * @param {number} dt
      */
     update(time, dt) {
-        this.owner.update(time, dt);
+        this.owner.update(time, dt, null);
     }
     /**
      * @param {CanvasWrapper} canvas

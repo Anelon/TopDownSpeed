@@ -7,6 +7,13 @@ import Tile from "../map/tile.js";
 import VictoryMonument from "../map/victoryMonument.js";
 import Vec2 from "../vec2.js";
 
+export const MaxPlayers = 6;
+export const MinPlayers = 2;
+
+export const NUM_OBJECTIVES = 3;
+
+export const MAPNAME = "wallsMap";
+
 //Enum of the type strings for consistency
 export const TYPES = {
     //ability types
@@ -99,7 +106,6 @@ export const REGIONS = {
 //lock the enum
 Object.freeze(REGIONS);
 
-export const NUM_OBJECTIVES = 3;
 export const OBJECTIVE_COLORS = {
     [REGION_NAMES.pvpObjective]: "red",
     [REGION_NAMES.pveObjective]: "blue",
@@ -108,6 +114,3 @@ export const OBJECTIVE_COLORS = {
 }
 //lock the enum
 Object.freeze(OBJECTIVE_COLORS);
-
-export const MaxPlayers = 6;
-export const MinPlayers = 2;

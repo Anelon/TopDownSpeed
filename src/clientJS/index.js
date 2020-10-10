@@ -14,6 +14,7 @@ import GameMap from "../sharedJS/map/gameMap.js";
 import ClientLoop from "./clientLoop.js";
 import Dragon from "../sharedJS/dragon.js";
 import { loadDecorationSprites, loadTileSprites } from "./sprites.js";
+import { MAPNAME } from "../sharedJS/utils/enums.js";
 
 //setup the sockets and listening
 // @ts-ignore
@@ -28,14 +29,11 @@ if(document.readyState === 'complete') {
         const readyState = /** @type {Document} */(e.target).readyState;
         if(readyState === "complete") {
             console.log("Document is ready");
-            /** @type {NodeListOf<HTMLImageElement>} */
-            const imgs = (document.querySelectorAll("img"));
-            for(const img of imgs) { 
-                console.log(img.src, img.complete);
-            }
             documentReady = true;
+            //call load functions
             loadTileSprites();
             loadDecorationSprites();
+            //start
             main();
         }
     });
@@ -89,10 +87,9 @@ let playerInfoJson = null;;
 async function main() {
     //wait for document and playerInfo to be ready
     if(!playerInfoJson || !documentReady) return;
-    const mapName = "wallsMap";
     //load the map
     errorP.innerText = "Loading Map";
-    const gameMap = await loadMap(mapName);
+    const gameMap = await loadMap(MAPNAME);
     //Globals
     const pixelDims = gameMap.dimentions.multiplyVec(gameMap.tileSize);
     const collisionEngine = new CollisionEngine(pixelDims.x, pixelDims.y);

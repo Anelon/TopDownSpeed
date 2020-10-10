@@ -27,6 +27,7 @@ export default class PVERegion extends Region {
     beginOverlap(player) {
         if(this.bossMonster) {
             this.bossMonster.active = true;
+            this.bossMonster.setTargetPlayers(this.overlaps);
         }
     }
 }

@@ -1,5 +1,5 @@
-import Drawable from "./drawable.js";
 import Vec2 from "../sharedJS/vec2.js";
+import Drawable from "./drawable.js";
 /** @typedef {import("./canvasWrapper.js").default} CanvasWrapper */
 
 export default class Sprite extends Drawable {

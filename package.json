@@ -8,10 +8,11 @@
     "node": "14.x"
   },
   "scripts": {
+    "start": "node app.js",
     "dev": "nodemon app.js -L --ext .js,.ejs,.css",
     "test": "mocha --exit",
     "test-coverage": "c8 mocha",
-    "start": "node app.js"
+    "deptree": "depcruise --exclude '^node_modules' --output-type dot reactive-react | dot -T svg > dependencygraph.svg"
   },
   "repository": {
     "type": "git",

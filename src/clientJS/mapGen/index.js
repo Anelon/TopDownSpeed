@@ -1,13 +1,11 @@
 import Vec2 from "../../sharedJS/vec2.js";
 import CanvasWrapper from "../canvasWrapper.js";
-import GameMap from "../../sharedJS/map/gameMap.js"
-import { TILES, TILE_NAMES, REGIONS, TILE_OPTIONS } from "../../sharedJS/utils/enums.js";
+import GameMap from "../../sharedJS/map/gameMap.js";
+import { TILES, TILE_NAMES, REGIONS, TILE_OPTIONS, MAPNAME } from "../../sharedJS/utils/enums.js";
 import PlayerController from "../playerController.js";
 import Time from "../../sharedJS/utils/time.js";
 import CollisionEngine from "../../sharedJS/collisionEngine.js";
 import ClientLoop from "../clientLoop.js";
-import Dragon from "../../sharedJS/dragon.js";
-import DragonSprite from "../dragonSprite.js";
 import { loadDecorationSprites, loadTileSprites } from "../sprites.js";
 
 if(document.readyState === 'complete') {
@@ -22,8 +20,7 @@ if(document.readyState === 'complete') {
     });
 }
 
-let mapName = "wallsMap";
-fetch(`./api/getMap/${mapName}`)
+fetch(`./api/getMap/${MAPNAME}`)
 .then(function(res) {
     if(res.status !== 200) {
         console.error("Error occured", res.status);

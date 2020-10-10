@@ -2,7 +2,7 @@ import Time from "../sharedJS/utils/time.js";
 import Connections from "./connections.js";
 import { performance } from "perf_hooks";
 import CollisionEngine from "../sharedJS/collisionEngine.js";
-import { TYPES, CATEGORY, NUM_OBJECTIVES } from "../sharedJS/utils/enums.js";
+import { CATEGORY, NUM_OBJECTIVES, MAPNAME } from "../sharedJS/utils/enums.js";
 import Player from "../sharedJS/player.js";
 import CHANNELS from "../sharedJS/utils/channels.js";
 import GameMap from "../sharedJS/map/gameMap.js";
@@ -100,7 +100,7 @@ export default class ServerLoop {
      * @param {import("http").Server | import("https").Server} server
      */
     setup(server) {
-        const mapJSON = JSON.parse(loadMapSync("map"));
+        const mapJSON = JSON.parse(loadMapSync(MAPNAME));
         this.gameMap = GameMap.makeFromJSON(mapJSON);
         const pixelDims = this.gameMap.dimentions.multiplyVec(this.gameMap.tileSize);
         this.collisionEngine = new CollisionEngine(pixelDims.x, pixelDims.y);

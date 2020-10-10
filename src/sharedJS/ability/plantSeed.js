@@ -1,6 +1,6 @@
+import Vec2 from "../vec2.js";
 import Projectile from "./projectile.js";
 import { TYPES, CATEGORY } from "../utils/enums.js";
-import Vec2 from "../vec2.js";
 import Sprite from "../../clientJS/sprite.js";
 /** @typedef {import("../player").default} Player */
 /** @typedef {import("../entity").default} Entity */

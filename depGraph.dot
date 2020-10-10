@@ -1,0 +1,297 @@
+strict digraph "dependency-cruiser output"{
+    ordering="out" rankdir="LR" splines="true" overlap="false" nodesep="0.16" ranksep="0.18" fontname="Helvetica-bold" fontsize="9" style="rounded,bold,filled" fillcolor="#ffffff" compound="true"
+    node [shape="box" style="rounded, filled" height="0.2" color="black" fillcolor="#ffffcc" fontcolor="black" fontname="Helvetica" fontsize="9"]
+    edge [arrowhead="normal" arrowsize="0.6" penwidth="2.0" color="#00000033" fontname="Helvetica" fontsize="9"]
+
+    ".dependency-cruiser.js" [label=".dependency-cruiser.js" URL=".dependency-cruiser.js" fillcolor="#ccffcc"]
+    "app.js" [label="app.js" URL="app.js" ]
+    "app.js" -> "serverJS/serverLoop.js"
+    "app.js" -> "serverJS/serverUtils.js"
+    "assert" [label="assert" color="grey" fontcolor="grey"]
+    subgraph "cluster_clientJS" {label="clientJS" "clientJS/canvasWrapper.js" [label="canvasWrapper.js" URL="clientJS/canvasWrapper.js" ] }
+    "clientJS/canvasWrapper.js" -> "sharedJS/dragon.js" [arrowhead="normalnoneodot"]
+    "clientJS/canvasWrapper.js" -> "sharedJS/player.js" [arrowhead="normalnoneodot"]
+    "clientJS/canvasWrapper.js" -> "sharedJS/vec2.js"
+    "clientJS/canvasWrapper.js" -> "clientJS/dragonSprite.js" [arrowhead="normalnoneodot"]
+    "clientJS/canvasWrapper.js" -> "clientJS/drawable.js" [arrowhead="normalnoneodot"]
+    subgraph "cluster_clientJS" {label="clientJS" "clientJS/clientLoop.js" [label="clientLoop.js" URL="clientJS/clientLoop.js" ] }
+    "clientJS/clientLoop.js" -> "sharedJS/ability/projectile.js"
+    "clientJS/clientLoop.js" -> "sharedJS/collisionEngine.js"
+    "clientJS/clientLoop.js" -> "sharedJS/map/gameMap.js"
+    "clientJS/clientLoop.js" -> "sharedJS/map/region.js"
+    "clientJS/clientLoop.js" -> "sharedJS/utils/channels.js"
+    "clientJS/clientLoop.js" -> "sharedJS/utils/enums.js"
+    "clientJS/clientLoop.js" -> "sharedJS/utils/time.js"
+    "clientJS/clientLoop.js" -> "clientJS/canvasWrapper.js"
+    "clientJS/clientLoop.js" -> "clientJS/playerController.js"
+    "clientJS/clientLoop.js" -> "clientJS/sprites.js"
+    subgraph "cluster_clientJS" {label="clientJS" "clientJS/clientUtils.js" [label="clientUtils.js" URL="clientJS/clientUtils.js" fillcolor="#ccffcc"] }
+    subgraph "cluster_clientJS" {label="clientJS" "clientJS/decorationSprite.js" [label="decorationSprite.js" URL="clientJS/decorationSprite.js" ] }
+    "clientJS/decorationSprite.js" -> "sharedJS/vec2.js"
+    "clientJS/decorationSprite.js" -> "clientJS/canvasWrapper.js"
+    subgraph "cluster_clientJS" {label="clientJS" "clientJS/dragonSprite.js" [label="dragonSprite.js" URL="clientJS/dragonSprite.js" ] }
+    "clientJS/dragonSprite.js" -> "sharedJS/dragon.js" [arrowhead="normalnoneodot"]
+    "clientJS/dragonSprite.js" -> "sharedJS/dragonData.js"
+    "clientJS/dragonSprite.js" -> "sharedJS/vec2.js"
+    "clientJS/dragonSprite.js" -> "clientJS/sprites.js" [arrowhead="normalnoneodot"]
+    subgraph "cluster_clientJS" {label="clientJS" "clientJS/drawable.js" [label="drawable.js" URL="clientJS/drawable.js" ] }
+    "clientJS/drawable.js" -> "sharedJS/utils/enums.js"
+    "clientJS/drawable.js" -> "sharedJS/vec2.js"
+    "clientJS/drawable.js" -> "clientJS/canvasWrapper.js" [arrowhead="normalnoneodot"]
+    subgraph "cluster_clientJS" {label="clientJS" "clientJS/index.js" [label="index.js" URL="clientJS/index.js" ] }
+    "clientJS/index.js" -> "sharedJS/ability/fireball.js"
+    "clientJS/index.js" -> "sharedJS/ability/plantSeed.js"
+    "clientJS/index.js" -> "sharedJS/ability/waterball.js"
+    "clientJS/index.js" -> "sharedJS/collisionEngine.js"
+    "clientJS/index.js" -> "sharedJS/dragon.js"
+    "clientJS/index.js" -> "sharedJS/map/gameMap.js"
+    "clientJS/index.js" -> "sharedJS/player.js"
+    "clientJS/index.js" -> "sharedJS/shapes.js"
+    "clientJS/index.js" -> "sharedJS/utils/channels.js"
+    "clientJS/index.js" -> "sharedJS/utils/enums.js"
+    "clientJS/index.js" -> "sharedJS/utils/time.js"
+    "clientJS/index.js" -> "sharedJS/utils/utils.js"
+    "clientJS/index.js" -> "sharedJS/vec2.js"
+    "clientJS/index.js" -> "clientJS/canvasWrapper.js"
+    "clientJS/index.js" -> "clientJS/clientLoop.js"
+    "clientJS/index.js" -> "clientJS/playerController.js"
+    "clientJS/index.js" -> "clientJS/sprites.js"
+    subgraph "cluster_clientJS" {label="clientJS" "clientJS/keyBinds.js" [label="keyBinds.js" URL="clientJS/keyBinds.js" ] }
+    subgraph "cluster_clientJS" {label="clientJS" subgraph "cluster_clientJS/mapGen" {label="mapGen" "clientJS/mapGen/index.js" [label="index.js" URL="clientJS/mapGen/index.js" ] } }
+    "clientJS/mapGen/index.js" -> "sharedJS/collisionEngine.js"
+    "clientJS/mapGen/index.js" -> "sharedJS/map/gameMap.js"
+    "clientJS/mapGen/index.js" -> "sharedJS/utils/enums.js"
+    "clientJS/mapGen/index.js" -> "sharedJS/utils/time.js"
+    "clientJS/mapGen/index.js" -> "sharedJS/vec2.js"
+    "clientJS/mapGen/index.js" -> "clientJS/canvasWrapper.js"
+    "clientJS/mapGen/index.js" -> "clientJS/clientLoop.js"
+    "clientJS/mapGen/index.js" -> "clientJS/playerController.js"
+    "clientJS/mapGen/index.js" -> "clientJS/sprites.js"
+    subgraph "cluster_clientJS" {label="clientJS" "clientJS/playerController.js" [label="playerController.js" URL="clientJS/playerController.js" ] }
+    "clientJS/playerController.js" -> "sharedJS/ability/ability.js"
+    "clientJS/playerController.js" -> "sharedJS/ability/fireballAbility.js"
+    "clientJS/playerController.js" -> "sharedJS/ability/plantSeedAbility.js"
+    "clientJS/playerController.js" -> "sharedJS/ability/projectile.js"
+    "clientJS/playerController.js" -> "sharedJS/ability/waterballAbility.js"
+    "clientJS/playerController.js" -> "sharedJS/collisionEngine.js"
+    "clientJS/playerController.js" -> "sharedJS/player.js"
+    "clientJS/playerController.js" -> "sharedJS/shapes.js"
+    "clientJS/playerController.js" -> "sharedJS/utils/channels.js"
+    "clientJS/playerController.js" -> "sharedJS/utils/time.js"
+    "clientJS/playerController.js" -> "sharedJS/vec2.js"
+    "clientJS/playerController.js" -> "clientJS/canvasWrapper.js"
+    "clientJS/playerController.js" -> "clientJS/keyBinds.js"
+    subgraph "cluster_clientJS" {label="clientJS" subgraph "cluster_clientJS/socket.io" {label="socket.io" "clientJS/socket.io/socket.io.js" [label="socket.io.js" URL="clientJS/socket.io/socket.io.js" fillcolor="#ccffcc"] } }
+    subgraph "cluster_clientJS" {label="clientJS" "clientJS/sprite.js" [label="sprite.js" URL="clientJS/sprite.js" ] }
+    "clientJS/sprite.js" -> "sharedJS/vec2.js"
+    "clientJS/sprite.js" -> "clientJS/drawable.js" [arrowhead="normalnoneodot"]
+    subgraph "cluster_clientJS" {label="clientJS" "clientJS/sprites.js" [label="sprites.js" URL="clientJS/sprites.js" ] }
+    "clientJS/sprites.js" -> "sharedJS/utils/enums.js"
+    "clientJS/sprites.js" -> "clientJS/decorationSprite.js" [arrowhead="normalnoneodot"]
+    "clientJS/sprites.js" -> "clientJS/tileSprite.js" [arrowhead="normalnoneodot"]
+    subgraph "cluster_clientJS" {label="clientJS" "clientJS/tileSprite.js" [label="tileSprite.js" URL="clientJS/tileSprite.js" ] }
+    "clientJS/tileSprite.js" -> "sharedJS/utils/dirsMap.js"
+    "clientJS/tileSprite.js" -> "sharedJS/vec2.js"
+    "clientJS/tileSprite.js" -> "clientJS/canvasWrapper.js"
+    "fs" [label="fs" color="grey" fontcolor="grey"]
+    "perf_hooks" [label="perf_hooks" color="grey" fontcolor="grey"]
+    subgraph "cluster_serverJS" {label="serverJS" "serverJS/connections.js" [label="connections.js" URL="serverJS/connections.js" ] }
+    "serverJS/connections.js" -> "sharedJS/collisionEngine.js"
+    "serverJS/connections.js" -> "sharedJS/player.js"
+    "serverJS/connections.js" -> "sharedJS/shapes.js"
+    "serverJS/connections.js" -> "sharedJS/utils/channels.js"
+    "serverJS/connections.js" -> "sharedJS/utils/enums.js"
+    "serverJS/connections.js" -> "sharedJS/utils/utils.js"
+    "serverJS/connections.js" -> "sharedJS/vec2.js"
+    "serverJS/connections.js" -> "serverJS/serverUtils.js"
+    subgraph "cluster_serverJS" {label="serverJS" "serverJS/serverLoop.js" [label="serverLoop.js" URL="serverJS/serverLoop.js" ] }
+    "serverJS/serverLoop.js" -> "sharedJS/collisionEngine.js"
+    "serverJS/serverLoop.js" -> "sharedJS/map/gameMap.js"
+    "serverJS/serverLoop.js" -> "sharedJS/player.js"
+    "serverJS/serverLoop.js" -> "sharedJS/utils/channels.js"
+    "serverJS/serverLoop.js" -> "sharedJS/utils/enums.js"
+    "serverJS/serverLoop.js" -> "sharedJS/utils/time.js"
+    "serverJS/serverLoop.js" -> "serverJS/connections.js"
+    "serverJS/serverLoop.js" -> "serverJS/serverUtils.js"
+    "serverJS/serverLoop.js" -> "perf_hooks" [style="dashed" penwidth="1.0"]
+    subgraph "cluster_serverJS" {label="serverJS" "serverJS/serverUtils.js" [label="serverUtils.js" URL="serverJS/serverUtils.js" ] }
+    "serverJS/serverUtils.js" -> "fs" [style="dashed" penwidth="1.0"]
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/ability" {label="ability" "sharedJS/ability/ability.js" [label="ability.js" URL="sharedJS/ability/ability.js" ] } }
+    "sharedJS/ability/ability.js" -> "sharedJS/shapes.js"
+    "sharedJS/ability/ability.js" -> "sharedJS/vec2.js"
+    "sharedJS/ability/ability.js" -> "sharedJS/ability/projectile.js" [arrowhead="normalnoneodot"]
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/ability" {label="ability" "sharedJS/ability/fireball.js" [label="fireball.js" URL="sharedJS/ability/fireball.js" ] } }
+    "sharedJS/ability/fireball.js" -> "clientJS/sprite.js" [arrowhead="normalnoneodot"]
+    "sharedJS/ability/fireball.js" -> "sharedJS/utils/enums.js"
+    "sharedJS/ability/fireball.js" -> "sharedJS/vec2.js"
+    "sharedJS/ability/fireball.js" -> "sharedJS/ability/projectile.js" [arrowhead="normalnoneodot"]
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/ability" {label="ability" "sharedJS/ability/fireballAbility.js" [label="fireballAbility.js" URL="sharedJS/ability/fireballAbility.js" ] } }
+    "sharedJS/ability/fireballAbility.js" -> "sharedJS/shapes.js"
+    "sharedJS/ability/fireballAbility.js" -> "sharedJS/vec2.js"
+    "sharedJS/ability/fireballAbility.js" -> "sharedJS/ability/ability.js" [arrowhead="normalnoneodot"]
+    "sharedJS/ability/fireballAbility.js" -> "sharedJS/ability/fireball.js" [arrowhead="normalnoneodot"]
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/ability" {label="ability" "sharedJS/ability/plantSeed.js" [label="plantSeed.js" URL="sharedJS/ability/plantSeed.js" ] } }
+    "sharedJS/ability/plantSeed.js" -> "clientJS/sprite.js"
+    "sharedJS/ability/plantSeed.js" -> "sharedJS/utils/enums.js"
+    "sharedJS/ability/plantSeed.js" -> "sharedJS/vec2.js"
+    "sharedJS/ability/plantSeed.js" -> "sharedJS/ability/projectile.js"
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/ability" {label="ability" "sharedJS/ability/plantSeedAbility.js" [label="plantSeedAbility.js" URL="sharedJS/ability/plantSeedAbility.js" ] } }
+    "sharedJS/ability/plantSeedAbility.js" -> "sharedJS/shapes.js"
+    "sharedJS/ability/plantSeedAbility.js" -> "sharedJS/vec2.js"
+    "sharedJS/ability/plantSeedAbility.js" -> "sharedJS/ability/ability.js"
+    "sharedJS/ability/plantSeedAbility.js" -> "sharedJS/ability/plantSeed.js"
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/ability" {label="ability" "sharedJS/ability/projectile.js" [label="projectile.js" URL="sharedJS/ability/projectile.js" ] } }
+    "sharedJS/ability/projectile.js" -> "clientJS/drawable.js" [arrowhead="normalnoneodot"]
+    "sharedJS/ability/projectile.js" -> "sharedJS/entity.js"
+    "sharedJS/ability/projectile.js" -> "sharedJS/player.js" [arrowhead="normalnoneodot"]
+    "sharedJS/ability/projectile.js" -> "sharedJS/shapes.js"
+    "sharedJS/ability/projectile.js" -> "sharedJS/utils/enums.js"
+    "sharedJS/ability/projectile.js" -> "sharedJS/vec2.js"
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/ability" {label="ability" "sharedJS/ability/waterball.js" [label="waterball.js" URL="sharedJS/ability/waterball.js" ] } }
+    "sharedJS/ability/waterball.js" -> "clientJS/sprite.js"
+    "sharedJS/ability/waterball.js" -> "sharedJS/utils/enums.js"
+    "sharedJS/ability/waterball.js" -> "sharedJS/vec2.js"
+    "sharedJS/ability/waterball.js" -> "sharedJS/ability/projectile.js"
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/ability" {label="ability" "sharedJS/ability/waterballAbility.js" [label="waterballAbility.js" URL="sharedJS/ability/waterballAbility.js" ] } }
+    "sharedJS/ability/waterballAbility.js" -> "sharedJS/shapes.js"
+    "sharedJS/ability/waterballAbility.js" -> "sharedJS/vec2.js"
+    "sharedJS/ability/waterballAbility.js" -> "sharedJS/ability/ability.js"
+    "sharedJS/ability/waterballAbility.js" -> "sharedJS/ability/waterball.js"
+    subgraph "cluster_sharedJS" {label="sharedJS" "sharedJS/box.js" [label="box.js" URL="sharedJS/box.js" ] }
+    "sharedJS/box.js" -> "sharedJS/shapes.js"
+    "sharedJS/box.js" -> "sharedJS/vec2.js"
+    subgraph "cluster_sharedJS" {label="sharedJS" "sharedJS/collisionEngine.js" [label="collisionEngine.js" URL="sharedJS/collisionEngine.js" ] }
+    "sharedJS/collisionEngine.js" -> "sharedJS/ability/projectile.js"
+    "sharedJS/collisionEngine.js" -> "sharedJS/player.js"
+    "sharedJS/collisionEngine.js" -> "sharedJS/quadTree.js"
+    "sharedJS/collisionEngine.js" -> "sharedJS/shapes.js"
+    "sharedJS/collisionEngine.js" -> "sharedJS/utils/time.js"
+    "sharedJS/collisionEngine.js" -> "sharedJS/vec2.js"
+    subgraph "cluster_sharedJS" {label="sharedJS" "sharedJS/dragon.js" [label="dragon.js" URL="sharedJS/dragon.js" ] }
+    "sharedJS/dragon.js" -> "sharedJS/ability/fireball.js" [arrowhead="normalnoneodot"]
+    "sharedJS/dragon.js" -> "sharedJS/ability/fireballAbility.js" [arrowhead="normalnoneodot"]
+    "sharedJS/dragon.js" -> "sharedJS/ability/projectile.js" [arrowhead="normalnoneodot"]
+    "sharedJS/dragon.js" -> "sharedJS/box.js"
+    "sharedJS/dragon.js" -> "sharedJS/dragonData.js"
+    "sharedJS/dragon.js" -> "sharedJS/entity.js"
+    "sharedJS/dragon.js" -> "sharedJS/shapes.js"
+    "sharedJS/dragon.js" -> "sharedJS/utils/enums.js"
+    "sharedJS/dragon.js" -> "sharedJS/vec2.js"
+    subgraph "cluster_sharedJS" {label="sharedJS" "sharedJS/dragonData.js" [label="dragonData.js" URL="sharedJS/dragonData.js" ] }
+    subgraph "cluster_sharedJS" {label="sharedJS" "sharedJS/entity.js" [label="entity.js" URL="sharedJS/entity.js" ] }
+    "sharedJS/entity.js" -> "sharedJS/point.js"
+    "sharedJS/entity.js" -> "sharedJS/shapes.js"
+    "sharedJS/entity.js" -> "sharedJS/utils/enums.js"
+    "sharedJS/entity.js" -> "sharedJS/utils/time.js"
+    "sharedJS/entity.js" -> "sharedJS/vec2.js"
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/map" {label="map" "sharedJS/map/gameMap.js" [label="gameMap.js" URL="sharedJS/map/gameMap.js" ] } }
+    "sharedJS/map/gameMap.js" -> "sharedJS/vec2.js"
+    "sharedJS/map/gameMap.js" -> "sharedJS/map/lane.js"
+    "sharedJS/map/gameMap.js" -> "sharedJS/map/region.js"
+    "sharedJS/map/gameMap.js" -> "sharedJS/map/voidRegion.js"
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/map" {label="map" "sharedJS/map/lane.js" [label="lane.js" URL="sharedJS/map/lane.js" ] } }
+    "sharedJS/map/lane.js" -> "sharedJS/dragon.js"
+    "sharedJS/map/lane.js" -> "sharedJS/utils/enums.js"
+    "sharedJS/map/lane.js" -> "sharedJS/vec2.js"
+    "sharedJS/map/lane.js" -> "sharedJS/map/layer.js"
+    "sharedJS/map/lane.js" -> "sharedJS/map/pveObjectiveRegion.js"
+    "sharedJS/map/lane.js" -> "sharedJS/map/pveRegion.js"
+    "sharedJS/map/lane.js" -> "sharedJS/map/region.js"
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/map" {label="map" "sharedJS/map/layer.js" [label="layer.js" URL="sharedJS/map/layer.js" ] } }
+    "sharedJS/map/layer.js" -> "sharedJS/utils/dirsMap.js"
+    "sharedJS/map/layer.js" -> "sharedJS/utils/enums.js"
+    "sharedJS/map/layer.js" -> "sharedJS/vec2.js"
+    "sharedJS/map/layer.js" -> "sharedJS/map/tile.js"
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/map" {label="map" "sharedJS/map/objectiveRegion.js" [label="objectiveRegion.js" URL="sharedJS/map/objectiveRegion.js" ] } }
+    "sharedJS/map/objectiveRegion.js" -> "sharedJS/utils/enums.js" [arrowhead="normalnoneodot"]
+    "sharedJS/map/objectiveRegion.js" -> "sharedJS/map/region.js" [arrowhead="normalnoneodot"]
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/map" {label="map" "sharedJS/map/pveObjectiveRegion.js" [label="pveObjectiveRegion.js" URL="sharedJS/map/pveObjectiveRegion.js" ] } }
+    "sharedJS/map/pveObjectiveRegion.js" -> "sharedJS/utils/enums.js" [arrowhead="normalnoneodot"]
+    "sharedJS/map/pveObjectiveRegion.js" -> "sharedJS/map/region.js" [arrowhead="normalnoneodot"]
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/map" {label="map" "sharedJS/map/pveRegion.js" [label="pveRegion.js" URL="sharedJS/map/pveRegion.js" ] } }
+    "sharedJS/map/pveRegion.js" -> "sharedJS/map/region.js" [arrowhead="normalnoneodot"]
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/map" {label="map" "sharedJS/map/region.js" [label="region.js" URL="sharedJS/map/region.js" ] } }
+    "sharedJS/map/region.js" -> "sharedJS/box.js"
+    "sharedJS/map/region.js" -> "sharedJS/shapes.js"
+    "sharedJS/map/region.js" -> "sharedJS/utils/enums.js" [arrowhead="normalnoneodot"]
+    "sharedJS/map/region.js" -> "sharedJS/vec2.js"
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/map" {label="map" "sharedJS/map/spawnRegion.js" [label="spawnRegion.js" URL="sharedJS/map/spawnRegion.js" ] } }
+    "sharedJS/map/spawnRegion.js" -> "sharedJS/utils/enums.js" [arrowhead="normalnoneodot"]
+    "sharedJS/map/spawnRegion.js" -> "sharedJS/map/region.js" [arrowhead="normalnoneodot"]
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/map" {label="map" "sharedJS/map/tile.js" [label="tile.js" URL="sharedJS/map/tile.js" ] } }
+    "sharedJS/map/tile.js" -> "sharedJS/box.js"
+    "sharedJS/map/tile.js" -> "sharedJS/shapes.js"
+    "sharedJS/map/tile.js" -> "sharedJS/utils/enums.js" [arrowhead="normalnoneodot"]
+    "sharedJS/map/tile.js" -> "sharedJS/vec2.js"
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/map" {label="map" "sharedJS/map/victoryMonument.js" [label="victoryMonument.js" URL="sharedJS/map/victoryMonument.js" ] } }
+    "sharedJS/map/victoryMonument.js" -> "sharedJS/map/region.js" [arrowhead="normalnoneodot"]
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/map" {label="map" "sharedJS/map/voidRegion.js" [label="voidRegion.js" URL="sharedJS/map/voidRegion.js" ] } }
+    "sharedJS/map/voidRegion.js" -> "sharedJS/vec2.js"
+    "sharedJS/map/voidRegion.js" -> "sharedJS/map/region.js"
+    subgraph "cluster_sharedJS" {label="sharedJS" "sharedJS/player.js" [label="player.js" URL="sharedJS/player.js" ] }
+    "sharedJS/player.js" -> "sharedJS/ability/projectile.js" [arrowhead="normalnoneodot"]
+    "sharedJS/player.js" -> "sharedJS/entity.js"
+    "sharedJS/player.js" -> "sharedJS/shapes.js"
+    "sharedJS/player.js" -> "sharedJS/utils/enums.js"
+    "sharedJS/player.js" -> "sharedJS/vec2.js"
+    subgraph "cluster_sharedJS" {label="sharedJS" "sharedJS/point.js" [label="point.js" URL="sharedJS/point.js" ] }
+    "sharedJS/point.js" -> "sharedJS/shapes.js"
+    "sharedJS/point.js" -> "sharedJS/vec2.js"
+    subgraph "cluster_sharedJS" {label="sharedJS" "sharedJS/quadTree.js" [label="quadTree.js" URL="sharedJS/quadTree.js" ] }
+    "sharedJS/quadTree.js" -> "sharedJS/shapes.js"
+    "sharedJS/quadTree.js" -> "sharedJS/vec2.js"
+    subgraph "cluster_sharedJS" {label="sharedJS" "sharedJS/shapes.js" [label="shapes.js" URL="sharedJS/shapes.js" ] }
+    "sharedJS/shapes.js" -> "sharedJS/vec2.js"
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/utils" {label="utils" "sharedJS/utils/channels.js" [label="channels.js" URL="sharedJS/utils/channels.js" ] } }
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/utils" {label="utils" "sharedJS/utils/dirsMap.js" [label="dirsMap.js" URL="sharedJS/utils/dirsMap.js" ] } }
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/utils" {label="utils" "sharedJS/utils/enums.js" [label="enums.js" URL="sharedJS/utils/enums.js" ] } }
+    "sharedJS/utils/enums.js" -> "sharedJS/map/objectiveRegion.js" [arrowhead="normalnoneodot"]
+    "sharedJS/utils/enums.js" -> "sharedJS/map/pveObjectiveRegion.js" [arrowhead="normalnoneodot"]
+    "sharedJS/utils/enums.js" -> "sharedJS/map/pveRegion.js" [arrowhead="normalnoneodot"]
+    "sharedJS/utils/enums.js" -> "sharedJS/map/region.js" [arrowhead="normalnoneodot"]
+    "sharedJS/utils/enums.js" -> "sharedJS/map/spawnRegion.js" [arrowhead="normalnoneodot"]
+    "sharedJS/utils/enums.js" -> "sharedJS/map/tile.js" [arrowhead="normalnoneodot"]
+    "sharedJS/utils/enums.js" -> "sharedJS/map/victoryMonument.js" [arrowhead="normalnoneodot"]
+    "sharedJS/utils/enums.js" -> "sharedJS/vec2.js"
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/utils" {label="utils" "sharedJS/utils/time.js" [label="time.js" URL="sharedJS/utils/time.js" ] } }
+    subgraph "cluster_sharedJS" {label="sharedJS" subgraph "cluster_sharedJS/utils" {label="utils" "sharedJS/utils/utils.js" [label="utils.js" URL="sharedJS/utils/utils.js" ] } }
+    "sharedJS/utils/utils.js" -> "sharedJS/ability/fireball.js"
+    "sharedJS/utils/utils.js" -> "sharedJS/ability/plantSeed.js"
+    "sharedJS/utils/utils.js" -> "sharedJS/ability/projectile.js"
+    "sharedJS/utils/utils.js" -> "sharedJS/ability/waterball.js"
+    "sharedJS/utils/utils.js" -> "sharedJS/shapes.js"
+    "sharedJS/utils/utils.js" -> "sharedJS/vec2.js"
+    subgraph "cluster_sharedJS" {label="sharedJS" "sharedJS/vec2.js" [label="vec2.js" URL="sharedJS/vec2.js" ] }
+    subgraph "cluster_test" {label="test" "test/entity.js" [label="entity.js" URL="test/entity.js" ] }
+    "test/entity.js" -> "sharedJS/entity.js"
+    "test/entity.js" -> "sharedJS/point.js"
+    "test/entity.js" -> "sharedJS/shapes.js"
+    "test/entity.js" -> "sharedJS/utils/time.js"
+    "test/entity.js" -> "sharedJS/vec2.js"
+    "test/entity.js" -> "perf_hooks" [style="dashed" penwidth="1.0"]
+    subgraph "cluster_test" {label="test" "test/player.js" [label="player.js" URL="test/player.js" ] }
+    "test/player.js" -> "sharedJS/player.js"
+    "test/player.js" -> "sharedJS/point.js"
+    "test/player.js" -> "sharedJS/shapes.js"
+    "test/player.js" -> "sharedJS/utils/time.js"
+    "test/player.js" -> "sharedJS/vec2.js"
+    "test/player.js" -> "perf_hooks" [style="dashed" penwidth="1.0"]
+    subgraph "cluster_test" {label="test" "test/point.js" [label="point.js" URL="test/point.js" ] }
+    "test/point.js" -> "sharedJS/entity.js"
+    "test/point.js" -> "sharedJS/point.js"
+    "test/point.js" -> "sharedJS/shapes.js"
+    "test/point.js" -> "sharedJS/vec2.js"
+    "test/point.js" -> "assert" [style="dashed" penwidth="1.0"]
+    subgraph "cluster_test" {label="test" "test/quadTree.js" [label="quadTree.js" URL="test/quadTree.js" ] }
+    "test/quadTree.js" -> "sharedJS/point.js"
+    "test/quadTree.js" -> "sharedJS/quadTree.js"
+    "test/quadTree.js" -> "sharedJS/shapes.js"
+    "test/quadTree.js" -> "sharedJS/vec2.js"
+    subgraph "cluster_test" {label="test" "test/shapes.js" [label="shapes.js" URL="test/shapes.js" ] }
+    "test/shapes.js" -> "sharedJS/point.js"
+    "test/shapes.js" -> "sharedJS/shapes.js"
+    "test/shapes.js" -> "sharedJS/vec2.js"
+    "test/shapes.js" -> "assert" [style="dashed" penwidth="1.0"]
+    subgraph "cluster_test" {label="test" "test/vec2.js" [label="vec2.js" URL="test/vec2.js" ] }
+    "test/vec2.js" -> "sharedJS/vec2.js"
+}

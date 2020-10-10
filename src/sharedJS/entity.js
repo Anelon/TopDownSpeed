@@ -3,6 +3,7 @@ import Point from "./point.js";
 import { Circle, Rectangle } from "./shapes.js";
 import Time from "./utils/time.js";
 import { TYPES, CATEGORY } from "./utils/enums.js";
+/** @typedef {import("./collisionEngine.js").default} CollisionEngine */
 
 let idGen = 0;
 export default class Entity {
@@ -77,8 +78,9 @@ export default class Entity {
      * Updates the Entity based on how much time has passed and the map state
      * @param {Time} time 
      * @param {number} dt The time sinse last frame
+     * @param {CollisionEngine} collisionEngine The time sinse last frame
      */
-    update(time, dt) {
+    update(time, dt, collisionEngine) {
         if(this.speed > 0) {
             this.move(dt, this.lookDirection);
         }
