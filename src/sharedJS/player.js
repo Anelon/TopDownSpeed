@@ -47,6 +47,9 @@ export default class Player extends Entity {
                 this.objectives.add(objective);
             }
         }
+        if (json.name) {
+            this.name = json.name;
+        }
         //call entity's updateFromJSON
         super.updateInfo(json);
         if(json.spawnLocation) {

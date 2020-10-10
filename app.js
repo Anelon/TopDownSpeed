@@ -11,8 +11,8 @@ const result = dotenv.config();
 const app = express();
 app.set("view engine", "ejs");
 app.use(express.static("public"));
-app.use("/js/sharedJS", express.static("sharedJS"));
-app.use("/js/clientJS", express.static("clientJS"));
+app.use("/js/sharedJS", express.static("./src/sharedJS"));
+app.use("/js/clientJS", express.static("./src/clientJS"));
 
 app.engine("html", ejs.renderFile);
 app.set("port", process.env.PORT || "3000");

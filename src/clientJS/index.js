@@ -106,9 +106,9 @@ async function main() {
     const fireBall = new Fireball(initLocation, "test", 0, 1, new Vec2(1, 0), 100, 100, new Circle(initLocation, 0), null);
     const plantSeed = new PlantSeed(initLocation, "test", 0, 1, new Vec2(1, 0), 100, 100, new Circle(initLocation, 0), null);
     const dragon = new Dragon(initLocation, "test", null, new Vec2(1,0));
-    canvas.addDrawable(waterBall.makeSprite());
-    canvas.addDrawable(fireBall.makeSprite());
-    canvas.addDrawable(plantSeed.makeSprite());
+    canvas.addDrawable(waterBall);
+    canvas.addDrawable(fireBall);
+    canvas.addDrawable(plantSeed);
     canvas.addEventListener("contextMenu", (e) => {
         console.log("context Menu", e);
         e.preventDefault();
@@ -126,7 +126,7 @@ async function main() {
             canvas.addDrawable(projectile);
         } else {
             // @ts-ignore
-            canvas.addDrawable(projectile.makeSprite());
+            canvas.addDrawable(projectile);
         }
     });
 

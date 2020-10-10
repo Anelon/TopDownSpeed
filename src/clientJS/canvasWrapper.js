@@ -3,10 +3,13 @@ import Drawable from "./drawable.js";
 import Player from "../sharedJS/player.js";
 import Dragon from "../sharedJS/dragon.js";
 import DragonSprite from "./dragonSprite.js";
-/** @typedef {import("../sharedJS/ability/projectile.js").default} Projectile */
+import Fireball from "../sharedJS/ability/fireball.js";
+import Sprite from "./sprite.js";
+import PlantSeed from "../sharedJS/ability/plantSeed.js";
+import Waterball from "../sharedJS/ability/waterball.js";
+import Projectile from "../sharedJS/ability/projectile.js";
 /** @typedef {import("../sharedJS/entity.js").default} Entity */
 /** @typedef { import("./playerController.js").default } PlayerController; */
-/** @typedef { import("./sprite.js").default } Sprite; */
 
 //https://stackoverflow.com/questions/1664785/resize-html5-canvas-to-fit-window
 
@@ -91,6 +94,14 @@ export default class CanvasWrapper {
 			//this.drawables.push(drawable);
 		} else if (drawable instanceof Dragon) {
 			this.drawables.set(drawable.id, new DragonSprite(drawable, 1, drawable.scale));
+		} else if (drawable instanceof Fireball) {
+			this.drawables.set(drawable.id, new Sprite(drawable, Fireball.FRAMES, Fireball.ANIMSPEED, this.scale, Fireball.SPRITEDIMS));
+		} else if (drawable instanceof PlantSeed) {
+			this.drawables.set(drawable.id, new Sprite(drawable, PlantSeed.FRAMES, PlantSeed.ANIMSPEED, this.scale, PlantSeed.SPRITEDIMS));
+		} else if (drawable instanceof Waterball) {
+			this.drawables.set(drawable.id, new Sprite(drawable, Waterball.FRAMES, Waterball.ANIMSPEED, this.scale, Waterball.SPRITEDIMS));
+		} else if (drawable instanceof Projectile) {
+			this.drawables.set(drawable.id, new Drawable(drawable, this.scale));
 		} else {
 			this.drawables.set(drawable.id, new Drawable(drawable, drawable.scale));
 		}

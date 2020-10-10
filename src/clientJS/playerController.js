@@ -123,7 +123,7 @@ export default class PlayerController extends Player {
                             projectile.id = id;
                             //add projectile to the collisions
                             collisions.addDynamic(projectile);
-                            canvas.addDrawable(projectile.makeSprite());
+                            canvas.addDrawable(projectile);
                         });
                     } else {
                         console.info("On CoolDown");

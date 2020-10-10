@@ -3,7 +3,6 @@ import Entity from "../entity.js";
 import { Circle } from "../shapes.js";
 import { TYPES, CATEGORY } from "../utils/enums.js";
 import Player from "../player.js";
-import Drawable from "../../clientJS/drawable.js";
 /** @typedef {import("../map/tile.js").default} Tile */
 
 //TODO add owner to projectile so you can't hit yourself
@@ -80,9 +79,5 @@ export default class Projectile extends Entity {
         }
 
         return remove;
-    }
-
-    makeSprite() {
-        return new Drawable(this, this.scale);
     }
 }

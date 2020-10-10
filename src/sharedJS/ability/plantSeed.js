@@ -1,7 +1,6 @@
 import Vec2 from "../vec2.js";
 import Projectile from "./projectile.js";
 import { TYPES, CATEGORY } from "../utils/enums.js";
-import Sprite from "../../clientJS/sprite.js";
 /** @typedef {import("../player").default} Player */
 /** @typedef {import("../entity").default} Entity */
 /** @typedef {import("../map/tile.js").default} Tile */
@@ -26,10 +25,6 @@ export default class PlantSeed extends Projectile {
         super(origin, name, speed, scale, look, range, damage, hitbox, ownerID, PlantSeed.IMAGE);
 
         this.type = TYPES.plant;
-    }
-
-    makeSprite() {
-        return new Sprite(this, PlantSeed.FRAMES, PlantSeed.ANIMSPEED, this.scale, PlantSeed.SPRITEDIMS);
     }
 
     /**

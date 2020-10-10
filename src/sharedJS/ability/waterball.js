@@ -1,7 +1,6 @@
 import Vec2 from "../vec2.js";
 import Projectile from "./projectile.js";
 import { TYPES, CATEGORY } from "../utils/enums.js";
-import Sprite from "../../clientJS/sprite.js";
 /** @typedef {import("../entity.js").default} Entity */
 /** @typedef {import("../player.js").default} Player */
 /** @typedef {import("../map/tile.js").default} Tile */
@@ -26,10 +25,6 @@ export default class Waterball extends Projectile {
         super(origin, name, speed, scale, look, range, damage, hitbox, ownerID, Waterball.IMAGE);
 
         this.type = TYPES.water;
-    }
-
-    makeSprite() {
-        return new Sprite(this, Waterball.FRAMES, Waterball.ANIMSPEED, this.scale, Waterball.SPRITEDIMS);
     }
 
     /**
