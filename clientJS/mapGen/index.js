@@ -22,7 +22,7 @@ if(document.readyState === 'complete') {
     });
 }
 
-let mapName = "map";
+let mapName = "wallsMap";
 fetch(`./api/getMap/${mapName}`)
 .then(function(res) {
     if(res.status !== 200) {
