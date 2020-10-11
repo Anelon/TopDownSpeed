@@ -20,6 +20,7 @@ export default class Region extends Rectangle {
         this.overlaps = new Map();
         this.lastOverlaps = new Map();
         this.locked = false;
+        this.laneName = "";
     }
     static makeFromJSON(json) {
         const {
@@ -27,14 +28,26 @@ export default class Region extends Rectangle {
         } = json;
         return new REGIONS[name](new Vec2(center.x, center.y), new Vec2(dimentions.x, dimentions.y), name, color);
     }
+    /**
+     * @param {string} laneName
+     */
+    setLaneName(laneName) {
+        this.laneName = laneName;
+    }
 
     //call when player overlaps
+    /**
+     * @param {import("../entity.js").default} other
+     */
     hit(other) {
         //don't overlap any other regions
         if(other.category === this.category) return;
         //if player add to overlapping the region
         if(other.category === CATEGORY.player) this.overlaps.set(other.id, other);
     }
+    /**
+     * @param {import("../../clientJS/canvasWrapper.js").default} canvas
+     */
     draw(canvas) {
         super.draw(canvas, this.color);
     }

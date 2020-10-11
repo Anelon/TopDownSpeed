@@ -9,6 +9,7 @@ const CHANNELS = {
     startGame: "startGame",
     endGame: "endGame",
     kill: "kill",
+    vmUpdate: "vmUpdate",
 }
 //lock the enum
 Object.freeze(CHANNELS);

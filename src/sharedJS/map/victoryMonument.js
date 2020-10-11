@@ -11,6 +11,11 @@ export default class VictoryMonument extends Region {
         super(center, dimentions, name, "white");
         this.objectives = new Set();
     }
+    getInfo() {
+        const objectives = new Array();
+        for(const objective of this.objectives.values()) objectives.push(objective);
+        return { objectives, laneName: this.laneName };
+    }
     /**
      * placeholder for regions that need to do something when first player begins overlap will probably just be used for the PVE dungeon to start AI
      * @param {Player} player

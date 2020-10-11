@@ -61,6 +61,7 @@ readyButton.addEventListener("click", (e) => {
         displayName = displayNameInput.value;
         displayNameInput.disabled = true;
         socket.emit(CHANNELS.ready, {displayName, ready})
+        clientLoop.playerController.name = displayName;
     } else {
         readyButton.innerText = "Ready";
         displayNameInput.disabled = false;
@@ -122,12 +123,7 @@ async function main() {
             console.error("Bad Projectile", updated.id);
         }
         collisionEngine.addDynamic(projectile);
-        if (newProjectile.type === "Projectile") {
-            canvas.addDrawable(projectile);
-        } else {
-            // @ts-ignore
-            canvas.addDrawable(projectile);
-        }
+        canvas.addDrawable(projectile);
     });
 
     socket.on(CHANNELS.playerMove, function (playerInfo) {
@@ -185,7 +181,7 @@ async function main() {
     const locationVec = new Vec2(location.x, location.y);
     const spawnVec = new Vec2(spawnLocation.x, spawnLocation.y);
     //make new player
-    const playerController = new PlayerController(locationVec, "Player " + name, imgSrc, speed, maxHealth, scale, canvas);
+    const playerController = new PlayerController(locationVec, name, imgSrc, speed, maxHealth, scale, canvas);
     playerController.id = id;
     playerController.spawnLocation = spawnVec;
     //this should be redundant as when playerController spawn you probably should have full health

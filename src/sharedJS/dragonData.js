@@ -1,7 +1,7 @@
 export const keyFrames = new Map(
     [
         ["attack1_55", "melee"],
-        ["attack2_130", "fireball"],
+        ["attack2_120", "fireball"],
         ["death_160", "kill"],//remove hitbox from collision
         ["death_300", "delete"],//remove hitbox from collision
     ]
@@ -18,4 +18,4 @@ export const animationLengths = new Map([
     //[animations.idle, 161],
     [animations.idleBattle, 140],
     //[animations.walking, 161],
-])
+]);

@@ -64,6 +64,8 @@ export default class Projectile extends Entity {
         let remove = false;
         if (other.type === this.type) {
             //Same type do nothing
+            if (other.category !== CATEGORY.tile)
+                return false;
         } else {
             if (other.category !== CATEGORY.tile)
                 remove = true;

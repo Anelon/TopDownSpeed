@@ -6,7 +6,8 @@ import { CATEGORY, NUM_OBJECTIVES, MAPNAME } from "../sharedJS/utils/enums.js";
 import Player from "../sharedJS/player.js";
 import CHANNELS from "../sharedJS/utils/channels.js";
 import GameMap from "../sharedJS/map/gameMap.js";
-import { loadMapSync } from "./serverUtils.js";
+import { getProjectileID, loadMapSync } from "./serverUtils.js";
+import { keyFrames } from "../sharedJS/dragonData.js";
 /** @typedef {import("../sharedJS/ability/projectile.js").default} Projectile */
 /** @typedef {import("../sharedJS/map/victoryMonument.js").default} VictoryMonument */
 /** @typedef {import("../sharedJS/map/region.js").default} Region */
@@ -19,6 +20,7 @@ export default class ServerLoop {
     constructor(server) {
         //basic time object to pass to funcitons
         this.time = new Time(performance);
+        this.mosters = new Map();
         this.gameMap = null;
         this.collisionEngine = null;
         this.connections = null;
@@ -50,6 +52,8 @@ export default class ServerLoop {
                 console.info(`Player entered the ${region.name} region`);
                 if(region.name === "victoryMonument") {
                     // @ts-ignore
+                    console.log(region.objectives);
+                    // @ts-ignore
                     if(region.objectives.size === NUM_OBJECTIVES) {
                         //find which team won
                         for(const [laneName, lane] of this.gameMap.lanes) {
@@ -66,7 +70,21 @@ export default class ServerLoop {
                 /** @type {Dragon} */(item).deleteCall = this.remove.bind(this);
             }
         }
+
         //check if anyone is ready to think
+        for (const monster of this.mosters.values()) {
+            if (keyFrames.has(`${monster.phase}_${monster.frame}`)) {
+                const action = keyFrames.get(`${monster.phase}_${monster.frame}`);
+                if(action === "fireball") {
+                    const attacks = monster.attack();
+                    for(const attack of attacks) {
+                        attack.id = getProjectileID();
+                        this.connections.broadcast(CHANNELS.newProjectile, attack.makeObject());
+                        this.collisionEngine.addDynamic(attack);
+                    }
+                }
+            }
+        }
     }
 
     tick() {
@@ -111,6 +129,9 @@ export default class ServerLoop {
         const dynamics = this.gameMap.getDynamics();
         for(const dynamic of dynamics) {
             this.collisionEngine.addDynamic(dynamic);
+            if (dynamic.category !== CATEGORY.tile) {
+                this.mosters.set(dynamic.id, dynamic);
+            }
         }
     }
 }

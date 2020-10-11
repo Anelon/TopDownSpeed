@@ -17,6 +17,6 @@ export default class SpawnRegion extends Region {
      */
     beginOverlap(player) {
         player.setSpawn(this.center);
-        console.info("Seting Spawn", player.id);
+        console.info("Setting Spawn", player.name);
     }
 }

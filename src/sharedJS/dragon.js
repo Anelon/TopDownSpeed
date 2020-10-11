@@ -66,6 +66,7 @@ export default class Dragon extends Entity {
         if (json.maxHealth)
             this.maxHealth = json.maxHealth;
         //call entity's updateFromJSON
+        super.updateInfo(json);
         return this;
     }
 
@@ -75,14 +76,20 @@ export default class Dragon extends Entity {
     }
 
     /**
-     * @param {CollisionEngine} [collisionEngine]
     */
-    attack(collisionEngine) {
+    attack() {
+        const attacks = new Array();
         for (const player of this.targetPlayers.values()) {
             console.log(player.name);
-            const fireball = new Fireball(this.attackOrigin, "fireBall", 200, 1, player.location.sub(this.attackOrigin), 500, 150, FireballAbility.hitbox, this.id);
-            collisionEngine.addDynamic(fireball);
+            for (let i = -1; i <= 1; i++) {
+                const target = player.location.add(new Vec2(0, i*10)).sub(this.attackOrigin);
+                const fireball = new Fireball(
+                    this.attackOrigin, "fireBall", 200, 1, target, 500, 150, FireballAbility.hitbox, this.id
+                    );
+                attacks.push(fireball);
+            }
         }
+        return attacks;
     }
 
     /**
@@ -92,6 +99,8 @@ export default class Dragon extends Entity {
     hit(other) {
         if (this.phase === animations.death) return false;
         if(other.category === CATEGORY.projectile) {
+            //same type don't hit
+            if(other.type === this.type) return false;
             if(this.currHealth - other.damage <= 0) {
                 this.frame = 0;
                 this.phase = animations.death;
@@ -123,7 +132,6 @@ export default class Dragon extends Entity {
                 //TODO melee attack
             } else if(action === "fireball") {
                 //TODO Launch fireball
-                this.attack(collisionEngine);
             } else if(action === "kill") {
                 this.kill();
             } else if(action === "delete") {

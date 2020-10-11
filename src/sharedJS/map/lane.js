@@ -108,6 +108,16 @@ export default class Lane {
         //create new mirrored lane
         return new Lane("", this.dimentions.clone(), this.layers.length, this.tileSize, laneTopLeft, mirroredLayers, mirroredRegions);
     }
+    /**
+     * @param {string} newName
+     */
+    setName(newName) {
+        this.name = newName;
+        this.region.setLaneName(newName);
+        for(const region of this.regions.values()) {
+            region.setLaneName(newName);
+        }
+    }
     getJSON() {
         return JSON.stringify(this);
     }

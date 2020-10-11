@@ -5,8 +5,9 @@ import CHANNELS from "../sharedJS/utils/channels.js";
 import CollisionEngine from "../sharedJS/collisionEngine.js";
 import { Circle } from "../sharedJS/shapes.js";
 import { projectileFromJSON } from "../sharedJS/utils/utils.js";
-import { CATEGORY, MaxPlayers, REGION_NAMES } from "../sharedJS/utils/enums.js";
+import { CATEGORY, MaxPlayers, REGIONS, REGION_NAMES } from "../sharedJS/utils/enums.js";
 import { getProjectileID } from "./serverUtils.js";
+import VictoryMonument from "../sharedJS/map/victoryMonument.js";
 /** @typedef {import("../sharedJS/map/gameMap.js").default} GameMap */
 
 export default class Connections {
@@ -115,6 +116,16 @@ export default class Connections {
                 for (const projectile of this.collisionEngine.dynamics.values()) {
                     if(projectile.category === CATEGORY.dragon) continue;
                     client.emit(CHANNELS.newProjectile, projectile.makeObject());
+                }
+            });
+
+            client.on(CHANNELS.vmUpdate, (vmInfo) => {
+                /** @type {VictoryMonument} */
+                // @ts-ignore
+                const vm = this.gameMap.lanes.get(vmInfo.laneName).regions.get(REGION_NAMES.victoryMonument);
+                //update the vm's objectives 
+                for(const objective of vmInfo.objectives) {
+                    vm.objectives.add(objective);
                 }
             });
 

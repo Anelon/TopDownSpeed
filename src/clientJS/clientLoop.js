@@ -8,6 +8,7 @@ import CanvasWrapper from "./canvasWrapper.js";
 import { tileSprites } from "./sprites.js";
 import CHANNELS from "../sharedJS/utils/channels.js";
 import Region from "../sharedJS/map/region.js";
+/** @typedef {import("../sharedJS/map/victoryMonument.js").default} VictoryMonument */
 /** @typedef {import("../sharedJS/player.js").default} Player */
 /** @typedef {import("../sharedJS/dragon.js").default} Dragon */
 /** @typedef {import("../sharedJS/entity.js").default} Entity */
@@ -79,9 +80,13 @@ export default class ClientLoop {
                 //@ts-ignore
                 const region = item;
                 if(region.name === "victoryMonument") {
-                    // @ts-ignore
-                    if(region.objectives.size === NUM_OBJECTIVES) {
-                        console.info("A Team has Won");
+                    const vm = /** @type {VictoryMonument} */(region);
+                    //send VM information
+                    console.log("VMInfo", vm.getInfo());
+                    if(this.socket) this.socket.emit(CHANNELS.vmUpdate, vm.getInfo());
+                    //Check for win
+                    if(vm.objectives.size === NUM_OBJECTIVES) {
+                        console.info(`${vm.laneName} has Won`);
                     }
                 }
             } else if (item.category === CATEGORY.dragon) {

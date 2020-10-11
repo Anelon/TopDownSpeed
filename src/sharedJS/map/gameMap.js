@@ -21,6 +21,9 @@ export default class GameMap {
         this.lanes.set(GameMap.LEFT, lane);
         this.tileSize = tileSize;
         if(!lane) this.lanes.set(GameMap.LEFT, new Lane("left", laneDimentions, GameMap.numLayers, tileSize));
+
+        this.lanes.get(GameMap.LEFT).setName(GameMap.RIGHT);
+
         const laneTopLeft = this.lanes.get(GameMap.LEFT).topLeft.clone();
 
         let voidCenter, voidDims;
@@ -43,6 +46,8 @@ export default class GameMap {
         }
 
         this.lanes.set(GameMap.RIGHT, this.lanes.get(GameMap.LEFT).mirror(verticalLanes, laneTopLeft));
+
+        this.lanes.get(GameMap.RIGHT).setName(GameMap.RIGHT);
 
         this.editMode = false;
         this.verticalLanes = verticalLanes;
@@ -90,7 +95,7 @@ export default class GameMap {
                     const newLane = lane.mirror(this.verticalLanes, this.lanes.get(other).topLeft);
                     this.lanes.set(other, newLane);
                     //put name back on
-                    this.lanes.get(other).name = name;
+                    this.lanes.get(other).setName(name);
                 }
                 placed = true;
                 break;
@@ -125,7 +130,7 @@ export default class GameMap {
                     const name = other.name;
                     other = lane.mirror(this.verticalLanes, other.topLeft);
                     //put name back on
-                    other.name = name;
+                    other.setName(name);
                 }
                 placed = true;
                 break;
@@ -172,6 +177,10 @@ export default class GameMap {
         }
         return monsters;
     }
+    /**
+     * @param {import("../player.js").default} newPlayer
+     * @param {string} laneName
+     */
     addPlayer(newPlayer, laneName) {
         this.lanes.get(laneName).addPlayer(newPlayer);
     }
