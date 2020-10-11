@@ -4,12 +4,11 @@ let expect = chai.expect;
 // @ts-ignore
 let should = chai.should;
 
-import Entity from "../sharedJS/entity.js";
-// @ts-ignore
-import { Circle, Rectangle } from '../sharedJS/shapes.js';
-import Point from "../sharedJS/point.js";
-import Vec2 from '../sharedJS/vec2.js';
-import Time from "../sharedJS/utils/time.js";
+import Entity from "../src/sharedJS/entity.js";
+import { Circle, Rectangle } from '../src/sharedJS/shapes.js';
+import Point from "../src/sharedJS/point.js";
+import Vec2 from '../src/sharedJS/vec2.js';
+import Time from "../src/sharedJS/utils/time.js";
 import { performance } from "perf_hooks";
 
 

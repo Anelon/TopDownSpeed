@@ -2,10 +2,11 @@ import chai from 'chai';
 let assert = chai.assert;
 let expect = chai.expect;
 let should = chai.should;
-import QuadTree from "../sharedJS/quadTree.js";
-import Vec2 from "../sharedJS/vec2.js";
-import { Rectangle, Circle } from "../sharedJS/shapes.js";
-import Point from "../sharedJS/point.js";
+
+import QuadTree from "../src/sharedJS/quadTree.js";
+import Vec2 from "../src/sharedJS/vec2.js";
+import { Rectangle, Circle } from "../src/sharedJS/shapes.js";
+import Point from "../src/sharedJS/point.js";
 
 describe('QuadTree', function () {
     let boundary = new Rectangle(new Vec2(1, 1), 20, 20);

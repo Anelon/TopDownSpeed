@@ -52,7 +52,7 @@ export default class ServerLoop {
                 console.info(`Player entered the ${region.name} region`);
                 if(region.name === "victoryMonument") {
                     // @ts-ignore
-                    console.log(region.objectives);
+                    console.info(region.objectives);
                     // @ts-ignore
                     if(region.objectives.size === NUM_OBJECTIVES) {
                         //find which team won

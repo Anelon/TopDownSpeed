@@ -14,15 +14,15 @@ export function loadTileSprites() {
 }
 
 export const ACTIVE = "Active";
-export const decorationSprites = new Map(
-);
+export const decorationSprites = new Map();
+
 export function loadDecorationSprites() {
-    tileSprites.set(DECORATION_NAMES.redPillar + ACTIVE, new DecorationSprite("redPillarActive", "R"));
-    tileSprites.set(DECORATION_NAMES.redPillar, new DecorationSprite("redPillar", "r"));
-    tileSprites.set(DECORATION_NAMES.bluePillar + ACTIVE, new DecorationSprite("bluePillarActive", "B"));
-    tileSprites.set(DECORATION_NAMES.bluePillar, new DecorationSprite("bluePillar", "b"));
-    tileSprites.set(DECORATION_NAMES.greenPillar + ACTIVE, new DecorationSprite("greenPillarActive", "G"));
-    tileSprites.set(DECORATION_NAMES.greenPillar, new DecorationSprite("greenPillar", "g"));
+    decorationSprites.set(DECORATION_NAMES.redPillar + ACTIVE, new DecorationSprite("redPillarActive", "R"));
+    decorationSprites.set(DECORATION_NAMES.redPillar, new DecorationSprite("redPillar", "r"));
+    decorationSprites.set(DECORATION_NAMES.bluePillar + ACTIVE, new DecorationSprite("bluePillarActive", "B"));
+    decorationSprites.set(DECORATION_NAMES.bluePillar, new DecorationSprite("bluePillar", "b"));
+    decorationSprites.set(DECORATION_NAMES.greenPillar + ACTIVE, new DecorationSprite("greenPillarActive", "G"));
+    decorationSprites.set(DECORATION_NAMES.greenPillar, new DecorationSprite("greenPillar", "g"));
 
 }
 

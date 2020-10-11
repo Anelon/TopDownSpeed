@@ -117,6 +117,14 @@ export default class Connections {
                     if(projectile.category === CATEGORY.dragon) continue;
                     client.emit(CHANNELS.newProjectile, projectile.makeObject());
                 }
+                //send information about the Victory Monument
+                for(const lane of this.gameMap.lanes.values()) {
+                    console.log(lane.name);
+                    /** @type {VictoryMonument} */
+                    // @ts-ignore
+                    const vm = lane.regions.get(REGION_NAMES.victoryMonument);
+                    client.emit(CHANNELS.vmUpdate, vm.getInfo())
+                }
             });
 
             client.on(CHANNELS.vmUpdate, (vmInfo) => {
@@ -127,6 +135,7 @@ export default class Connections {
                 for(const objective of vmInfo.objectives) {
                     vm.objectives.add(objective);
                 }
+                this.broadcast(CHANNELS.vmUpdate, vmInfo, client);
             });
 
             client.on(CHANNELS.ready, (data) => {
@@ -142,20 +151,21 @@ export default class Connections {
                 //if ready add to count and check if there is enough ready
                 if(data.ready) {
                     this.readyCount++;
+                    console.info(this.readyCount, this.collisionEngine.players.size);
                     //TODO add check that there is more than the minPlayers
-                    if(this.readyCount === this.collisionEngine.players.size) {
+                    if (this.serverLoop.running) {
+                        //just tell the client that just readied to start
+                        client.emit(CHANNELS.startGame, "quientStart")
+                    } else if(this.readyCount === this.collisionEngine.players.size) {
                         this.broadcast(CHANNELS.startGame, "start");
                         console.info("starting game");
                         this.serverLoop.start();
-                    } else if (this.readyCount > this.collisionEngine.players.size) {
-                        //just tell the client that just readied to start
-                        client.emit(CHANNELS.startGame, "quientStart")
                     }
                 } else {
                     //unready the player
                     this.readyCount--;
                 }
-            })
+            });
         });
         return this;
     }

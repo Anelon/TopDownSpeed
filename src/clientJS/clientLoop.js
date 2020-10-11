@@ -5,7 +5,7 @@ import Projectile from "../sharedJS/ability/projectile.js";
 import { TYPES, CATEGORY, NUM_OBJECTIVES } from "../sharedJS/utils/enums.js";
 import GameMap from "../sharedJS/map/gameMap.js";
 import CanvasWrapper from "./canvasWrapper.js";
-import { tileSprites } from "./sprites.js";
+import { decorationSprites, tileSprites } from "./sprites.js";
 import CHANNELS from "../sharedJS/utils/channels.js";
 import Region from "../sharedJS/map/region.js";
 /** @typedef {import("../sharedJS/map/victoryMonument.js").default} VictoryMonument */
@@ -107,7 +107,7 @@ export default class ClientLoop {
         //https://yashints.dev/blog/2019/05/11/offscreen-canvas
         this.canvas.clear();
 
-        this.gameMap.draw(this.canvas, tileSprites);
+        this.gameMap.draw(this.canvas, tileSprites, decorationSprites);
         this.canvas.render(this.playerController);
         this.playerController.draw(this.canvas);
     }

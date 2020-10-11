@@ -22,7 +22,7 @@ export default class GameMap {
         this.tileSize = tileSize;
         if(!lane) this.lanes.set(GameMap.LEFT, new Lane("left", laneDimentions, GameMap.numLayers, tileSize));
 
-        this.lanes.get(GameMap.LEFT).setName(GameMap.RIGHT);
+        this.lanes.get(GameMap.LEFT).setName(GameMap.LEFT);
 
         const laneTopLeft = this.lanes.get(GameMap.LEFT).topLeft.clone();
 
@@ -124,19 +124,20 @@ export default class GameMap {
             if (lane.region.contains(startPoint) && lane.region.contains(endPoint)) {
                 lane.addRegion(regionStart, regionEnd, region, name);
 
-                for (let other of this.lanes.values()) {
+                for (let other of this.lanes.keys()) {
                     //skip the current lane
-                    if(other === lane) continue;
-                    const name = other.name;
-                    other = lane.mirror(this.verticalLanes, other.topLeft);
+                    if(this.lanes.get(other) === lane) continue;
+                    const name = this.lanes.get(other).name;
+                    const newLane = lane.mirror(this.verticalLanes, this.lanes.get(other).topLeft);
+                    this.lanes.set(other, newLane);
                     //put name back on
-                    other.setName(name);
+                    this.lanes.get(other).setName(name);
                 }
                 placed = true;
                 break;
             }
         }
-        if(placed) {
+        if(!placed) {
             //TODO possibly alert an error message
             console.error("Failed to place tiles");
             console.error(startPoint, endPoint);
@@ -159,11 +160,12 @@ export default class GameMap {
     /**
      * @param {import("../../clientJS/canvasWrapper.js").default} canvas
      * @param {import("../../clientJS/sprites.js").tileSprites} tileSprites
+     * @param {import("../../clientJS/sprites.js").decorationSprites} decorationSprites
      */
-    draw(canvas, tileSprites) {
+    draw(canvas, tileSprites, decorationSprites) {
         canvas.clear();
         for(const lane of this.lanes.values()) {
-            lane.draw(canvas, tileSprites);
+            lane.draw(canvas, tileSprites, decorationSprites);
         }
         canvas.drawGrid();
     }

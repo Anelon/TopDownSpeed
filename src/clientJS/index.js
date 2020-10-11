@@ -14,7 +14,7 @@ import GameMap from "../sharedJS/map/gameMap.js";
 import ClientLoop from "./clientLoop.js";
 import Dragon from "../sharedJS/dragon.js";
 import { loadDecorationSprites, loadTileSprites } from "./sprites.js";
-import { MAPNAME } from "../sharedJS/utils/enums.js";
+import { MAPNAME, REGION_NAMES } from "../sharedJS/utils/enums.js";
 
 //setup the sockets and listening
 // @ts-ignore
@@ -28,7 +28,7 @@ if(document.readyState === 'complete') {
     document.addEventListener("readystatechange", function (e) {
         const readyState = /** @type {Document} */(e.target).readyState;
         if(readyState === "complete") {
-            console.log("Document is ready");
+            console.info("Document is ready");
             documentReady = true;
             //call load functions
             loadTileSprites();
@@ -163,6 +163,18 @@ async function main() {
         //hide the intro message ready screen
         introMessageDiv.hidden = true;
         clientLoop.start();
+    });
+
+    socket.on(CHANNELS.vmUpdate, function (vmInfo) {
+        console.log("VMInfo", vmInfo);
+        console.log(gameMap.lanes);
+        /** @type {import("../sharedJS/map/victoryMonument").default} */
+        // @ts-ignore
+        const vm = gameMap.lanes.get(vmInfo.laneName).regions.get(REGION_NAMES.victoryMonument);
+        //update the vm's objectives 
+        for (const objective of vmInfo.objectives) {
+            vm.activateDecoration(objective);
+        }
     });
 
     socket.on(CHANNELS.endGame, function (winLaneName) {

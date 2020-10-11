@@ -3,7 +3,7 @@ import chai from 'chai';
 let assert = chai.assert;
 let expect = chai.expect;
 let should = chai.should;
-import Vec2 from '../sharedJS/vec2.js';
+import Vec2 from '../src/sharedJS/vec2.js';
 
 describe('Vec2', function () {
     describe('Default Constructor', function () {

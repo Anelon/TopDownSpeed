@@ -62,6 +62,16 @@ export const DECORATION_NAMES = {
 //lock the enum
 Object.freeze(DECORATION_NAMES);
 
+export const VM_DECORATION = new Set(
+    [
+        DECORATION_NAMES.redPillar,
+        DECORATION_NAMES.bluePillar,
+        DECORATION_NAMES.greenPillar,
+    ]
+);
+//lock the enum
+Object.freeze(VM_DECORATION);
+
 export const TILES = {
     [TILE_NAMES.g]: new Tile(new Vec2(), TILE_NAMES.g, true, true, 0),
     [TILE_NAMES.s]: new Tile(new Vec2(), TILE_NAMES.s, true, true, 0),

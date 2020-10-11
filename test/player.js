@@ -3,11 +3,11 @@ const assert = chai.assert;
 const expect = chai.expect;
 const should = chai.should;
 
-import Player from "../sharedJS/player.js";
-import { Circle } from '../sharedJS/shapes.js';
-import Point from "../sharedJS/point.js";
-import Vec2 from '../sharedJS/vec2.js';
-import Time from "../sharedJS/utils/time.js";
+import Player from "../src/sharedJS/player.js";
+import { Circle } from '../src/sharedJS/shapes.js';
+import Point from "../src/sharedJS/point.js";
+import Vec2 from '../src/sharedJS/vec2.js';
+import Time from "../src/sharedJS/utils/time.js";
 import { performance } from "perf_hooks";
 
 

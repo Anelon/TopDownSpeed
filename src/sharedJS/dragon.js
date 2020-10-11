@@ -80,7 +80,7 @@ export default class Dragon extends Entity {
     attack() {
         const attacks = new Array();
         for (const player of this.targetPlayers.values()) {
-            console.log(player.name);
+            console.info("Dragon attack's ", player.name);
             for (let i = -1; i <= 1; i++) {
                 const target = player.location.add(new Vec2(0, i*10)).sub(this.attackOrigin);
                 const fireball = new Fireball(
