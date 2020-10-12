@@ -156,7 +156,7 @@ export default class Connections {
                     if (this.serverLoop.running) {
                         //just tell the client that just readied to start
                         client.emit(CHANNELS.startGame, "quientStart")
-                    } else if(this.readyCount === this.collisionEngine.players.size) {
+                    } else if(this.readyCount >= this.collisionEngine.players.size) {
                         this.broadcast(CHANNELS.startGame, "start");
                         console.info("starting game");
                         this.serverLoop.start();
