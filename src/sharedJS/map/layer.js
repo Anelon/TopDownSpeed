@@ -19,7 +19,7 @@ export default class Layer {
             this.empty = false;
             this.baseTile = baseTile;
         }
-        
+
         if (tiles) {
             this.tiles = tiles;
         } else {
@@ -41,7 +41,7 @@ export default class Layer {
         for (const row of this.tiles) {
             const newRow = new Array();
             for (const tile of row) {
-                newRow.push({ "name": tile.name, "walkable": tile.walkable, "passable": tile.passable });
+                newRow.push({ "name": tile.name, "walkable": tile.walkable, "passable": tile.passable, "breakable": tile.breakable });
             }
             tiles.push(newRow);
         }
@@ -53,14 +53,14 @@ export default class Layer {
         } = json;
 
         let tile = null;
-        if (baseTile) tile = new Tile(new Vec2(), baseTile.name, baseTile.walkable, baseTile.passable, 0);
+        if (baseTile) tile = new Tile(new Vec2(), baseTile.name, baseTile.walkable, baseTile.passable, baseTile.breakable, 0);
         let empty = true;
         const newTiles = new Array();
         for (let j = 0; j < tiles.length; j++) {
             const newRow = new Array();
             for (let i = 0; i < tiles[0].length; i++) {
                 newRow.push(new Tile(new Vec2(i, j),
-                    tiles[j][i].name, tiles[j][i].walkable, tiles[j][i].passable, 0));
+                    tiles[j][i].name, tiles[j][i].walkable, tiles[j][i].passable, tiles[j][i].breakable, 0));
                 if (tiles[j][i].name !== TILE_NAMES[" "]) {
                     empty = false;
                 }
@@ -98,7 +98,7 @@ export default class Layer {
      * @param {Vec2} tileSize
      */
     generateStatic(tileSize, topLeft) {
-        if(this.empty) return [];
+        if (this.empty) return [];
         const statics = new Array();
         for (const row of this.tiles) {
             for (const tile of row) {

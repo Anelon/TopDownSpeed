@@ -87,6 +87,7 @@ canvas.addEventListener("mouseup", function(e) {
         const traversal = document.querySelectorAll("input[name='traversal']");
         const traversalObject = {
             walkable: false,
+            breakable: false,
             passable: true
         };
         for (const elem of traversal) {
@@ -101,6 +102,7 @@ canvas.addEventListener("mouseup", function(e) {
         //build traversal object
         const traversalObject = {
             walkable: false,
+            breakable: false,
             passable: true
         };
         for (const elem of traversal) {

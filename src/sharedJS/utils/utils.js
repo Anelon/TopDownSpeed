@@ -5,7 +5,6 @@ import Fireball from "../ability/fireball.js";
 import Waterball from "../ability/waterball.js";
 import PlantSeed from "../ability/plantSeed.js";
 
-export const mapName = "wallsMap";
 
 /**
  * @param {{ json: string; type: string; }} object
