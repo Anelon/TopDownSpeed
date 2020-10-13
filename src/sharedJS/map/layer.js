@@ -19,7 +19,7 @@ export default class Layer {
             this.empty = false;
             this.baseTile = baseTile;
         }
-        
+
         if (tiles) {
             this.tiles = tiles;
         } else {
@@ -98,7 +98,7 @@ export default class Layer {
      * @param {Vec2} tileSize
      */
     generateStatic(tileSize, topLeft) {
-        if(this.empty) return [];
+        if (this.empty) return [];
         const statics = new Array();
         for (const row of this.tiles) {
             for (const tile of row) {
@@ -162,23 +162,29 @@ export default class Layer {
      * @param {import("../../clientJS/canvasWrapper.js").default} canvas
      * @param {Vec2} topLeft
      * @param {import("../../clientJS/sprites.js").tileSprites} tileSprites
+     * @param {import("../../clientJS/sprites.js").decorationSprites} decorationSprites
      */
-    draw(canvas, topLeft, tileSprites) {
+    draw(canvas, topLeft, tileSprites, decorationSprites) {
         if (this.empty) return;
-        const height = this.dimentions.y, width = this.dimentions.x;
+        const [width, height] = this.dimentions.getXY();
+
         for (let j = 0; j < height; j++) {
             for (let i = 0; i < width; i++) {
                 //grab tile name
                 const tileName = this.tiles[j][i].name;
-                //skip if tile name in none
-                if (!tileSprites.has(tileName)) continue;
-                //get the sprite
-                const sprite = tileSprites.get(tileName);
-                //get the around value
-                const around = this.getAround(i, j, sprite.connects);
-                const tile = TILES[tileName].clone().init(new Vec2(i, j), around);
-                //sprite.draw(canvas, tile.location, tile.around);
-                tileSprites.get(tile.name).draw(canvas, tile.location.add(topLeft), tile.around);
+                //check if it is a tile or decoration sprite
+                if (tileSprites.has(tileName)) {
+                    //get the sprite
+                    const sprite = tileSprites.get(tileName);
+                    //get the around value
+                    //TODO move to loading map so it doesn't get run every frame
+                    const around = this.getAround(i, j, sprite.connects);
+                    const tile = TILES[tileName].clone().init(new Vec2(i, j), around);
+                    //sprite.draw(canvas, tile.location, tile.around);
+                    tileSprites.get(tile.name).draw(canvas, tile.location.add(topLeft), tile.around);
+                } else if (decorationSprites.has(tileName)) {
+                    decorationSprites.get(tileName).draw(canvas, new Vec2(i, j).addS(topLeft));
+                }
             }
         }
     }
