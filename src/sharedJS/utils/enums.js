@@ -12,7 +12,7 @@ export const MinPlayers = 2;
 
 export const NUM_OBJECTIVES = 3;
 
-export const MAPNAME = "wallsMap";
+export const MAPNAME = "map";
 
 //Enum of the type strings for consistency
 export const TYPES = {

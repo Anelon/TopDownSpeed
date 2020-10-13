@@ -1,6 +1,6 @@
 import Box from "../box.js";
 import { Rectangle } from "../shapes.js";
-import { CATEGORY, TYPES } from "../utils/enums.js";
+import { CATEGORY, TILE_NAMES, TYPES } from "../utils/enums.js";
 import Vec2 from "../vec2.js";
 
 export default class Tile {
@@ -74,7 +74,7 @@ export default class Tile {
                 this.walkable = true;
                 this.passable = true;
                 this.breakable = false;
-                this.name = "none";
+                this.name = TILE_NAMES[" "];
             }
         }
 
