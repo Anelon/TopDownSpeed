@@ -73,20 +73,20 @@ export const VM_DECORATION = new Set(
 Object.freeze(VM_DECORATION);
 
 export const TILES = {
-    [TILE_NAMES.g]: new Tile(new Vec2(), TILE_NAMES.g, true, true, 0),
-    [TILE_NAMES.s]: new Tile(new Vec2(), TILE_NAMES.s, true, true, 0),
-    [TILE_NAMES.d]: new Tile(new Vec2(), TILE_NAMES.d, true, true, 0),
-    [TILE_NAMES.w]: new Tile(new Vec2(), TILE_NAMES.w, false, true, 0),
-    [TILE_NAMES.u]: new Tile(new Vec2(), TILE_NAMES.u, true, true, 0),
-    [DECORATION_NAMES.redPillar]: new Tile(new Vec2(), DECORATION_NAMES.redPillar, false, true, 0),
-    [DECORATION_NAMES.bluePillar]: new Tile(new Vec2(), DECORATION_NAMES.bluePillar, false, true, 0),
-    [DECORATION_NAMES.greenPillar]: new Tile(new Vec2(), DECORATION_NAMES.greenPillar, false, true, 0),
-    [TILE_NAMES[" "]]: new Tile(new Vec2(), TILE_NAMES[" "], true, true, 0),
+    [TILE_NAMES.g]: new Tile(new Vec2(), TILE_NAMES.g, true, true, false, 0),
+    [TILE_NAMES.s]: new Tile(new Vec2(), TILE_NAMES.s, true, true, false, 0),
+    [TILE_NAMES.d]: new Tile(new Vec2(), TILE_NAMES.d, true, true, false, 0),
+    [TILE_NAMES.w]: new Tile(new Vec2(), TILE_NAMES.w, false, true, false, 0),
+    [TILE_NAMES.u]: new Tile(new Vec2(), TILE_NAMES.u, true, true, false, 0),
+    [DECORATION_NAMES.redPillar]: new Tile(new Vec2(), DECORATION_NAMES.redPillar, false, true, false, 0),
+    [DECORATION_NAMES.bluePillar]: new Tile(new Vec2(), DECORATION_NAMES.bluePillar, false, true, false, 0),
+    [DECORATION_NAMES.greenPillar]: new Tile(new Vec2(), DECORATION_NAMES.greenPillar, false, true, false, 0),
+    [TILE_NAMES[" "]]: new Tile(new Vec2(), TILE_NAMES[" "], true, true, false, 0),
 }
 //lock the enum
 Object.freeze(TILES);
 
-export const TILE_OPTIONS = new Set(["walkable", "passable"]);
+export const TILE_OPTIONS = new Set(["walkable", "passable", "breakable"]);
 //lock the enum
 Object.freeze(TILE_OPTIONS);
 

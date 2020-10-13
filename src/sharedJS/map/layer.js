@@ -41,7 +41,7 @@ export default class Layer {
         for (const row of this.tiles) {
             const newRow = new Array();
             for (const tile of row) {
-                newRow.push({ "name": tile.name, "walkable": tile.walkable, "passable": tile.passable });
+                newRow.push({ "name": tile.name, "walkable": tile.walkable, "passable": tile.passable, "breakable": tile.breakable });
             }
             tiles.push(newRow);
         }
@@ -53,14 +53,14 @@ export default class Layer {
         } = json;
 
         let tile = null;
-        if (baseTile) tile = new Tile(new Vec2(), baseTile.name, baseTile.walkable, baseTile.passable, 0);
+        if (baseTile) tile = new Tile(new Vec2(), baseTile.name, baseTile.walkable, baseTile.passable, baseTile.breakable, 0);
         let empty = true;
         const newTiles = new Array();
         for (let j = 0; j < tiles.length; j++) {
             const newRow = new Array();
             for (let i = 0; i < tiles[0].length; i++) {
                 newRow.push(new Tile(new Vec2(i, j),
-                    tiles[j][i].name, tiles[j][i].walkable, tiles[j][i].passable, 0));
+                    tiles[j][i].name, tiles[j][i].walkable, tiles[j][i].passable, tiles[j][i].breakable, 0));
                 if (tiles[j][i].name !== TILE_NAMES[" "]) {
                     empty = false;
                 }
@@ -162,29 +162,23 @@ export default class Layer {
      * @param {import("../../clientJS/canvasWrapper.js").default} canvas
      * @param {Vec2} topLeft
      * @param {import("../../clientJS/sprites.js").tileSprites} tileSprites
-     * @param {import("../../clientJS/sprites.js").decorationSprites} decorationSprites
      */
-    draw(canvas, topLeft, tileSprites, decorationSprites) {
+    draw(canvas, topLeft, tileSprites) {
         if (this.empty) return;
-        const [width, height] = this.dimentions.getXY();
-
+        const height = this.dimentions.y, width = this.dimentions.x;
         for (let j = 0; j < height; j++) {
             for (let i = 0; i < width; i++) {
                 //grab tile name
                 const tileName = this.tiles[j][i].name;
-                //check if it is a tile or decoration sprite
-                if (tileSprites.has(tileName)) {
-                    //get the sprite
-                    const sprite = tileSprites.get(tileName);
-                    //get the around value
-                    //TODO move to loading map so it doesn't get run every frame
-                    const around = this.getAround(i, j, sprite.connects);
-                    const tile = TILES[tileName].clone().init(new Vec2(i, j), around);
-                    //sprite.draw(canvas, tile.location, tile.around);
-                    tileSprites.get(tile.name).draw(canvas, tile.location.add(topLeft), tile.around);
-                } else if (decorationSprites.has(tileName)) {
-                    decorationSprites.get(tileName).draw(canvas, new Vec2(i, j).addS(topLeft));
-                }
+                //skip if tile name in none
+                if (!tileSprites.has(tileName)) continue;
+                //get the sprite
+                const sprite = tileSprites.get(tileName);
+                //get the around value
+                const around = this.getAround(i, j, sprite.connects);
+                const tile = TILES[tileName].clone().init(new Vec2(i, j), around);
+                //sprite.draw(canvas, tile.location, tile.around);
+                tileSprites.get(tile.name).draw(canvas, tile.location.add(topLeft), tile.around);
             }
         }
     }

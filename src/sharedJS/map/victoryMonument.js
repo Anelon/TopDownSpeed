@@ -29,6 +29,7 @@ export default class VictoryMonument extends Region {
     }
     activateDecoration(objective) {
         console.info(objective, " added to VM");
+        console.log(this.decorations);
         this.objectives.add(objective);
         const decorationStr = `${objective}Pillar`;
         if(this.decorations.has(decorationStr)) {
