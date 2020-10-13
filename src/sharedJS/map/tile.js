@@ -69,6 +69,14 @@ export default class Tile {
                 other.location = other.oldLocation;
             }
         }
+        if (other.category === CATEGORY.projectile) {
+            if (this.breakable) {
+                this.walkable = true;
+                this.passable = true;
+                this.breakable = false;
+                this.name = "none";
+            }
+        }
 
     }
 }
